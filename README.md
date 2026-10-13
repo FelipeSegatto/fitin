@@ -35,3 +35,11 @@ O login abre com registros fictícios: 7 dias de sequência, meta de 2.000 kcal,
 Página com coleção de seis medalhas, assets de halteres extraídos do SVG, filtros e detalhes, desafio de 30 dias e semana. XP deriva das medalhas conquistadas e não duplica ao abrir o card. Login tem histórico fictício separado (17 dias anteriores de registro, 14 refeições e 6.250 kcal de atividades), somado aos registros do dia; cadastro começa zerado. A sequência de sete dias mantém-se igual à home. Foco total mede 30 dias de registro, não necessariamente consecutivos; o desafio foi rotulado de 30 dias para manter coerência sem confundir dias registrados com dias de calendário. Os níveis/recompensas são regras demonstrativas. Os cards de medalhas seguem as variações e cores do segundo SVG fornecido pelo autor; as telas anteriores preservam suas variações próximas e tratamentos próprios. Verificação: `npm run test:achievements`.
 
 As três novas personagens foram extraídas dos SVGs fornecidos para acompanhar o personagem azul na composição desktop. Os cards de atividades e refeições da home usam amarelo e pêssego com fundos suaves e texto escuro, mantendo as outras variações de cor.
+
+## Diário e Progresso
+
+Diário por data, com resumo de consumo/restante, macros logo abaixo e cards de refeições/atividades. Adição, edição e exclusão compartilham o estado com a home; registros de outros dias não alteram o consumo de hoje. Macros são opcionais: valores ausentes são exibidos como desconhecidos/parciais, nunca estimados a partir das calorias. A conta demo tem refeições de 370 e 556 kcal com macros coerentes (total P58/C115/G26). A fonte dos indicadores da home foi aumentada apenas no desktop.
+
+Progresso traz plano atual, filtros de período, histórico de peso, metas, projeção linear demonstrativa e registros de passos. Login carrega seis pesos fictícios (81 a 78 kg), meta de 70 kg e passos de exemplo. Médias de calorias usam somente dias com refeições registradas e são identificadas como parciais. Cadastro novo inicia com o peso informado, se houver; não recebe histórico fictício. Fórmulas de gordura corporal não foram inventadas. Peso no mesmo dia é atualizado em vez de duplicado.
+
+Verificação dos fluxos: `npm run test:diary-progress`. Dados continuam apenas na memória da sessão, sem autenticação ou sincronização real.

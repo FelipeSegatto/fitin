@@ -9,7 +9,8 @@
     "preview": "vite preview --host 0.0.0.0 --port 5200 --strictPort",
     "test:smoke": "node scripts/smoke.mjs",
     "test:measures": "node scripts/optional-measures.mjs",
-    "test:achievements": "node scripts/achievements-smoke.mjs"
+    "test:achievements": "node scripts/achievements-smoke.mjs",
+    "test:diary-progress": "node scripts/diary-progress-smoke.mjs"
   },
   "dependencies": {
     "@fontsource/poppins": "^5.2.7",

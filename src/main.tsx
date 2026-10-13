@@ -24,6 +24,15 @@ import "@fontsource/poppins/500.css";
 import "@fontsource/poppins/600.css";
 import "@fontsource/poppins/700.css";
 import "./styles.css";
+import { Diary } from "./Diary";
+import { Progress, type WeightRecord, type StepRecord } from "./Progress";
+import {
+  type DailyRecord,
+  type RecordDraft,
+  localDay,
+  localTime,
+  recordId,
+} from "./records";
 import { Achievements, type AchievementHistory } from "./Achievements";
 type Screen =
   | "welcome"
@@ -147,8 +156,28 @@ function App() {
       burned: 0,
     }),
     [modal, setModal] = useState(""),
-    [foods, setFoods] = useState<{ name: string; kcal: number }[]>([]),
-    [workouts, setWorkouts] = useState<{ name: string; kcal: number }[]>([]);
+    [foodRecords, setFoods] = useState<DailyRecord[]>([]),
+    [workoutRecords, setWorkouts] = useState<DailyRecord[]>([]),
+    [weightRecords, setWeightRecords] = useState<WeightRecord[]>([]),
+    [stepRecords, setStepRecords] = useState<StepRecord[]>([]),
+    [weightGoal, setWeightGoal] = useState(""),
+    [modalDate, setModalDate] = useState(localDay()),
+    [editingRecord, setEditingRecord] = useState<{
+      kind: string;
+      id: string;
+    } | null>(null);
+  const foods = foodRecords.filter((e) => e.date === localDay()),
+    workouts = workoutRecords.filter((e) => e.date === localDay());
+  const openRecord = (kind: string, date = localDay(), entry?: DailyRecord) => {
+    setModalDate(date);
+    setEditingRecord(entry ? { kind, id: entry.id } : null);
+    setModal(kind);
+  };
+  const initialRecord = editingRecord
+    ? (editingRecord.kind === "food" ? foodRecords : workoutRecords).find(
+        (e) => e.id === editingRecord.id,
+      )
+    : undefined;
   const change = (key: keyof Profile, value: string) => {
     setProfile((p) => ({
       ...p,
@@ -222,6 +251,13 @@ function App() {
       window.scrollTo(0, 0);
     } else {
       setProfile((p) => ({ ...p, password: "", confirm: "" }));
+      setWeightRecords(
+        profile.weight
+          ? [{ date: localDay(), weight: Number(profile.weight) }]
+          : [],
+      );
+      setStepRecords([]);
+      setWeightGoal("");
       setFoods([]);
       setWorkouts([]);
       setStreak(0);
@@ -323,12 +359,50 @@ function App() {
       setTab("Home");
       setRate(0.4);
       setStreak(7);
+      setWeightGoal("70");
+      setWeightRecords(
+        [81, 80.5, 79.9, 79.3, 78.4, 78].map((weight, i) => {
+          const d = new Date();
+          d.setDate(d.getDate() - (5 - i) * 7);
+          return { date: localDay(d), weight };
+        }),
+      );
+      setStepRecords([{ date: localDay(), steps: 8200 }]);
       setAchievementHistory({ days: 17, meals: 14, burned: 6250 });
       setFoods([
-        { name: "Café da manhã: pão, ovos e fruta", kcal: 370 },
-        { name: "Lanche: arroz, frango +", kcal: 556 },
+        {
+          id: "demo-breakfast",
+          date: localDay(),
+          time: "08:15",
+          meal: "Café da manhã",
+          name: "Pão integral, ovos e fruta",
+          kcal: 370,
+          protein: 20,
+          carbs: 50,
+          fat: 10,
+        },
+        {
+          id: "demo-lunch",
+          date: localDay(),
+          time: "12:30",
+          meal: "Almoço",
+          name: "Arroz, frango e acompanhamentos",
+          kcal: 556,
+          protein: 38,
+          carbs: 65,
+          fat: 16,
+        },
       ]);
-      setWorkouts([{ name: "Musculação · 40 min", kcal: 150 }]);
+      setWorkouts([
+        {
+          id: "demo-workout",
+          date: localDay(),
+          time: "18:00",
+          name: "Musculação",
+          minutes: 40,
+          kcal: 150,
+        },
+      ]);
       setProfile((p) => ({
         ...p,
         name: "João",
@@ -959,16 +1033,18 @@ function App() {
         )}
         {screen === "home" && (
           <div className={"home-body " + (streak > 0 ? "demo-filled" : "")}>
-            <header>
-              <Logo />
-              <button
-                className="icon"
-                aria-label="Notificações"
-                onClick={() => setModal("notifications")}
-              >
-                <Bell size={20} />
-              </button>
-            </header>
+            {tab !== "Diário" && tab !== "Progresso" && (
+              <header>
+                <Logo />
+                <button
+                  className="icon"
+                  aria-label="Notificações"
+                  onClick={() => setModal("notifications")}
+                >
+                  <Bell size={20} />
+                </button>
+              </header>
+            )}
             {tab === "Home" && (
               <>
                 <div
@@ -1042,12 +1118,15 @@ function App() {
                   </div>
                 </div>
                 <div className="home-actions">
-                  <button className="primary" onClick={() => setModal("food")}>
+                  <button
+                    className="primary"
+                    onClick={() => openRecord("food")}
+                  >
                     <PlusCircle size={17} /> Adicionar alimentos
                   </button>
                   <button
                     className="outline"
-                    onClick={() => setModal("workout")}
+                    onClick={() => openRecord("workout")}
                   >
                     <PlusCircle size={17} /> Adicionar atividades
                   </button>
@@ -1086,43 +1165,44 @@ function App() {
               </>
             )}
             {tab === "Diário" && (
-              <>
-                <h1>Seu diário</h1>
-                <p>Os registros desta sessão, no seu ritmo.</p>
-                {!foods.length && !workouts.length ? (
-                  <div className="empty">
-                    <Mascot name="party" />
-                    <p>Seu primeiro registro pode começar hoje.</p>
-                    <button
-                      className="primary"
-                      onClick={() => setModal("food")}
-                    >
-                      Adicionar refeição
-                    </button>
-                  </div>
-                ) : (
-                  <div className="card">
-                    {[...foods, ...workouts].map((i, n) => (
-                      <p key={n}>
-                        {i.name} <strong>{i.kcal} kcal</strong>
-                      </p>
-                    ))}
-                  </div>
-                )}
-              </>
+              <Diary
+                foods={foodRecords}
+                workouts={workoutRecords}
+                target={target}
+                onNotifications={() => setModal("notifications")}
+                onAdd={(kind, date) => openRecord(kind, date)}
+                onEdit={(kind, entry) => openRecord(kind, entry.date, entry)}
+                onDelete={(kind, id) =>
+                  kind === "food"
+                    ? setFoods((a) => a.filter((e) => e.id !== id))
+                    : setWorkouts((a) => a.filter((e) => e.id !== id))
+                }
+              />
             )}
             {tab === "Progresso" && (
-              <>
-                <h1>Seu progresso</h1>
-                <div className="empty">
-                  <Mascot name="sport" />
-                  <h3>Um passo de cada vez</h3>
-                  <p>
-                    Você fez {foods.length + workouts.length} registros nesta
-                    sessão. O histórico de peso entra em uma próxima etapa.
-                  </p>
-                </div>
-              </>
+              <Progress
+                weights={weightRecords}
+                steps={stepRecords}
+                foods={foodRecords}
+                workouts={workoutRecords}
+                target={target}
+                goal={goal}
+                rate={rate}
+                weightGoal={weightGoal}
+                onGoal={setWeightGoal}
+                onWeight={(date, weight) =>
+                  setWeightRecords((a) => [
+                    ...a.filter((e) => e.date !== date),
+                    { date, weight },
+                  ])
+                }
+                onSteps={(date, steps) =>
+                  setStepRecords((a) => [
+                    ...a.filter((e) => e.date !== date),
+                    { date, steps },
+                  ])
+                }
+              />
             )}
             {tab === "Conquistas" && (
               <Achievements
@@ -1156,6 +1236,9 @@ function App() {
                   className="text-button"
                   onClick={() => {
                     setProfile(initial);
+                    setWeightRecords([]);
+                    setStepRecords([]);
+                    setWeightGoal("");
                     setSkippedMeasures([]);
                     setStreak(0);
                     setAchievementHistory({ days: 0, meals: 0, burned: 0 });
@@ -1201,13 +1284,27 @@ function App() {
         {modal && (
           <Modal
             kind={modal}
-            close={() => setModal("")}
-            add={(item) => {
-              modal === "food"
-                ? (setFoods((a) => [...a, item]),
-                  setStreak((s) => Math.max(s, 1)))
-                : setWorkouts((a) => [...a, item]);
+            initial={initialRecord}
+            close={() => {
               setModal("");
+              setEditingRecord(null);
+            }}
+            add={(item) => {
+              const entry: DailyRecord = {
+                ...item,
+                id: initialRecord?.id || recordId(),
+                date: modalDate,
+              };
+              const update = (a: DailyRecord[]) =>
+                initialRecord
+                  ? a.map((e) => (e.id === initialRecord.id ? entry : e))
+                  : [...a, entry];
+              modal === "food"
+                ? (setFoods(update),
+                  entry.date === localDay() && setStreak((s) => Math.max(s, 1)))
+                : setWorkouts(update);
+              setModal("");
+              setEditingRecord(null);
             }}
           />
         )}
@@ -1219,13 +1316,25 @@ function Modal({
   kind,
   close,
   add,
+  initial,
 }: {
+  initial?: DailyRecord;
   kind: string;
   close: () => void;
-  add: (i: { name: string; kcal: number }) => void;
+  add: (i: RecordDraft) => void;
 }) {
-  const [name, setName] = useState(""),
-    [kcal, setKcal] = useState("");
+  const [name, setName] = useState(initial?.name || ""),
+    [kcal, setKcal] = useState(initial ? String(initial.kcal) : ""),
+    [time, setTime] = useState(initial?.time || localTime()),
+    [meal, setMeal] = useState(initial?.meal || "Refeição"),
+    [minutes, setMinutes] = useState(
+      initial?.minutes ? String(initial.minutes) : "",
+    ),
+    [macros, setMacros] = useState({
+      protein: initial?.protein === undefined ? "" : String(initial.protein),
+      carbs: initial?.carbs === undefined ? "" : String(initial.carbs),
+      fat: initial?.fat === undefined ? "" : String(initial.fat),
+    });
   const ref = React.useRef<HTMLDivElement>(null);
   React.useEffect(() => {
     const previous = document.activeElement as HTMLElement;
@@ -1233,7 +1342,9 @@ function Modal({
     const f = (e: KeyboardEvent) => {
       if (e.key === "Escape") close();
       if (e.key === "Tab") {
-        const els = ref.current?.querySelectorAll<HTMLElement>("button,input");
+        const els = ref.current?.querySelectorAll<HTMLElement>(
+          "button,input,select",
+        );
         if (!els?.length) return;
         const first = els[0],
           last = els[els.length - 1];
@@ -1274,8 +1385,12 @@ function Modal({
           {kind === "notifications"
             ? "Suas notificações"
             : kind === "food"
-              ? "Adicionar alimento"
-              : "Adicionar atividade"}
+              ? initial
+                ? "Editar refeição"
+                : "Adicionar alimento"
+              : initial
+                ? "Editar atividade"
+                : "Adicionar atividade"}
         </h2>
         {kind === "notifications" ? (
           <p>
@@ -1287,7 +1402,23 @@ function Modal({
             onSubmit={(e) => {
               e.preventDefault();
               if (name.trim() && Number(kcal) > 0 && Number(kcal) <= 10000)
-                add({ name: name.trim(), kcal: Number(kcal) });
+                add({
+                  name: name.trim(),
+                  kcal: Number(kcal),
+                  time,
+                  ...(kind === "food"
+                    ? {
+                        meal,
+                        ...Object.fromEntries(
+                          Object.entries(macros)
+                            .filter(([, v]) => v !== "")
+                            .map(([k, v]) => [k, Number(v)]),
+                        ),
+                      }
+                    : minutes
+                      ? { minutes: Number(minutes) }
+                      : {}),
+                });
             }}
           >
             <p className="subtitle">
@@ -1316,7 +1447,82 @@ function Modal({
                 required
               />
             </label>
-            <button className="primary">Adicionar registro</button>
+            <div className="record-details">
+              <label className="field">
+                <span>Horário</span>
+                <input
+                  type="time"
+                  value={time}
+                  onChange={(e) => setTime(e.target.value)}
+                  required
+                />
+              </label>
+              {kind === "food" ? (
+                <label className="field">
+                  <span>Refeição</span>
+                  <select
+                    value={meal}
+                    onChange={(e) => setMeal(e.target.value)}
+                  >
+                    {[
+                      "Refeição",
+                      "Café da manhã",
+                      "Almoço",
+                      "Lanche da tarde",
+                      "Jantar",
+                      "Ceia",
+                    ].map((v) => (
+                      <option key={v}>{v}</option>
+                    ))}
+                  </select>
+                </label>
+              ) : (
+                <label className="field">
+                  <span>Duração (min)</span>
+                  <input
+                    type="number"
+                    min="1"
+                    max="1440"
+                    value={minutes}
+                    onChange={(e) => setMinutes(e.target.value)}
+                  />
+                </label>
+              )}
+            </div>
+            {kind === "food" && (
+              <>
+                <div className="record-macros">
+                  {(["protein", "carbs", "fat"] as const).map((key, i) => (
+                    <label className="field" key={key}>
+                      <span>
+                        {
+                          ["Proteínas (g)", "Carboidratos (g)", "Gorduras (g)"][
+                            i
+                          ]
+                        }
+                      </span>
+                      <input
+                        type="number"
+                        min="0"
+                        max="1000"
+                        step="0.1"
+                        value={macros[key]}
+                        onChange={(e) =>
+                          setMacros((m) => ({ ...m, [key]: e.target.value }))
+                        }
+                      />
+                    </label>
+                  ))}
+                </div>
+                <p className="record-macros-note">
+                  Macros opcionais. Sem esses valores, o resumo do dia fica
+                  parcial.
+                </p>
+              </>
+            )}
+            <button className="primary">
+              {initial ? "Salvar alterações" : "Adicionar registro"}
+            </button>
           </form>
         )}
       </div>
