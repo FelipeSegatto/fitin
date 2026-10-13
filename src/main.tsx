@@ -990,7 +990,7 @@ function App() {
                           : "Registre sua primeira refeição para iniciar sua sequência de dias."}
                     </p>
                   </div>
-                  <Mascot name={foods.length ? "happy" : "buddy"} />
+                  <Mascot name={foods.length ? "streak-buddy" : "buddy"} />
                 </div>
                 <div className="card daily">
                   <div className="card-title">
