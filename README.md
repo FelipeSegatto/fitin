@@ -25,3 +25,7 @@ Confirmar fonte e pequenos detalhes do design, definir regras de conta e plano, 
 ## Medidas opcionais
 
 Na etapa de medidas, a idade é editável e sincroniza a data de nascimento. Peso, altura, pescoço, cintura e quadril podem ser adiados individualmente ou em conjunto. Campos adiados ficam vazios e não geram cálculos de IMC sem peso/altura. Verificação: `npm run test:measures`.
+
+## Home da conta demonstrativa
+
+O login abre com registros fictícios: 7 dias de sequência, meta de 2.000 kcal, duas refeições somando 926 kcal e musculação de 150 kcal. O saldo é 1.224 kcal. Quem conclui o cadastro começa sem registros. O logo usa o asset fornecido no SVG de referência da home.

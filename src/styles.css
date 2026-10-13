@@ -1138,3 +1138,31 @@ button:hover {
     min-height: inherit;
   }
 }
+.daily-equation {
+  white-space: nowrap;
+}
+.daily-equation span {
+  color: #ff7e68;
+}
+.daily-equation em {
+  font-style: normal;
+  color: #52bcaa;
+}
+.daily-equation strong {
+  font-weight: 600;
+}
+.demo-filled .home-actions .primary {
+  background: white;
+  color: #30274b;
+  box-shadow: 0 5px 16px #634b3b0c;
+}
+.demo-filled .home-actions svg {
+  color: #fa6a29;
+}
+.demo-filled .home-banner h2 {
+  font-size: 23px;
+}
+.logo {
+  object-fit: contain;
+  height: auto;
+}

@@ -139,6 +139,7 @@ function App() {
     [recovered, setRecovered] = useState(false),
     [rate, setRate] = useState(0.55),
     [tab, setTab] = useState("Home"),
+    [streak, setStreak] = useState(0),
     [modal, setModal] = useState(""),
     [foods, setFoods] = useState<{ name: string; kcal: number }[]>([]),
     [workouts, setWorkouts] = useState<{ name: string; kcal: number }[]>([]);
@@ -215,6 +216,9 @@ function App() {
       window.scrollTo(0, 0);
     } else {
       setProfile((p) => ({ ...p, password: "", confirm: "" }));
+      setFoods([]);
+      setWorkouts([]);
+      setStreak(0);
       go("loading");
       setTimeout(() => go("result"), 900);
     }
@@ -310,6 +314,13 @@ function App() {
     setTimeout(() => {
       setBusy(false);
       setTab("Home");
+      setRate(0.4);
+      setStreak(7);
+      setFoods([
+        { name: "Café da manhã: pão, ovos e fruta", kcal: 370 },
+        { name: "Lanche: arroz, frango +", kcal: 556 },
+      ]);
+      setWorkouts([{ name: "Musculação · 40 min", kcal: 150 }]);
       setProfile((p) => ({
         ...p,
         name: "João",
@@ -938,7 +949,7 @@ function App() {
           </div>
         )}
         {screen === "home" && (
-          <div className="home-body">
+          <div className={"home-body " + (streak > 0 ? "demo-filled" : "")}>
             <header>
               <Logo />
               <button
@@ -955,11 +966,19 @@ function App() {
                   className={"home-banner " + (foods.length ? "started" : "")}
                 >
                   <div>
-                    <h2>{foods.length ? "Você começou!" : "Vamos começar!"}</h2>
+                    <h2>
+                      {streak > 1
+                        ? `Streak de ${streak} dias!`
+                        : foods.length
+                          ? "Você começou!"
+                          : "Vamos começar!"}
+                    </h2>
                     <p>
-                      {foods.length
-                        ? "Cada registro é um passo na sua jornada."
-                        : "Registre sua primeira refeição para iniciar sua sequência de dias."}
+                      {streak > 1
+                        ? "Muito bem! Continue registrando e mantenha o progresso em dia."
+                        : foods.length
+                          ? "Cada registro é um passo na sua jornada."
+                          : "Registre sua primeira refeição para iniciar sua sequência de dias."}
                     </p>
                   </div>
                   <Mascot name={foods.length ? "happy" : "buddy"} />
@@ -967,9 +986,16 @@ function App() {
                 <div className="card daily">
                   <div className="card-title">
                     <h3>Resumo Diário</h3>
-                    <small>
-                      meta do dia = {target.toLocaleString("pt-BR")} kcal
-                    </small>
+                    {foods.length ? (
+                      <small className="daily-equation">
+                        {target} − <span>{consumed}</span> + <em>{burned}</em> ={" "}
+                        <strong>{remaining} kcal</strong>
+                      </small>
+                    ) : (
+                      <small>
+                        meta do dia = {target.toLocaleString("pt-BR")} kcal
+                      </small>
+                    )}
                   </div>
                   <div className="daily-content">
                     <div
@@ -1132,6 +1158,7 @@ function App() {
                   onClick={() => {
                     setProfile(initial);
                     setSkippedMeasures([]);
+                    setStreak(0);
                     setFoods([]);
                     setWorkouts([]);
                     setRate(0.55);
@@ -1177,7 +1204,8 @@ function App() {
             close={() => setModal("")}
             add={(item) => {
               modal === "food"
-                ? setFoods((a) => [...a, item])
+                ? (setFoods((a) => [...a, item]),
+                  setStreak((s) => Math.max(s, 1)))
                 : setWorkouts((a) => [...a, item]);
               setModal("");
             }}

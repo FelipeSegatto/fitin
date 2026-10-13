@@ -80,8 +80,10 @@ try {
   await p.getByRole("button", { name: "Entrar", exact: true }).click();
   await p.getByRole("button", { name: "Preencher dados" }).click();
   await p.getByRole("button", { name: "Entrar", exact: true }).click();
-  await p.getByRole("heading", { name: "Vamos começar!" }).waitFor();
-  assert.equal(await p.locator(".ring strong").innerText(), "1.850");
+  await p.getByRole("heading", { name: "Streak de 7 dias!" }).waitFor();
+  assert.equal(await p.locator(".ring strong").innerText(), "1.224");
+  assert((await p.locator(".daily-values").innerText()).includes("926 kcal"));
+  assert((await p.locator(".daily-values").innerText()).includes("150 kcal"));
   await p.setViewportSize({ width: 1440, height: 1000 });
   await p.screenshot({
     path: "/workspace/artifacts/fitin-home-desktop.png",
