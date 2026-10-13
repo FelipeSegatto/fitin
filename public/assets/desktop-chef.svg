@@ -19,22 +19,29 @@
 <ellipse cx="148.701" cy="170.001" rx="22.2885" ry="9.80381" fill="#F36B8F"/>
 <path d="M271.972 114.377L284.674 88.6208M259.623 100.97L266.68 72.0381M245.863 98.5003L242.688 79.4479" stroke="black" stroke-width="4.72651" stroke-linecap="round"/>
 <ellipse cx="251.395" cy="133.336" rx="23.514" ry="35.3594" fill="#FBFBFB"/>
-<mask id="mask0_3147_10605" style="mask-type:alpha" maskUnits="userSpaceOnUse" x="227" y="97" width="48" height="72">
+<mask id="mask0_3148_10662" style="mask-type:alpha" maskUnits="userSpaceOnUse" x="227" y="97" width="48" height="72">
 <ellipse cx="251.395" cy="133.336" rx="23.514" ry="35.3594" fill="#FBFBFB"/>
 </mask>
-<g mask="url(#mask0_3147_10605)">
+<g mask="url(#mask0_3148_10662)">
 <ellipse cx="251.533" cy="133.336" rx="19.6211" ry="23.9956" fill="#2E4133"/>
 <ellipse cx="243.816" cy="128.821" rx="6.74315" ry="7.50633" fill="#FBFBFB"/>
 <ellipse cx="251.796" cy="123.329" rx="3.37157" ry="3.75316" fill="#FBFBFB"/>
 </g>
 <path d="M134.891 114.377L122.189 88.6208M147.24 100.97L140.183 72.0381M161 98.5003L164.175 79.4479" stroke="black" stroke-width="4.72651" stroke-linecap="round"/>
 <ellipse cx="155.194" cy="133.336" rx="23.514" ry="35.3594" fill="#FBFBFB"/>
-<mask id="mask1_3147_10605" style="mask-type:alpha" maskUnits="userSpaceOnUse" x="131" y="97" width="48" height="72">
+<mask id="mask1_3148_10662" style="mask-type:alpha" maskUnits="userSpaceOnUse" x="131" y="97" width="48" height="72">
 <ellipse cx="155.194" cy="133.336" rx="23.514" ry="35.3594" fill="#FBFBFB"/>
 </mask>
-<g mask="url(#mask1_3147_10605)">
+<g mask="url(#mask1_3148_10662)">
 <ellipse cx="155.332" cy="133.336" rx="19.6211" ry="23.9956" fill="#2E4133"/>
 <ellipse cx="147.615" cy="128.821" rx="6.74315" ry="7.50633" fill="#FBFBFB"/>
 <ellipse cx="155.594" cy="123.329" rx="3.37157" ry="3.75316" fill="#FBFBFB"/>
 </g>
+<ellipse cx="326.286" cy="161.368" rx="9.48149" ry="8.25055" transform="rotate(96.6048 326.286 161.368)" fill="black"/>
+<path d="M324.5 165.5L331 146" stroke="black" stroke-width="6" stroke-linecap="round"/>
+<path d="M252 221.13C282.962 212.518 296.851 192.137 320.5 167.5M320.5 167.5V146.5M320.5 167.5L340 153M320.5 167.5L338.5 165" stroke="black" stroke-width="6.26" stroke-linecap="round"/>
+<ellipse cx="9.48149" cy="8.25055" rx="9.48149" ry="8.25055" transform="matrix(0.115021 0.993363 0.993363 -0.115021 75.4272 149.898)" fill="black"/>
+<path d="M86.5 162.5L80 143" stroke="black" stroke-width="6" stroke-linecap="round"/>
+<path d="M159 218.13C128.038 209.518 114.149 189.137 90.5 164.5M90.5 164.5V143.5M90.5 164.5L71 150M90.5 164.5L72.5 162" stroke="black" stroke-width="6.26" stroke-linecap="round"/>
+<path d="M206.82 192.555C216.067 191.858 223.081 184.894 222.486 177L189 179.524C189.595 187.418 197.573 193.252 206.82 192.555Z" fill="#9B3838"/>
 </svg>
