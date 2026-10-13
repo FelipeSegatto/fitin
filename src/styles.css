@@ -1078,3 +1078,63 @@ button:hover {
     animation: none;
   }
 }
+.measure-help {
+  font-size: 12px;
+  color: #7c7091;
+  margin-bottom: 8px;
+}
+.skip-all {
+  background: #f0e5fd;
+  color: #6d5395;
+  border-radius: 12px;
+  padding: 10px 14px;
+  font-size: 11px;
+  margin-bottom: 20px;
+  align-self: flex-start;
+}
+.measure-field {
+  margin-bottom: 20px;
+}
+.signup-body .measure-field .field {
+  margin-bottom: 0;
+}
+.measure-skip {
+  background: transparent;
+  color: #7b609d;
+  padding: 7px 0;
+  font-size: 10px;
+  text-align: left;
+}
+.input-wrap:has(input:disabled) {
+  background: #f1eae4;
+  box-shadow: none;
+}
+.field input:disabled {
+  color: #9c8ba7;
+}
+.measure-row {
+  align-items: start;
+}
+.surface.plan {
+  display: flex;
+  min-height: 100dvh;
+}
+.plan-body {
+  flex: 1;
+  width: 100%;
+  min-height: inherit;
+}
+.plan-body > .plan-next {
+  flex-shrink: 0;
+}
+.plan-body > .demo-note {
+  flex-shrink: 0;
+}
+@media (min-width: 760px) {
+  .surface.plan {
+    min-height: max(850px, calc(100dvh - 72px));
+  }
+  .surface.plan .plan-body {
+    min-height: inherit;
+  }
+}

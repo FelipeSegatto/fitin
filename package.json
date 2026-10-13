@@ -7,7 +7,8 @@
     "dev": "vite --host 0.0.0.0 --port 5200 --strictPort",
     "build": "tsc --noEmit && vite build",
     "preview": "vite preview --host 0.0.0.0 --port 5200 --strictPort",
-    "test:smoke": "node scripts/smoke.mjs"
+    "test:smoke": "node scripts/smoke.mjs",
+    "test:measures": "node scripts/optional-measures.mjs"
   },
   "dependencies": {
     "@fontsource/poppins": "^5.2.7",

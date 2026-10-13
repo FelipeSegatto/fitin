@@ -21,3 +21,7 @@ As metas e projeções são um cenário demonstrativo de manutenção de 2.450 k
 ## Próximos passos
 
 Confirmar fonte e pequenos detalhes do design, definir regras de conta e plano, selecionar backend/persistência e implementar as próximas jornadas com novas telas de referência. Não publicar como aplicação com recomendações reais nesta etapa.
+
+## Medidas opcionais
+
+Na etapa de medidas, a idade é editável e sincroniza a data de nascimento. Peso, altura, pescoço, cintura e quadril podem ser adiados individualmente ou em conjunto. Campos adiados ficam vazios e não geram cálculos de IMC sem peso/altura. Verificação: `npm run test:measures`.

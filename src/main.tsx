@@ -36,6 +36,7 @@ type Screen =
 type Profile = {
   email: string;
   birth: string;
+  age: string;
   password: string;
   confirm: string;
   name: string;
@@ -51,6 +52,7 @@ type Profile = {
 const initial: Profile = {
   email: "",
   birth: "",
+  age: "",
   password: "",
   confirm: "",
   name: "",
@@ -63,6 +65,34 @@ const initial: Profile = {
   activity: "",
   goal: "",
 };
+const measureKeys = ["weight", "height", "neck", "waist", "hip"] as const;
+type MeasureKey = (typeof measureKeys)[number];
+function ageFromBirth(birth: string): string {
+  const d = new Date(birth + "T12:00:00");
+  if (!birth || !Number.isFinite(d.getTime())) return "";
+  const now = new Date();
+  const birthday = new Date(now.getFullYear(), d.getMonth(), d.getDate());
+  return String(now.getFullYear() - d.getFullYear() - (now < birthday ? 1 : 0));
+}
+function birthFromAge(age: string, birth: string): string {
+  const value = Number(age);
+  if (!age || !Number.isInteger(value) || value < 1 || value > 125)
+    return birth;
+  const now = new Date(),
+    previous = new Date(birth + "T12:00:00");
+  const month = Number.isFinite(previous.getTime())
+    ? previous.getMonth()
+    : now.getMonth();
+  const day = Number.isFinite(previous.getTime())
+    ? previous.getDate()
+    : now.getDate();
+  const year =
+    now.getFullYear() -
+    value -
+    (now < new Date(now.getFullYear(), month, day) ? 1 : 0);
+  const validDay = Math.min(day, new Date(year, month + 1, 0).getDate());
+  return `${year}-${String(month + 1).padStart(2, "0")}-${String(validDay).padStart(2, "0")}`;
+}
 const activities = [
   ["Sedentário", "Pouco ou nenhum exercício", "purple"],
   ["Leve", "Exercícios 1 a 3 vezes por semana", "blue"],
@@ -99,6 +129,7 @@ function App() {
   const [screen, setScreen] = useState<Screen>("welcome"),
     [profile, setProfile] = useState<Profile>(initial),
     [step, setStep] = useState(0),
+    [skippedMeasures, setSkippedMeasures] = useState<MeasureKey[]>([]),
     [planStep, setPlanStep] = useState(0),
     [errors, setErrors] = useState<Record<string, string>>({}),
     [busy, setBusy] = useState(false),
@@ -112,7 +143,12 @@ function App() {
     [foods, setFoods] = useState<{ name: string; kcal: number }[]>([]),
     [workouts, setWorkouts] = useState<{ name: string; kcal: number }[]>([]);
   const change = (key: keyof Profile, value: string) => {
-    setProfile((p) => ({ ...p, [key]: value }));
+    setProfile((p) => ({
+      ...p,
+      [key]: value,
+      ...(key === "birth" ? { age: ageFromBirth(value) } : {}),
+      ...(key === "age" ? { birth: birthFromAge(value, p.birth) } : {}),
+    }));
     setErrors((e) => ({ ...e, [key]: "" }));
   };
   const go = (s: Screen) => {
@@ -155,7 +191,15 @@ function App() {
       if (!profile.sex) e.sex = "Selecione uma opção.";
     }
     if (step === 2) {
-      for (const k of ["weight", "height", "neck", "waist", "hip"] as const) {
+      if (
+        !profile.age ||
+        !Number.isInteger(Number(profile.age)) ||
+        Number(profile.age) < 1 ||
+        Number(profile.age) > 125
+      )
+        e.age = "Informe uma idade válida.";
+      for (const k of measureKeys) {
+        if (skippedMeasures.includes(k)) continue;
         const v = Number(profile[k]);
         if (!Number.isFinite(v) || v <= 0 || v > 500)
           e[k] = "Informe uma medida válida.";
@@ -180,11 +224,13 @@ function App() {
     label: string,
     type = "text",
     unit = "",
+    disabled = false,
   ) => (
     <label className="field" key={key}>
       <span>{label}</span>
       <div className={"input-wrap " + (errors[key] ? "invalid" : "")}>
         <input
+          disabled={disabled}
           aria-label={label}
           aria-invalid={!!errors[key]}
           aria-describedby={errors[key] ? key + "-error" : undefined}
@@ -221,6 +267,28 @@ function App() {
       )}
     </label>
   );
+  const measure = (key: MeasureKey, label: string, unit: string) => {
+    const skipped = skippedMeasures.includes(key);
+    return (
+      <div className="measure-field">
+        {field(key, label, "number", unit, skipped)}
+        <button
+          type="button"
+          className="measure-skip"
+          aria-label={`${skipped ? "Informar agora" : "Informar depois"}: ${label}`}
+          aria-pressed={skipped}
+          onClick={() => {
+            setSkippedMeasures((current) =>
+              skipped ? current.filter((k) => k !== key) : [...current, key],
+            );
+            change(key, "");
+          }}
+        >
+          {skipped ? "Informar agora" : "Não sei / informar depois"}
+        </button>
+      </div>
+    );
+  };
   const authHero = (
     <div className="auth-hero">
       <Mascot name="welcome-buddy" />
@@ -510,39 +578,33 @@ function App() {
                 )}
                 {step === 2 && (
                   <>
+                    <p className="measure-help">
+                      Não tem alguma medida? Você pode informar depois.
+                    </p>
+                    <button
+                      type="button"
+                      className="skip-all"
+                      onClick={() => {
+                        setSkippedMeasures([...measureKeys]);
+                        setProfile((p) => ({
+                          ...p,
+                          ...Object.fromEntries(
+                            measureKeys.map((k) => [k, ""]),
+                          ),
+                        }));
+                        setErrors({});
+                      }}
+                    >
+                      Informar todas as medidas depois
+                    </button>
                     <div className="measure-row">
-                      <div className="age">
-                        <span>Idade</span>
-                        <strong>
-                          {profile.birth
-                            ? Math.max(
-                                0,
-                                new Date().getFullYear() -
-                                  new Date(
-                                    profile.birth + "T12:00:00",
-                                  ).getFullYear() -
-                                  (new Date() <
-                                  new Date(
-                                    new Date().getFullYear(),
-                                    new Date(
-                                      profile.birth + "T12:00:00",
-                                    ).getMonth(),
-                                    new Date(
-                                      profile.birth + "T12:00:00",
-                                    ).getDate(),
-                                  )
-                                    ? 1
-                                    : 0),
-                              )
-                            : "—"}
-                        </strong>
-                      </div>
-                      {field("weight", "Peso (kg)", "number", "kg")}
+                      {field("age", "Idade", "number", "anos")}
+                      {measure("weight", "Peso (kg)", "kg")}
                     </div>
-                    {field("height", "Altura (cm)", "number", "cm")}
-                    {field("neck", "Pescoço (cm)", "number", "cm")}
-                    {field("waist", "Cintura (cm)", "number", "cm")}
-                    {field("hip", "Quadril (cm)", "number", "cm")}
+                    {measure("height", "Altura (cm)", "cm")}
+                    {measure("neck", "Pescoço (cm)", "cm")}
+                    {measure("waist", "Cintura (cm)", "cm")}
+                    {measure("hip", "Quadril (cm)", "cm")}
                   </>
                 )}
                 {step === 3 && (
@@ -1069,6 +1131,7 @@ function App() {
                   className="text-button"
                   onClick={() => {
                     setProfile(initial);
+                    setSkippedMeasures([]);
                     setFoods([]);
                     setWorkouts([]);
                     setRate(0.55);
