@@ -431,3 +431,30 @@
     font-size: 22px;
   }
 }
+.current-plan-heading {
+  min-height: 106px;
+  padding-right: 108px;
+}
+.current-plan-heading img {
+  width: 85px;
+  height: 84px;
+  right: 12px;
+  top: 24px;
+  object-fit: contain;
+}
+.current-plan-heading > span {
+  top: 0;
+  transform: none;
+}
+@media (min-width: 760px) {
+  .current-plan-heading {
+    min-height: 120px;
+    padding-right: 125px;
+  }
+  .current-plan-heading img {
+    width: 100px;
+    height: 96px;
+    right: 13px;
+  }
+}
+.progress-shortcuts{flex-wrap:wrap}

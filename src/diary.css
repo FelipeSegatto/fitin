@@ -434,3 +434,63 @@
 .diary-date input {
   max-width: 135px;
 }
+.diary-hero {
+  position: relative;
+  padding-right: 98px;
+  gap: 8px;
+}
+.diary-hero-mascot {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 78px;
+  height: 96px;
+  object-fit: contain;
+  pointer-events: none;
+}
+.diary-hero > div:first-of-type strong {
+  white-space: normal;
+  font-size: 20px;
+}
+.diary-hero strong small {
+  font-size: 10px;
+}
+.diary-hero > div:last-of-type strong {
+  font-size: 20px;
+}
+@media (min-width: 760px) {
+  .diary-hero {
+    padding-right: 118px;
+  }
+  .diary-hero-mascot {
+    width: 94px;
+    height: 108px;
+    right: 13px;
+  }
+  .diary-hero > div:first-of-type strong,
+  .diary-hero > div:last-of-type strong {
+    font-size: 24px;
+  }
+  .diary-hero strong small {
+    font-size: 12px;
+  }
+}
+@media (max-width: 350px) {
+  .diary-hero {
+    padding-right: 86px;
+  }
+  .diary-hero-mascot {
+    width: 67px;
+    height: 85px;
+    right: 8px;
+  }
+  .diary-hero > div:first-of-type strong,
+  .diary-hero > div:last-of-type strong {
+    font-size: 18px;
+  }
+  .diary-hero > p {
+    font-size: 9px;
+  }
+}
+@media(min-width:760px) and (max-width:1000px){.diary-hero{padding-right:98px}.diary-hero-mascot{width:78px;height:96px;right:10px}.diary-hero>div:first-of-type strong,.diary-hero>div:last-of-type strong{font-size:20px}.diary-hero strong small{font-size:10px}}

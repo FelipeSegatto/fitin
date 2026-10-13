@@ -203,6 +203,11 @@ export function Diary({
         </button>
       </div>
       <div className="diary-hero">
+        <img
+          className="diary-hero-mascot"
+          src="/assets/desktop-chef.svg"
+          alt=""
+        />
         <div>
           <span>Consumo total</span>
           <strong>
