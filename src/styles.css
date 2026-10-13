@@ -1166,3 +1166,72 @@ button:hover {
   object-fit: contain;
   height: auto;
 }
+@media (min-width: 760px) {
+  .buddy-garden {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 12px;
+    align-items: end;
+    max-width: 470px;
+    width: 100%;
+  }
+  .buddy-garden .mascot {
+    width: 100%;
+    max-width: 105px;
+    height: 150px;
+    object-fit: contain;
+  }
+  .buddy-garden .mascot:nth-child(3) {
+    max-width: 90px;
+    justify-self: center;
+  }
+  .buddy-garden .mascot:nth-child(4) {
+    max-width: 110px;
+  }
+}
+@media (min-width: 760px) and (max-width: 1000px) {
+  .buddy-garden {
+    gap: 6px;
+  }
+  .buddy-garden .mascot {
+    height: 120px;
+  }
+}
+@media (min-width: 760px) and (max-width: 1000px) {
+  .app {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.05fr);
+    gap: 24px;
+    padding: 24px;
+  }
+  .desktop-intro {
+    padding-left: 0;
+    padding-right: 0;
+  }
+  .desktop-intro h1 {
+    font-size: 34px;
+  }
+  .desktop-intro p {
+    font-size: 13px;
+  }
+  .surface.plan {
+    min-height: max(750px, calc(100dvh - 48px));
+  }
+}
+.home-body > .card.today-workouts {
+  background: #fff0d2;
+  border: 1.5px solid #ffb732;
+  box-shadow: 0 4px 12px #ffb73215;
+}
+.home-body > .card.today-meals {
+  background: #fde4cc;
+  border: 1.5px solid #f79b40;
+  box-shadow: 0 4px 12px #f79b4015;
+}
+.home-body > .card.today-workouts > strong,
+.home-body > .card.today-meals > strong {
+  color: #30274b;
+}
+.home-body > .card.today-workouts p,
+.home-body > .card.today-meals p {
+  color: #51405a;
+}

@@ -84,6 +84,39 @@ try {
   await p.getByRole("button", { name: "Calcular meu plano!" }).click();
   await p.getByRole("button", { name: "Avançar", exact: true }).waitFor();
   assert.equal(await p.locator(".stat.purple strong").innerText(), "—");
+  await p.getByRole("button", { name: "Avançar", exact: true }).click();
+  for (const name of [
+    "Ver como fica o dia",
+    "Continuar",
+    "Quero ajustar o ritmo",
+    "Bora começar",
+  ])
+    await p.getByRole("button", { name, exact: true }).click();
+  await p.getByRole("button", { name: "Conquistas", exact: true }).click();
+  assert.equal(
+    await p.locator(".ach-stats>div").nth(0).locator("strong").innerText(),
+    "0/6",
+  );
+  assert.equal(
+    await p.locator(".ach-stats>div").nth(1).locator("strong").innerText(),
+    "0",
+  );
+  await p.getByRole("button", { name: "Home", exact: true }).click();
+  await p
+    .getByRole("button", { name: "Adicionar alimentos", exact: true })
+    .click();
+  await p.getByLabel("Alimento ou refeição").fill("Primeira refeição");
+  await p.getByLabel("Energia (kcal)").fill("500");
+  await p.getByRole("button", { name: "Adicionar registro" }).click();
+  await p.getByRole("button", { name: "Conquistas", exact: true }).click();
+  assert.equal(
+    await p.locator(".ach-stats>div").nth(0).locator("strong").innerText(),
+    "1/6",
+  );
+  assert.equal(
+    await p.locator(".ach-stats>div").nth(1).locator("strong").innerText(),
+    "50",
+  );
   console.log(
     "PASS: idade editável e sincronizada, validação, medidas adiáveis individualmente/em conjunto, navegação preserva escolhas e IMC ausente sem medidas.",
   );

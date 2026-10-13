@@ -24,6 +24,7 @@ import "@fontsource/poppins/500.css";
 import "@fontsource/poppins/600.css";
 import "@fontsource/poppins/700.css";
 import "./styles.css";
+import { Achievements, type AchievementHistory } from "./Achievements";
 type Screen =
   | "welcome"
   | "login"
@@ -140,6 +141,11 @@ function App() {
     [rate, setRate] = useState(0.55),
     [tab, setTab] = useState("Home"),
     [streak, setStreak] = useState(0),
+    [achievementHistory, setAchievementHistory] = useState<AchievementHistory>({
+      days: 0,
+      meals: 0,
+      burned: 0,
+    }),
     [modal, setModal] = useState(""),
     [foods, setFoods] = useState<{ name: string; kcal: number }[]>([]),
     [workouts, setWorkouts] = useState<{ name: string; kcal: number }[]>([]);
@@ -219,6 +225,7 @@ function App() {
       setFoods([]);
       setWorkouts([]);
       setStreak(0);
+      setAchievementHistory({ days: 0, meals: 0, burned: 0 });
       go("loading");
       setTimeout(() => go("result"), 900);
     }
@@ -316,6 +323,7 @@ function App() {
       setTab("Home");
       setRate(0.4);
       setStreak(7);
+      setAchievementHistory({ days: 17, meals: 14, burned: 6250 });
       setFoods([
         { name: "Café da manhã: pão, ovos e fruta", kcal: 370 },
         { name: "Lanche: arroz, frango +", kcal: 556 },
@@ -362,8 +370,9 @@ function App() {
         </div>
         <div className="buddy-garden">
           <Mascot />
-          <Mascot name="sport" />
-          <Mascot name="party" />
+          <Mascot name="desktop-girl" />
+          <Mascot name="desktop-crown" />
+          <Mascot name="desktop-chef" />
         </div>
         <small>{demoNotice}</small>
       </aside>
@@ -1044,7 +1053,7 @@ function App() {
                   </button>
                 </div>
                 <h3>Hoje</h3>
-                <div className="card purple">
+                <div className="card today-workouts">
                   <strong>
                     {workouts.length
                       ? "Suas atividades"
@@ -1060,7 +1069,7 @@ function App() {
                     <p>Seus treinos do dia aparecem aqui.</p>
                   )}
                 </div>
-                <div className="card mint">
+                <div className="card today-meals">
                   <strong>
                     {foods.length ? "Suas refeições" : "Nenhuma refeição ainda"}
                   </strong>
@@ -1116,22 +1125,12 @@ function App() {
               </>
             )}
             {tab === "Conquistas" && (
-              <>
-                <h1>Suas conquistas</h1>
-                <div className="empty">
-                  <Mascot name="party" />
-                  <h3>
-                    {foods.length
-                      ? "Primeiro passo!"
-                      : "Sua jornada começa aqui"}
-                  </h3>
-                  <p>
-                    {foods.length
-                      ? "Você registrou sua primeira refeição."
-                      : "Registre uma refeição para marcar seu primeiro passo."}
-                  </p>
-                </div>
-              </>
+              <Achievements
+                streak={streak}
+                foods={foods.length}
+                workoutCalories={burned}
+                history={achievementHistory}
+              />
             )}
             {tab === "Perfil" && (
               <>
@@ -1159,6 +1158,7 @@ function App() {
                     setProfile(initial);
                     setSkippedMeasures([]);
                     setStreak(0);
+                    setAchievementHistory({ days: 0, meals: 0, burned: 0 });
                     setFoods([]);
                     setWorkouts([]);
                     setRate(0.55);

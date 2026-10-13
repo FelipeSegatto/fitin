@@ -29,3 +29,9 @@ Na etapa de medidas, a idade é editável e sincroniza a data de nascimento. Pes
 ## Home da conta demonstrativa
 
 O login abre com registros fictícios: 7 dias de sequência, meta de 2.000 kcal, duas refeições somando 926 kcal e musculação de 150 kcal. O saldo é 1.224 kcal. Quem conclui o cadastro começa sem registros. O logo usa o asset fornecido no SVG de referência da home.
+
+## Conquistas
+
+Página com coleção de seis medalhas, assets de halteres extraídos do SVG, filtros e detalhes, desafio de 30 dias e semana. XP deriva das medalhas conquistadas e não duplica ao abrir o card. Login tem histórico fictício separado (17 dias anteriores de registro, 14 refeições e 6.250 kcal de atividades), somado aos registros do dia; cadastro começa zerado. A sequência de sete dias mantém-se igual à home. Foco total mede 30 dias de registro, não necessariamente consecutivos; o desafio foi rotulado de 30 dias para manter coerência sem confundir dias registrados com dias de calendário. Os níveis/recompensas são regras demonstrativas. Os cards de medalhas seguem as variações e cores do segundo SVG fornecido pelo autor; as telas anteriores preservam suas variações próximas e tratamentos próprios. Verificação: `npm run test:achievements`.
+
+As três novas personagens foram extraídas dos SVGs fornecidos para acompanhar o personagem azul na composição desktop. Os cards de atividades e refeições da home usam amarelo e pêssego com fundos suaves e texto escuro, mantendo as outras variações de cor.
