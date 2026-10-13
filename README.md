@@ -43,3 +43,9 @@ Diário por data, com resumo de consumo/restante, macros logo abaixo e cards de 
 Progresso traz plano atual, filtros de período, histórico de peso, metas, projeção linear demonstrativa e registros de passos. Login carrega seis pesos fictícios (81 a 78 kg), meta de 70 kg e passos de exemplo. Médias de calorias usam somente dias com refeições registradas e são identificadas como parciais. Cadastro novo inicia com o peso informado, se houver; não recebe histórico fictício. Fórmulas de gordura corporal não foram inventadas. Peso no mesmo dia é atualizado em vez de duplicado.
 
 Verificação dos fluxos: `npm run test:diary-progress`. Dados continuam apenas na memória da sessão, sem autenticação ou sincronização real.
+
+## Perfil
+
+Perfil baseado no SVG fornecido, com cores ajustadas à paleta existente. Avatar por iniciais, nível/medalhas compartilhando o cálculo de Conquistas, jornada baseada nos pesos do Progresso e resumo mensal dos registros disponíveis no Diário. Atalhos abrem o registro de peso, a meta de peso, o ajuste de ritmo e a coleção. Nome/e-mail podem ser alterados somente na sessão; o FAQ explica os limites da demo e não inventa canais externos de suporte. Logout limpa a demonstração.
+
+Verificação: `npm run test:profile`.

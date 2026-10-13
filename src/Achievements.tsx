@@ -17,19 +17,12 @@ type Medal = {
   metal: string;
   color: string;
 };
-export function Achievements({
-  streak,
-  foods,
-  workoutCalories,
-  history,
-}: {
-  streak: number;
-  foods: number;
-  workoutCalories: number;
-  history: AchievementHistory;
-}) {
-  const [selected, setSelected] = useState<Medal | null>(null),
-    [filter, setFilter] = useState("Todas");
+export function achievementSummary(
+  streak: number,
+  foods: number,
+  workoutCalories: number,
+  history: AchievementHistory,
+) {
   const medals: Medal[] = [
     {
       id: "workout",
@@ -116,6 +109,23 @@ export function Achievements({
     levelProgress = Number.isFinite(level.max)
       ? (xp - level.min) / (level.max - level.min)
       : 1;
+  return { medals, earned, xp, pending, levelIndex, level, levelProgress };
+}
+export function Achievements({
+  streak,
+  foods,
+  workoutCalories,
+  history,
+}: {
+  streak: number;
+  foods: number;
+  workoutCalories: number;
+  history: AchievementHistory;
+}) {
+  const [selected, setSelected] = useState<Medal | null>(null),
+    [filter, setFilter] = useState("Todas");
+  const { medals, earned, xp, pending, levelIndex, level, levelProgress } =
+    achievementSummary(streak, foods, workoutCalories, history);
   const mission = medals.find((m) => m.id === "focus")!,
     closest = pending.reduce<Medal | null>(
       (best, m) =>

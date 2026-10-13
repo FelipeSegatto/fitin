@@ -5,6 +5,7 @@ import "./progress.css";
 export type WeightRecord = { date: string; weight: number };
 export type StepRecord = { date: string; steps: number };
 type Props = {
+  initialAction?: "weight" | "goal" | "history";
   weights: WeightRecord[];
   steps: StepRecord[];
   foods: DailyRecord[];
@@ -18,6 +19,7 @@ type Props = {
   onGoal: (value: string) => void;
 };
 export function Progress({
+  initialAction,
   weights,
   steps,
   foods,
@@ -30,10 +32,16 @@ export function Progress({
   onSteps,
   onGoal,
 }: Props) {
-  const [view, setView] = useState("Resumo"),
+  const [view, setView] = useState(
+      initialAction === "history" ? "Histórico" : "Resumo",
+    ),
     [period, setPeriod] = useState(7),
-    [editor, setEditor] = useState(""),
-    [value, setValue] = useState(""),
+    [editor, setEditor] = useState(
+      initialAction === "weight" || initialAction === "goal"
+        ? initialAction
+        : "",
+    ),
+    [value, setValue] = useState(initialAction === "goal" ? weightGoal : ""),
     [date, setDate] = useState(localDay());
   const sorted = [...weights].sort((a, b) => a.date.localeCompare(b.date));
   const current = sorted.at(-1),

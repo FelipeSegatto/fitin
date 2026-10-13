@@ -1,0 +1,438 @@
+.profile-hero {
+  background: linear-gradient(115deg, #ffcd75, #f79b40);
+  border-radius: 26px;
+  padding: 20px;
+  margin: 4px 0 20px;
+  color: #30274b;
+  box-shadow: 0 8px 20px #f79b4020;
+}
+.profile-identity {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.profile-avatar {
+  width: 58px;
+  height: 58px;
+  border-radius: 50%;
+  border: 2px solid white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #8e69de;
+  color: white;
+  font-size: 20px;
+  font-weight: 600;
+  flex: none;
+}
+.profile-identity > div:nth-child(2) {
+  min-width: 0;
+  flex: 1;
+}
+.profile-identity h1 {
+  font-size: 20px;
+  margin: 0;
+  line-height: 1.3;
+  overflow-wrap: anywhere;
+}
+.profile-identity p {
+  font-size: 10px;
+  color: #85532d;
+  margin-top: 5px;
+}
+.profile-award {
+  background: #ffffff45;
+  color: #805331;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  padding: 8px;
+  flex: none;
+}
+.profile-badges {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  margin-top: 17px;
+  flex-wrap: wrap;
+}
+.profile-badges > span {
+  font-size: 9px;
+  font-weight: 600;
+  background: #e0f3eb;
+  color: #2d7955;
+  padding: 7px 10px;
+  border-radius: 20px;
+}
+.profile-badges > span:last-child {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  background: #30274b;
+  color: white;
+}
+.profile-badges svg {
+  color: #ffb732;
+}
+.profile-journey,
+.profile-medals {
+  background: white;
+  border: 1px solid #eee2d8;
+  border-radius: 22px;
+  padding: 18px;
+  margin: 18px 0;
+}
+.profile-section-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+.profile-section-heading h2 {
+  font-size: 16px;
+  color: #30274b;
+  font-weight: 600;
+}
+.profile-section-heading > span,
+.profile-section-heading > button {
+  font-size: 10px;
+  color: #bd642b;
+  white-space: nowrap;
+  background: transparent;
+  padding: 0;
+}
+.journey-labels {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 6px;
+  margin: 18px 0 8px;
+  font-size: 10px;
+  color: #89748f;
+}
+.journey-labels button {
+  background: #30274b;
+  color: white;
+  font-size: 10px;
+  padding: 4px 7px;
+  border-radius: 15px;
+  white-space: nowrap;
+}
+.journey-labels .journey-target {
+  background: transparent;
+  color: #b96c37;
+  padding: 0;
+}
+.journey-meter {
+  height: 7px;
+  background: #efe4d7;
+  border-radius: 6px;
+  overflow: hidden;
+}
+.journey-meter i {
+  display: block;
+  height: 100%;
+  background: #f79b40;
+  border-radius: 6px;
+}
+.journey-counters {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin: 17px 0;
+}
+.journey-counters > div {
+  background: #fff0e3;
+  border: 1px solid #f4dccc;
+  border-radius: 16px;
+  padding: 12px;
+}
+.journey-counters small {
+  font-size: 8px;
+  color: #b16b3f;
+  display: block;
+}
+.journey-counters strong {
+  font-size: 17px;
+  display: block;
+  margin-top: 4px;
+  line-height: 1.3;
+}
+.profile-weight-button {
+  background: #30274b;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  width: 100%;
+  padding: 13px 10px;
+  border-radius: 25px;
+  font-size: 12px;
+  font-weight: 500;
+}
+.profile-subheading {
+  font-size: 17px;
+  color: #30274b;
+  margin: 22px 0 11px;
+  font-weight: 600;
+}
+.profile-month {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 9px;
+}
+.profile-month > div {
+  background: #eee5fb;
+  border-radius: 19px;
+  padding: 16px 12px;
+  color: #7d51b4;
+}
+.profile-month strong {
+  font-size: 25px;
+  line-height: 1.2;
+  display: block;
+}
+.profile-month span {
+  font-size: 10px;
+  line-height: 1.35;
+  display: block;
+  margin-top: 7px;
+}
+.profile-medal-list {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  margin-top: 18px;
+}
+.profile-medal-list > button {
+  background: transparent;
+  flex: 1;
+  min-width: 0;
+  max-width: 78px;
+  color: #8b7591;
+  padding: 0;
+}
+.mini-medal {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 55px;
+  border-radius: 14px;
+  background: #fff0d2;
+  border: 1px solid #ffb732;
+}
+.mini-medal.purple {
+  background: #e8dff8;
+  border-color: #8e69de;
+}
+.mini-medal.mint {
+  background: #dff3ef;
+  border-color: #5fc5b5;
+}
+.mini-medal.coral {
+  background: #fdebd9;
+  border-color: #f79b40;
+}
+.mini-medal img {
+  width: 70px;
+  height: 42px;
+  max-width: 115%;
+  object-fit: contain;
+}
+.profile-medal-list small {
+  display: block;
+  font-size: 8px;
+  line-height: 1.25;
+  margin-top: 6px;
+  overflow-wrap: anywhere;
+}
+.extra-medals > span {
+  height: 55px;
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #fff5eb;
+  border: 1px solid #eee0d4;
+  font-size: 20px;
+  color: #9b8a8d;
+}
+.profile-no-medals {
+  font-size: 11px;
+  color: #95839e;
+  margin-top: 18px;
+}
+.profile-settings {
+  display: grid;
+  gap: 10px;
+}
+.settings-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  text-align: left;
+  background: white;
+  border: 1px solid #eee2d8;
+  border-radius: 17px;
+  padding: 13px;
+  box-shadow: 0 4px 11px #74533b09;
+  color: #30274b;
+}
+.settings-icon {
+  width: 36px;
+  height: 36px;
+  flex: none;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+}
+.settings-icon.orange {
+  background: #f79b40;
+}
+.settings-icon.purple {
+  background: #8e69de;
+}
+.settings-icon.blue {
+  background: #4489d9;
+}
+.settings-row > span:nth-child(2) {
+  flex: 1;
+  min-width: 0;
+}
+.settings-row strong {
+  font-size: 12px;
+  display: block;
+  font-weight: 600;
+}
+.settings-row small {
+  font-size: 10px;
+  color: #9c8a9c;
+  display: block;
+  margin-top: 3px;
+}
+.settings-row > svg {
+  color: #ad9cac;
+  flex: none;
+}
+.settings-content {
+  background: white;
+  border-radius: 16px;
+  padding: 18px;
+  border: 1px solid #eee2d8;
+  margin-top: -4px;
+}
+.settings-content > p {
+  font-size: 12px;
+  color: #8b7898;
+  margin-bottom: 10px;
+}
+.settings-content > button:not(.primary) {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  background: #fff0d2;
+  padding: 10px;
+  border-radius: 12px;
+  margin-top: 8px;
+  font-size: 11px;
+  color: #8b5f37;
+}
+.settings-content > .primary {
+  font-size: 12px;
+  min-height: 44px;
+}
+.profile-account-note {
+  font-size: 9px;
+  color: #9a88a2;
+  display: block;
+  margin-top: 12px;
+  text-align: center;
+}
+.settings-content .profile-saved {
+  font-size: 11px;
+  color: #479473;
+  margin-top: 12px;
+}
+.profile-faq details + details {
+  border-top: 1px solid #eee5df;
+  margin-top: 10px;
+  padding-top: 10px;
+}
+.profile-faq summary {
+  font-size: 12px;
+  color: #695174;
+  cursor: pointer;
+}
+.profile-faq p {
+  font-size: 11px;
+  color: #9a84a2;
+  margin-top: 10px;
+}
+.profile-logout {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  background: transparent;
+  width: 100%;
+  color: #b95e2e;
+  font-size: 12px;
+  padding: 22px 10px 5px;
+  margin-top: 15px;
+}
+.profile-footer {
+  font-size: 10px;
+  color: #b4a2b7;
+  text-align: center;
+  margin: 5px 0 10px;
+}
+@media (min-width: 760px) {
+  .profile-hero {
+    padding: 24px;
+  }
+  .profile-avatar {
+    width: 64px;
+    height: 64px;
+  }
+  .profile-identity h1 {
+    font-size: 24px;
+  }
+  .profile-identity p {
+    font-size: 12px;
+  }
+  .profile-badges > span {
+    font-size: 10px;
+  }
+  .profile-journey,
+  .profile-medals {
+    padding: 23px;
+  }
+  .profile-month strong {
+    font-size: 28px;
+  }
+  .settings-row strong {
+    font-size: 14px;
+  }
+  .settings-row small {
+    font-size: 11px;
+  }
+  .profile-section-heading h2 {
+    font-size: 18px;
+  }
+}
+
+.profile-stat-note {
+  font-size: 9px;
+  color: #9a87a2;
+  margin: -5px 0 12px;
+}
+.settings-icon.orange {
+  color: white;
+}

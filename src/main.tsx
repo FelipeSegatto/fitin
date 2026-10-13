@@ -17,7 +17,6 @@ import {
   X,
   LoaderCircle,
   Check,
-  LogOut,
 } from "lucide-react";
 import "@fontsource/poppins/400.css";
 import "@fontsource/poppins/500.css";
@@ -25,6 +24,7 @@ import "@fontsource/poppins/600.css";
 import "@fontsource/poppins/700.css";
 import "./styles.css";
 import { Diary } from "./Diary";
+import { Profile } from "./Profile";
 import { Progress, type WeightRecord, type StepRecord } from "./Progress";
 import {
   type DailyRecord,
@@ -43,7 +43,7 @@ type Screen =
   | "result"
   | "plan"
   | "home";
-type Profile = {
+type UserProfile = {
   email: string;
   birth: string;
   age: string;
@@ -59,7 +59,7 @@ type Profile = {
   activity: string;
   goal: string;
 };
-const initial: Profile = {
+const initial: UserProfile = {
   email: "",
   birth: "",
   age: "",
@@ -137,7 +137,7 @@ function Mascot({
 }
 function App() {
   const [screen, setScreen] = useState<Screen>("welcome"),
-    [profile, setProfile] = useState<Profile>(initial),
+    [profile, setProfile] = useState<UserProfile>(initial),
     [step, setStep] = useState(0),
     [skippedMeasures, setSkippedMeasures] = useState<MeasureKey[]>([]),
     [planStep, setPlanStep] = useState(0),
@@ -161,6 +161,9 @@ function App() {
     [weightRecords, setWeightRecords] = useState<WeightRecord[]>([]),
     [stepRecords, setStepRecords] = useState<StepRecord[]>([]),
     [weightGoal, setWeightGoal] = useState(""),
+    [progressAction, setProgressAction] = useState<
+      "weight" | "goal" | "history" | undefined
+    >(undefined),
     [modalDate, setModalDate] = useState(localDay()),
     [editingRecord, setEditingRecord] = useState<{
       kind: string;
@@ -178,7 +181,7 @@ function App() {
         (e) => e.id === editingRecord.id,
       )
     : undefined;
-  const change = (key: keyof Profile, value: string) => {
+  const change = (key: keyof UserProfile, value: string) => {
     setProfile((p) => ({
       ...p,
       [key]: value,
@@ -267,7 +270,7 @@ function App() {
     }
   };
   const field = (
-    key: keyof Profile,
+    key: keyof UserProfile,
     label: string,
     type = "text",
     unit = "",
@@ -1033,7 +1036,7 @@ function App() {
         )}
         {screen === "home" && (
           <div className={"home-body " + (streak > 0 ? "demo-filled" : "")}>
-            {tab !== "Diário" && tab !== "Progresso" && (
+            {tab !== "Diário" && tab !== "Progresso" && tab !== "Perfil" && (
               <header>
                 <Logo />
                 <button
@@ -1181,6 +1184,7 @@ function App() {
             )}
             {tab === "Progresso" && (
               <Progress
+                initialAction={progressAction}
                 weights={weightRecords}
                 steps={stepRecords}
                 foods={foodRecords}
@@ -1213,46 +1217,46 @@ function App() {
               />
             )}
             {tab === "Perfil" && (
-              <>
-                <h1>Seu perfil</h1>
-                <div className="card">
-                  <h3>{profile.name || "Visitante"}</h3>
-                  <p>Objetivo: {goal}</p>
-                  <p>Atividade: {profile.activity || "Não informada"}</p>
-                  <p>
-                    Meta demonstrativa: {target.toLocaleString("pt-BR")} kcal
-                  </p>
-                  <button
-                    className="outline"
-                    onClick={() => {
-                      setPlanStep(3);
-                      go("plan");
-                    }}
-                  >
-                    Ajustar meu ritmo
-                  </button>
-                </div>
-                <button
-                  className="text-button"
-                  onClick={() => {
-                    setProfile(initial);
-                    setWeightRecords([]);
-                    setStepRecords([]);
-                    setWeightGoal("");
-                    setSkippedMeasures([]);
-                    setStreak(0);
-                    setAchievementHistory({ days: 0, meals: 0, burned: 0 });
-                    setFoods([]);
-                    setWorkouts([]);
-                    setRate(0.55);
-                    setLoginEmail("");
-                    setLoginPassword("");
-                    go("welcome");
-                  }}
-                >
-                  <LogOut size={16} /> Sair e limpar demonstração
-                </button>
-              </>
+              <Profile
+                name={profile.name}
+                email={profile.email || loginEmail}
+                streak={streak}
+                foods={foodRecords}
+                workouts={workoutRecords}
+                weights={weightRecords}
+                weightGoal={weightGoal}
+                rate={rate}
+                target={target}
+                history={achievementHistory}
+                onProgress={(action) => {
+                  setProgressAction(action);
+                  setTab("Progresso");
+                }}
+                onAchievements={() => setTab("Conquistas")}
+                onAdjust={() => {
+                  setPlanStep(3);
+                  go("plan");
+                }}
+                onAccount={(name, email) =>
+                  setProfile((p) => ({ ...p, name, email }))
+                }
+                onLogout={() => {
+                  setProfile(initial);
+                  setWeightRecords([]);
+                  setStepRecords([]);
+                  setWeightGoal("");
+                  setProgressAction(undefined);
+                  setSkippedMeasures([]);
+                  setStreak(0);
+                  setAchievementHistory({ days: 0, meals: 0, burned: 0 });
+                  setFoods([]);
+                  setWorkouts([]);
+                  setRate(0.55);
+                  setLoginEmail("");
+                  setLoginPassword("");
+                  go("welcome");
+                }}
+              />
             )}
             <p className="demo-note">
               Dados desta sessão · Sem gravação de conta ou senha
@@ -1271,7 +1275,10 @@ function App() {
                     key={String(label)}
                     className={tab === label ? "active" : ""}
                     aria-current={tab === label ? "page" : undefined}
-                    onClick={() => setTab(String(label))}
+                    onClick={() => {
+                      setProgressAction(undefined);
+                      setTab(String(label));
+                    }}
                   >
                     <I size={21} />
                     <span>{String(label)}</span>
