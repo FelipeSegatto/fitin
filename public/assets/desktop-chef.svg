@@ -19,25 +19,22 @@
 <ellipse cx="148.701" cy="170.001" rx="22.2885" ry="9.80381" fill="#F36B8F"/>
 <path d="M271.972 114.377L284.674 88.6208M259.623 100.97L266.68 72.0381M245.863 98.5003L242.688 79.4479" stroke="black" stroke-width="4.72651" stroke-linecap="round"/>
 <ellipse cx="251.395" cy="133.336" rx="23.514" ry="35.3594" fill="#FBFBFB"/>
-<mask id="mask0_3140_10593" style="mask-type:alpha" maskUnits="userSpaceOnUse" x="227" y="97" width="48" height="72">
+<mask id="mask0_3147_10605" style="mask-type:alpha" maskUnits="userSpaceOnUse" x="227" y="97" width="48" height="72">
 <ellipse cx="251.395" cy="133.336" rx="23.514" ry="35.3594" fill="#FBFBFB"/>
 </mask>
-<g mask="url(#mask0_3140_10593)">
+<g mask="url(#mask0_3147_10605)">
 <ellipse cx="251.533" cy="133.336" rx="19.6211" ry="23.9956" fill="#2E4133"/>
 <ellipse cx="243.816" cy="128.821" rx="6.74315" ry="7.50633" fill="#FBFBFB"/>
 <ellipse cx="251.796" cy="123.329" rx="3.37157" ry="3.75316" fill="#FBFBFB"/>
 </g>
 <path d="M134.891 114.377L122.189 88.6208M147.24 100.97L140.183 72.0381M161 98.5003L164.175 79.4479" stroke="black" stroke-width="4.72651" stroke-linecap="round"/>
 <ellipse cx="155.194" cy="133.336" rx="23.514" ry="35.3594" fill="#FBFBFB"/>
-<mask id="mask1_3140_10593" style="mask-type:alpha" maskUnits="userSpaceOnUse" x="131" y="97" width="48" height="72">
+<mask id="mask1_3147_10605" style="mask-type:alpha" maskUnits="userSpaceOnUse" x="131" y="97" width="48" height="72">
 <ellipse cx="155.194" cy="133.336" rx="23.514" ry="35.3594" fill="#FBFBFB"/>
 </mask>
-<g mask="url(#mask1_3140_10593)">
+<g mask="url(#mask1_3147_10605)">
 <ellipse cx="155.332" cy="133.336" rx="19.6211" ry="23.9956" fill="#2E4133"/>
 <ellipse cx="147.615" cy="128.821" rx="6.74315" ry="7.50633" fill="#FBFBFB"/>
 <ellipse cx="155.594" cy="123.329" rx="3.37157" ry="3.75316" fill="#FBFBFB"/>
 </g>
-<path d="M198.408 166.387C193.199 166.387 188.977 168.454 188.977 171.005H207.839C207.839 168.454 203.617 166.387 198.408 166.387Z" fill="#9B3838"/>
-<path d="M213.126 166.387C207.918 166.387 203.695 168.454 203.695 171.005H222.558C222.558 168.454 218.335 166.387 213.126 166.387Z" fill="#9B3838"/>
-<path d="M205.32 177.067C214.84 177.067 222.558 174.353 222.558 171.005L188.082 171.005C188.082 174.353 195.8 177.067 205.32 177.067Z" fill="#9B3838"/>
 </svg>
