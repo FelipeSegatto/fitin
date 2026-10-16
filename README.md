@@ -10,7 +10,7 @@ Node 24 foi usado na validação. Instale as dependências com `npm ci` e execut
 
 Boas-vindas, login demonstrativo, recuperação de senha simulada, cadastro em cinco etapas, apresentação de resultado, plano em quatro telas, ajuste de ritmo e home com registro manual de refeições e atividades. Desktop adaptado da identidade mobile; não existe protótipo desktop de referência. Diário, Progresso, Conquistas e Perfil possuem estados iniciais próprios, sem fingir histórico persistido.
 
-Login: `demo@fitin.app` / `fitin123`. Essa conta apenas libera navegação local; não existe autenticação de backend. O cadastro não cria uma conta e recuperação não envia e-mails. Dados ficam apenas na memória da sessão; senha descartada ao terminar o formulário e todos os dados são limpos ao sair. Use dados fictícios.
+Logins: `demo@fitin.app` / `fitin123` (João, dia em andamento) e `completo@fitin.app` / `fitin123` (Marina, dia completo). As contas apenas liberam navegação local; não existe autenticação de backend. O cadastro não cria uma conta e recuperação não envia e-mails. Dados ficam apenas na memória da sessão; senha descartada ao terminar o formulário e todos os dados são limpos ao sair. Use dados fictícios.
 
 As metas e projeções são um cenário demonstrativo de manutenção de 2.450 kcal. Sexo e medidas não são usados para prescrição; parâmetros reais precisam ser definidos e validados antes de transformar isso em recurso de saúde. A meta se mantém consistente no resultado/plano/home, e refeições/exercícios atualizam o mesmo resumo.
 
@@ -63,3 +63,12 @@ As escolhas sobrevivem à navegação entre abas, mas são limpas ao sair, recar
 Os quatro desafios semanais usam composições SVG locais com ícones Lucide (licença ISC). As medalhas usam os medalhões aprovados em PNG e os halteres do autor em SVG/PNG. As versões rosa e verde seguem o acabamento das referências. Os mesmos nomes, critérios, artes e XP são compartilhados entre Conquistas, detalhes, catálogo e Perfil. Créditos dos ícones em `public/assets/achievements/`.
 
 As definições de medalhas e os critérios ficam em `src/medalCollection.ts`. Cada prêmio é independente: concluir um desafio libera apenas a medalha com aquele nome, sem exigir os outros dois nomes da mesma arte. XP é derivado uma única vez por ID; o catálogo não concede recompensas ao abrir ou filtrar. Os registros futuros não contam e os dias são deduplicados por data. Os totais agregados da conta de demonstração são identificados como fictícios; o número de atividades e os dias específicos de refeição/atividade usam somente os registros disponíveis. As escolhas e os prêmios continuam limitados à sessão, sem persistência entre acessos.
+
+
+## Segunda conta de demonstração: dia completo
+
+No login, “Preencher dia completo” seleciona `completo@fitin.app` / `fitin123`. Depois, clique em “Entrar”. Marina tem seis refeições (café, lanche da manhã, almoço, lanche da tarde, jantar e ceia) e três atividades do dia. A home exibe nove cards individuais com horários e cores suaves derivadas da paleta do FitIn.
+
+O cenário fictício tem meta de 2.000 kcal, 2.400 kcal registradas em refeições e 400 kcal em atividades, resultando em saldo de 0 kcal. Os macros somam 140 g de proteína, 280 g de carboidratos e 80 g de gordura. Valores são apenas dados de interface, sem recomendação alimentar ou de exercícios. Home, Diário, Progresso, Conquistas e Perfil compartilham os mesmos registros da sessão. Sair limpa os dados; um novo login restaura o cenário original. João mantém os dois alimentos, uma atividade e saldo de 1.224 kcal anteriores.
+
+Verificação: `npm run test:full-day-demo` cobre os registros, as cores, os totais, alterações pelo Diário, isolamento entre contas e larguras mobile/desktop.

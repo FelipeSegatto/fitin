@@ -1239,7 +1239,7 @@ button:hover {
 /* Desktop dashboard follows the supplied FitIn desktop reference. */
 @font-face {
   font-family: Figtree;
-  src: url('/assets/figtree-latin.woff2') format('woff2');
+  src: url("/assets/figtree-latin.woff2") format("woff2");
   font-style: normal;
   font-weight: 300 900;
   font-display: swap;
@@ -1401,7 +1401,7 @@ button:hover {
     font-size: 40px;
     line-height: 1.08;
     font-weight: 800;
-    letter-spacing: -.01em;
+    letter-spacing: -0.01em;
   }
   .home-tab .home-banner p {
     font-size: 20px;
@@ -1510,12 +1510,24 @@ button:hover {
     padding: 28px 32px;
     min-width: 0;
   }
-  .home-tab > .card.today-workouts { background: #b39ddb; }
-  .home-tab > .card.today-meals { background: #5fc4b0; }
-  .home-tab > .card.today-workouts { grid-column: 1; }
-  .home-tab > .card.today-meals { grid-column: 2; }
-  .home-tab > .card > strong { font-size: 18px; }
-  .home-tab > .card:has(.record-name) > strong { display: none; }
+  .home-tab > .card.today-workouts {
+    background: #b39ddb;
+  }
+  .home-tab > .card.today-meals {
+    background: #5fc4b0;
+  }
+  .home-tab > .card.today-workouts {
+    grid-column: 1;
+  }
+  .home-tab > .card.today-meals {
+    grid-column: 2;
+  }
+  .home-tab > .card > strong {
+    font-size: 18px;
+  }
+  .home-tab > .card:has(.record-name) > strong {
+    display: none;
+  }
   .home-tab > .card:is(.today-workouts, .today-meals) p {
     display: flex;
     justify-content: space-between;
@@ -1525,7 +1537,9 @@ button:hover {
     font-size: 21px;
     color: #2b2540;
   }
-  .home-tab > .card:is(.today-workouts, .today-meals) p + p { margin-top: 16px; }
+  .home-tab > .card:is(.today-workouts, .today-meals) p + p {
+    margin-top: 16px;
+  }
   .home-tab > .card .record-name {
     font-size: 24px;
     font-weight: 700;
@@ -1534,28 +1548,241 @@ button:hover {
     white-space: nowrap;
     min-width: 0;
   }
-  .home-tab > .card:is(.today-workouts, .today-meals) p > span:last-child { flex-shrink: 0; }
-  .home-tab .desktop-duration { display: inline; float: none; }
-  .home-tab > .demo-note { grid-column: 1 / -1; margin: 0; }
+  .home-tab > .card:is(.today-workouts, .today-meals) p > span:last-child {
+    flex-shrink: 0;
+  }
+  .home-tab .desktop-duration {
+    display: inline;
+    float: none;
+  }
+  .home-tab > .demo-note {
+    grid-column: 1 / -1;
+    margin: 0;
+  }
 }
 @media (min-width: 1000px) and (max-width: 1279px) {
-  .dashboard-mode .home-body { margin-left: 220px; padding: 32px; }
-  .dashboard-mode .bottom-nav { width: 220px; padding: 32px 16px; }
-  .home-body.home-tab { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 20px; }
-  .home-tab .home-banner { padding: 28px; }
-  .home-tab .home-banner h2 { font-size: 32px; }
-  .home-tab .home-banner p { font-size: 17px; }
-  .home-tab .home-banner .mascot { width: 170px; height: 170px; }
-  .home-tab .home-overview { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 20px; }
-  .home-tab .daily { padding: 28px 20px; }
-  .home-tab .daily-content { flex-wrap: wrap; gap: 18px; }
-  .home-tab .ring { width: 140px; height: 140px; padding: 18px; }
-  .home-tab .ring strong { font-size: 30px; }
-  .home-tab .ring small { font-size: 11px; }
-  .home-body.home-tab .daily-values p { font-size: 13px; gap: 8px; }
-  .home-body.home-tab .daily-values strong { font-size: 16px; }
-  .home-tab .home-actions button { font-size: 18px; }
-  .home-tab > .card.today-workouts, .home-tab > .card.today-meals { padding: 24px; }
-  .home-tab > .card .record-name { font-size: 19px; }
-  .home-tab > .card:is(.today-workouts, .today-meals) p { font-size: 16px; }
+  .dashboard-mode .home-body {
+    margin-left: 220px;
+    padding: 32px;
+  }
+  .dashboard-mode .bottom-nav {
+    width: 220px;
+    padding: 32px 16px;
+  }
+  .home-body.home-tab {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: 20px;
+  }
+  .home-tab .home-banner {
+    padding: 28px;
+  }
+  .home-tab .home-banner h2 {
+    font-size: 32px;
+  }
+  .home-tab .home-banner p {
+    font-size: 17px;
+  }
+  .home-tab .home-banner .mascot {
+    width: 170px;
+    height: 170px;
+  }
+  .home-tab .home-overview {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 20px;
+  }
+  .home-tab .daily {
+    padding: 28px 20px;
+  }
+  .home-tab .daily-content {
+    flex-wrap: wrap;
+    gap: 18px;
+  }
+  .home-tab .ring {
+    width: 140px;
+    height: 140px;
+    padding: 18px;
+  }
+  .home-tab .ring strong {
+    font-size: 30px;
+  }
+  .home-tab .ring small {
+    font-size: 11px;
+  }
+  .home-body.home-tab .daily-values p {
+    font-size: 13px;
+    gap: 8px;
+  }
+  .home-body.home-tab .daily-values strong {
+    font-size: 16px;
+  }
+  .home-tab .home-actions button {
+    font-size: 18px;
+  }
+  .home-tab > .card.today-workouts,
+  .home-tab > .card.today-meals {
+    padding: 24px;
+  }
+  .home-tab > .card .record-name {
+    font-size: 19px;
+  }
+  .home-tab > .card:is(.today-workouts, .today-meals) p {
+    font-size: 16px;
+  }
+}
+
+.demo-accounts {
+  display: grid;
+  gap: 12px;
+  margin-top: 20px;
+}
+.demo-accounts .demo-account {
+  margin-top: 0;
+}
+.full-demo-account {
+  background: #dff3ed;
+}
+.demo-account-description {
+  display: block;
+  margin: 8px auto 0;
+  max-width: 270px;
+  font-size: 10px;
+  color: #5c7b70;
+}
+.today-heading {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin: 24px 0 16px;
+}
+.today-heading > span {
+  font-size: 11px;
+  color: #82718e;
+  font-weight: 400;
+}
+.today-record-group {
+  display: grid;
+  gap: 12px;
+  min-width: 0;
+  align-content: start;
+  margin-bottom: 20px;
+}
+.today-record-group > h4 {
+  margin: 0;
+  color: #82718e;
+  font-size: 12px;
+  font-weight: 500;
+}
+.record-tone-purple {
+  --record-bg: #e8dff8;
+  --record-border: #b39ddb;
+  --record-accent: #7751aa;
+}
+.record-tone-mint {
+  --record-bg: #dff3ed;
+  --record-border: #79cdbd;
+  --record-accent: #2c8575;
+}
+.record-tone-yellow {
+  --record-bg: #fff1d6;
+  --record-border: #f3c771;
+  --record-accent: #9e712b;
+}
+.record-tone-peach {
+  --record-bg: #fde7d7;
+  --record-border: #edb384;
+  --record-accent: #b36e35;
+}
+.record-tone-blue {
+  --record-bg: #e0ebfa;
+  --record-border: #9dbde7;
+  --record-accent: #4479ae;
+}
+.record-tone-pink {
+  --record-bg: #fce5ee;
+  --record-border: #edacc7;
+  --record-accent: #ad5881;
+}
+.today-record {
+  background: var(--record-bg);
+  border: 1px solid var(--record-border);
+  border-radius: 20px;
+  padding: 18px;
+  min-width: 0;
+  color: #30274b;
+}
+.today-record-meta {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 10px;
+  color: var(--record-accent);
+  margin-bottom: 12px;
+  flex-wrap: wrap;
+}
+.today-record-meta > span:last-child:not(:nth-child(2)) {
+  margin-left: auto;
+}
+.today-record-content {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+}
+.today-record-content .record-name {
+  font-size: 14px;
+  font-weight: 600;
+  overflow-wrap: anywhere;
+  min-width: 0;
+  line-height: 1.45;
+}
+.today-record-energy {
+  flex: none;
+  font-size: 19px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+.today-record-energy small {
+  font-size: 10px;
+  font-weight: 400;
+}
+.today-record > p {
+  margin-top: 8px;
+  color: #78688a;
+}
+@media (min-width: 1000px) {
+  .home-tab > .today-heading {
+    margin: 0 0 -12px;
+  }
+  .home-tab > .today-heading > span {
+    font-size: 14px;
+  }
+  .home-tab > .today-record-group {
+    margin: 0;
+    gap: 16px;
+  }
+  .home-tab > .today-workouts {
+    grid-column: 1;
+  }
+  .home-tab > .today-meals {
+    grid-column: 2;
+  }
+  .today-record {
+    padding: 22px 24px;
+    border-radius: 22px;
+  }
+  .today-record-content .record-name {
+    font-size: 20px;
+  }
+  .today-record-energy {
+    font-size: 24px;
+  }
+  .today-record-energy small {
+    font-size: 13px;
+  }
+  .today-record-meta,
+  .today-record-group > h4 {
+    font-size: 12px;
+  }
 }

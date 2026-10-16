@@ -35,6 +35,7 @@ import {
 } from "./records";
 import { Achievements, type AchievementHistory } from "./Achievements";
 import type { ChallengeSelection } from "./weeklyChallenges";
+import { fullDayRecords } from "./demoAccounts";
 type Screen =
   | "welcome"
   | "login"
@@ -346,11 +347,25 @@ function App() {
     <div className="auth-hero">
       <Mascot name={screen === "login" ? "login-buddy" : "welcome-buddy"} />
       {screen === "login" ? (
-        <svg className="login-ledge" viewBox="0 0 540 100" preserveAspectRatio="none" aria-hidden="true">
-          <path className="login-ledge-surface" d="M-10 66Q270 -16 550 66V105H-10Z" />
+        <svg
+          className="login-ledge"
+          viewBox="0 0 540 100"
+          preserveAspectRatio="none"
+          aria-hidden="true"
+        >
+          <path
+            className="login-ledge-surface"
+            d="M-10 66Q270 -16 550 66V105H-10Z"
+          />
           {/* The lower contours follow the ledge curve exactly, keeping both arms in contact. */}
-          <path className="login-resting-arm" d="M202 27.419C185 8 158 9 150 32.531Q176 29.267 202 27.419Z" />
-          <path className="login-resting-arm" d="M338 27.419C355 8 382 9 390 32.531Q364 29.267 338 27.419Z" />
+          <path
+            className="login-resting-arm"
+            d="M202 27.419C185 8 158 9 150 32.531Q176 29.267 202 27.419Z"
+          />
+          <path
+            className="login-resting-arm"
+            d="M338 27.419C355 8 382 9 390 32.531Q364 29.267 338 27.419Z"
+          />
         </svg>
       ) : (
         <div className="cream-wave" />
@@ -359,12 +374,15 @@ function App() {
   );
   const loginSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    const email = loginEmail.trim().toLowerCase();
+    const fullDay = email === "completo@fitin.app";
     if (
-      loginEmail.toLowerCase() !== "demo@fitin.app" ||
+      !["demo@fitin.app", "completo@fitin.app"].includes(email) ||
       loginPassword !== "fitin123"
     ) {
       setErrors({
-        login: "E-mail ou senha incorretos. Use a conta demonstrativa abaixo.",
+        login:
+          "E-mail ou senha incorretos. Use uma das contas demonstrativas abaixo.",
       });
       return;
     }
@@ -383,48 +401,62 @@ function App() {
           return { date: localDay(d), weight };
         }),
       );
-      setStepRecords([{ date: localDay(), steps: 8200 }]);
-      setAchievementHistory({ days: 17, meals: 14, burned: 6250 });
-      setFoods([
-        {
-          id: "demo-breakfast",
-          date: localDay(),
-          time: "08:15",
-          meal: "Café da manhã",
-          name: "Pão integral, ovos e fruta",
-          kcal: 370,
-          protein: 20,
-          carbs: 50,
-          fat: 10,
-        },
-        {
-          id: "demo-lunch",
-          date: localDay(),
-          time: "12:30",
-          meal: "Almoço",
-          name: "Arroz, frango e acompanhamentos",
-          kcal: 556,
-          protein: 38,
-          carbs: 65,
-          fat: 16,
-        },
-      ]);
-      setWorkouts([
-        {
-          id: "demo-workout",
-          date: localDay(),
-          time: "18:00",
-          name: "Musculação",
-          minutes: 40,
-          kcal: 150,
-        },
-      ]);
-      setProfile((p) => ({
-        ...p,
-        name: "João",
+      setStepRecords([{ date: localDay(), steps: fullDay ? 10840 : 8200 }]);
+      setAchievementHistory(
+        fullDay
+          ? { days: 24, meals: 58, burned: 9200 }
+          : { days: 17, meals: 14, burned: 6250 },
+      );
+      const fullRecords = fullDayRecords();
+      setFoods(
+        fullDay
+          ? fullRecords.foods
+          : [
+              {
+                id: "demo-breakfast",
+                date: localDay(),
+                time: "08:15",
+                meal: "Café da manhã",
+                name: "Pão integral, ovos e fruta",
+                kcal: 370,
+                protein: 20,
+                carbs: 50,
+                fat: 10,
+              },
+              {
+                id: "demo-lunch",
+                date: localDay(),
+                time: "12:30",
+                meal: "Almoço",
+                name: "Arroz, frango e acompanhamentos",
+                kcal: 556,
+                protein: 38,
+                carbs: 65,
+                fat: 16,
+              },
+            ],
+      );
+      setWorkouts(
+        fullDay
+          ? fullRecords.workouts
+          : [
+              {
+                id: "demo-workout",
+                date: localDay(),
+                time: "18:00",
+                name: "Musculação",
+                minutes: 40,
+                kcal: 150,
+              },
+            ],
+      );
+      setProfile({
+        ...initial,
+        email,
+        name: fullDay ? "Marina" : "João",
         activity: "Moderado",
         goal: "Emagrecer",
-      }));
+      });
       go("home");
     }, 450);
   };
@@ -592,20 +624,40 @@ function App() {
                 {screen === "login" ? "Esqueceu a senha?" : "Voltar ao login"}
               </button>
               {screen === "login" && (
-                <div className="demo-account">
-                  Conta de demonstração
-                  <br />
-                  <strong>demo@fitin.app · fitin123</strong>
-                  <button
-                    className="text-button"
-                    onClick={() => {
-                      setLoginEmail("demo@fitin.app");
-                      setLoginPassword("fitin123");
-                      setErrors({});
-                    }}
-                  >
-                    Preencher dados
-                  </button>
+                <div className="demo-accounts">
+                  <div className="demo-account">
+                    João · dia em andamento
+                    <br />
+                    <strong>demo@fitin.app · fitin123</strong>
+                    <button
+                      className="text-button"
+                      onClick={() => {
+                        setLoginEmail("demo@fitin.app");
+                        setLoginPassword("fitin123");
+                        setErrors({});
+                      }}
+                    >
+                      Preencher dados
+                    </button>
+                  </div>
+                  <div className="demo-account full-demo-account">
+                    Marina · dia completo
+                    <br />
+                    <strong>completo@fitin.app · fitin123</strong>
+                    <span className="demo-account-description">
+                      6 refeições e 3 atividades para explorar a home.
+                    </span>
+                    <button
+                      className="text-button"
+                      onClick={() => {
+                        setLoginEmail("completo@fitin.app");
+                        setLoginPassword("fitin123");
+                        setErrors({});
+                      }}
+                    >
+                      Preencher dia completo
+                    </button>
+                  </div>
                 </div>
               )}
             </div>
@@ -1048,7 +1100,13 @@ function App() {
           </div>
         )}
         {screen === "home" && (
-          <div className={"home-body " + (tab === "Home" ? "home-tab " : "") + (streak > 0 ? "demo-filled" : "")}>
+          <div
+            className={
+              "home-body " +
+              (tab === "Home" ? "home-tab " : "") +
+              (streak > 0 ? "demo-filled" : "")
+            }
+          >
             {tab !== "Diário" && tab !== "Progresso" && tab !== "Perfil" && (
               <header>
                 <Logo />
@@ -1091,8 +1149,8 @@ function App() {
                       <h3>Resumo Diário</h3>
                       {foods.length ? (
                         <small className="daily-equation">
-                          {target} − <span>{consumed}</span> + <em>{burned}</em> ={" "}
-                          <strong>{remaining} kcal</strong>
+                          {target} − <span>{consumed}</span> + <em>{burned}</em>{" "}
+                          = <strong>{remaining} kcal</strong>
                         </small>
                       ) : (
                         <small>
@@ -1117,7 +1175,9 @@ function App() {
                           <Flame />
                           <span>
                             Meta diária
-                            <strong>{target.toLocaleString("pt-BR")} kcal</strong>
+                            <strong>
+                              {target.toLocaleString("pt-BR")} kcal
+                            </strong>
                           </span>
                         </p>
                         <p>
@@ -1150,43 +1210,78 @@ function App() {
                     <PlusCircle size={17} /> Adicionar atividades
                   </button>
                 </div>
-                <h3>Hoje</h3>
-                <div className="card today-workouts">
-                  <strong>
-                    {workouts.length
-                      ? "Suas atividades"
-                      : "Nenhuma atividade ainda"}
-                  </strong>
+                <h3 className="today-heading">
+                  Hoje{" "}
+                  <span>
+                    {foods.length}{" "}
+                    {foods.length === 1 ? "refeição" : "refeições"} ·{" "}
+                    {workouts.length}{" "}
+                    {workouts.length === 1 ? "atividade" : "atividades"}
+                  </span>
+                </h3>
+                <section
+                  className="today-record-group today-workouts"
+                  aria-label="Atividades de hoje"
+                >
+                  <h4>Atividades</h4>
                   {workouts.length ? (
-                    workouts.map((i, n) => (
-                      <p key={n}>
-                        <span className="record-name">{i.name}</span>
-                        <span>
-                          {i.minutes && (
-                            <span className="desktop-duration">{i.minutes} min · </span>
-                          )}
-                          {i.kcal} kcal
-                        </span>
-                      </p>
+                    workouts.map((entry, index) => (
+                      <article
+                        className={`today-record record-tone-${["purple", "blue", "yellow"][index % 3]}`}
+                        key={entry.id}
+                      >
+                        <div className="today-record-meta">
+                          <Dumbbell size={16} aria-hidden="true" />
+                          <span>Atividade · {entry.time}</span>
+                          {entry.minutes && <span>{entry.minutes} min</span>}
+                        </div>
+                        <div className="today-record-content">
+                          <strong className="record-name">{entry.name}</strong>
+                          <span className="today-record-energy">
+                            {entry.kcal} <small>kcal</small>
+                          </span>
+                        </div>
+                      </article>
                     ))
                   ) : (
-                    <p>Seus treinos do dia aparecem aqui.</p>
+                    <div className="today-record record-tone-purple">
+                      <strong>Nenhuma atividade ainda</strong>
+                      <p>Seus treinos do dia aparecem aqui.</p>
+                    </div>
                   )}
-                </div>
-                <div className="card today-meals">
-                  <strong>
-                    {foods.length ? "Suas refeições" : "Nenhuma refeição ainda"}
-                  </strong>
+                </section>
+                <section
+                  className="today-record-group today-meals"
+                  aria-label="Refeições de hoje"
+                >
+                  <h4>Refeições</h4>
                   {foods.length ? (
-                    foods.map((i, n) => (
-                      <p key={n}>
-                        <span className="record-name">{i.name}</span> <span>{i.kcal} kcal</span>
-                      </p>
+                    foods.map((entry, index) => (
+                      <article
+                        className={`today-record record-tone-${["mint", "peach", "yellow", "pink", "blue", "purple"][index % 6]}`}
+                        key={entry.id}
+                      >
+                        <div className="today-record-meta">
+                          <Utensils size={16} aria-hidden="true" />
+                          <span>
+                            {entry.meal || "Refeição"} · {entry.time}
+                          </span>
+                        </div>
+                        <div className="today-record-content">
+                          <strong className="record-name">{entry.name}</strong>
+                          <span className="today-record-energy">
+                            {entry.kcal} <small>kcal</small>
+                          </span>
+                        </div>
+                      </article>
                     ))
                   ) : (
-                    <p>Suas refeições do dia aparecem aqui.</p>
+                    <div className="today-record record-tone-mint">
+                      <strong>Nenhuma refeição ainda</strong>
+                      <p>Suas refeições do dia aparecem aqui.</p>
+                    </div>
                   )}
-                </div>
+                </section>
               </>
             )}
             {tab === "Diário" && (
@@ -1290,7 +1385,9 @@ function App() {
               Dados desta sessão · Sem gravação de conta ou senha
             </p>
             <nav className="bottom-nav" aria-label="Navegação principal">
-              <div className="nav-brand"><Logo /></div>
+              <div className="nav-brand">
+                <Logo />
+              </div>
               {[
                 [Home, "Home"],
                 [BookOpen, "Diário"],
