@@ -436,3 +436,28 @@
 .settings-icon.orange {
   color: white;
 }
+
+.profile-banner-bottom {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 12px;
+}
+.profile-banner-bottom .profile-badges {
+  margin-top: 0;
+  flex: 1;
+  min-width: 0;
+}
+.profile-banner-art {
+  display: block;
+  width: 130px;
+  height: auto;
+  flex: none;
+  object-fit: contain;
+}
+@media (min-width: 1000px) {
+  .profile-banner-art {
+    width: 180px;
+  }
+}

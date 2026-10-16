@@ -114,14 +114,17 @@ export function Profile({
             <Award size={20} />
           </button>
         </div>
-        <div className="profile-badges">
-          <span>
-            NÍVEL {ach.levelIndex + 1} / {ach.level.name.toUpperCase()}
-          </span>
-          <span>
-            <Flame size={13} />
-            {streak} {streak === 1 ? "DIA" : "DIAS"}
-          </span>
+        <div className="profile-banner-bottom">
+          <div className="profile-badges">
+            <span>
+              NÍVEL {ach.levelIndex + 1} / {ach.level.name.toUpperCase()}
+            </span>
+            <span>
+              <Flame size={13} />
+              {streak} {streak === 1 ? "DIA" : "DIAS"}
+            </span>
+          </div>
+          <img className="profile-banner-art" src="/assets/profile-buddy.svg" alt="" />
         </div>
       </div>
       <section className="profile-journey">
