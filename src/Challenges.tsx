@@ -5,7 +5,7 @@ import {
   weeklyChallenges,
   weeklyProgress,
   type ChallengeSelection,
-} from "./challenges";
+} from "./weeklyChallenges";
 import type { DailyRecord } from "./records";
 
 export function Challenges({

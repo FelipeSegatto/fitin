@@ -78,7 +78,7 @@ try {
   // Validate calendar boundaries and deduplication against the actual browser module.
   await p.evaluate(async () => {
     const { weeklyProgress, challengeWeek } = await import(
-      "/src/challenges.ts"
+      "/src/weeklyChallenges.ts"
     );
     const now = new Date(2026, 9, 14, 12);
     const record = (date, id) => ({

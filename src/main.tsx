@@ -34,7 +34,7 @@ import {
   recordId,
 } from "./records";
 import { Achievements, type AchievementHistory } from "./Achievements";
-import type { ChallengeSelection } from "./challenges";
+import type { ChallengeSelection } from "./weeklyChallenges";
 type Screen =
   | "welcome"
   | "login"

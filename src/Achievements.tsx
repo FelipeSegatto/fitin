@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { Check, Lock, X } from "lucide-react";
 import "./achievements.css";
 import { Challenges } from "./Challenges";
-import type { ChallengeSelection } from "./challenges";
+import type { ChallengeSelection } from "./weeklyChallenges";
 import type { DailyRecord } from "./records";
 export type AchievementHistory = {
   days: number;
