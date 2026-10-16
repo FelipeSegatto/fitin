@@ -20,6 +20,11 @@ type Medal = {
   metal: string;
   color: string;
 };
+export function medalAsset(metal: string, earned = true) {
+  if (metal === "pink") return "/assets/medal-pink.png";
+  return `/assets/medal-${earned ? metal : "silver"}.svg`;
+}
+
 export function achievementSummary(
   streak: number,
   foods: number,
@@ -81,7 +86,7 @@ export function achievementSummary(
       current: history.burned + workoutCalories,
       target: 10000,
       unit: "kcal",
-      metal: "diamond",
+      metal: "pink",
       color: "pink",
     },
     {
@@ -288,10 +293,7 @@ export function Achievements({
               aria-label={`${m.name}, ${done ? "conquistada" : `${m.current} de ${m.target} ${m.unit}`}, ${m.xp} XP`}
             >
               <div className={"medal-art " + m.color}>
-                <img
-                  src={"/assets/medal-" + (done ? m.metal : "silver") + ".svg"}
-                  alt=""
-                />
+                <img src={medalAsset(m.metal, done)} alt="" />
                 <span className="medal-status">
                   {done ? <Check size={13} /> : <Lock size={12} />}
                 </span>
@@ -399,10 +401,7 @@ function MedalDialog({ medal, close }: { medal: Medal; close: () => void }) {
           <X />
         </button>
         <div className={"medal-art " + medal.color}>
-          <img
-            src={"/assets/medal-" + (done ? medal.metal : "silver") + ".svg"}
-            alt=""
-          />
+          <img src={medalAsset(medal.metal, done)} alt="" />
         </div>
         <h2 id="medal-title">{medal.name}</h2>
         <span className="xp-pill">+{medal.xp} XP</span>
@@ -473,6 +472,11 @@ function MedalPreview({ close }: { close: () => void }) {
         <img
           src="/assets/achievements/medal-preview.png"
           alt="Quatro propostas de medalhas: ouro com haltere, prata com calendário, bronze com broto e diamante azul com alvo."
+        />
+        <h3 className="pink-preview-title">Haltere rosa · Grande energia</h3>
+        <img
+          src="/assets/medal-pink.png"
+          alt="Haltere rosa metálico com barra vinho e reflexos claros, em teste na medalha Grande energia."
         />
       </div>
     </div>

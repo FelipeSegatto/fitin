@@ -9,7 +9,11 @@ import {
   ChevronRight,
   LogOut,
 } from "lucide-react";
-import { achievementSummary, type AchievementHistory } from "./Achievements";
+import {
+  achievementSummary,
+  medalAsset,
+  type AchievementHistory,
+} from "./Achievements";
 import { type DailyRecord, localDay } from "./records";
 import { type WeightRecord } from "./Progress";
 import "./profile.css";
@@ -124,7 +128,11 @@ export function Profile({
               {streak} {streak === 1 ? "DIA" : "DIAS"}
             </span>
           </div>
-          <img className="profile-banner-art" src="/assets/profile-buddy.svg" alt="" />
+          <img
+            className="profile-banner-art"
+            src="/assets/profile-buddy.svg"
+            alt=""
+          />
         </div>
       </div>
       <section className="profile-journey">
@@ -215,7 +223,7 @@ export function Profile({
                 aria-label={"Ver coleção: " + m.name}
               >
                 <span className={"mini-medal " + m.color}>
-                  <img src={"/assets/medal-" + m.metal + ".svg"} alt="" />
+                  <img src={medalAsset(m.metal)} alt="" />
                 </span>
                 <small>{m.name}</small>
               </button>

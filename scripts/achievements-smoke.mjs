@@ -27,8 +27,14 @@ try {
     .evaluateAll((images) => images.map((img) => img.getAttribute("src")));
   assert(
     medalSources.every((src) =>
-      /^\/assets\/medal-(gold|bronze|silver|diamond)\.svg$/.test(src),
+      /^\/assets\/medal-((gold|bronze|silver|diamond)\.svg|pink\.png)$/.test(
+        src,
+      ),
     ),
+  );
+  assert.equal(
+    await p.locator(".medal-tone-pink .medal-art img").getAttribute("src"),
+    "/assets/medal-pink.png",
   );
   const previewButton = p.getByRole("button", {
     name: "Ver novas medalhas Prévia",
@@ -40,7 +46,7 @@ try {
     exact: true,
   });
   await preview.waitFor();
-  const previewImage = preview.locator("img");
+  const previewImage = preview.locator("img").first();
   await previewImage.evaluate((img) => img.decode());
   assert(await previewImage.evaluate((img) => img.naturalWidth > 0));
   assert.equal(await p.evaluate(() => document.body.style.overflow), "hidden");
@@ -254,6 +260,9 @@ try {
     false,
   );
   await p.getByRole("button", { name: "Perfil", exact: true }).click();
+  const pinkProfileMedal = p.locator('.profile-medal-list img[src="/assets/medal-pink.png"]');
+  assert.equal(await pinkProfileMedal.count(), 1);
+  await pinkProfileMedal.evaluate((img) => img.decode());
   await p.getByRole("button", { name: "Sair e limpar demonstração" }).click();
   await p.getByRole("button", { name: "Entrar", exact: true }).click();
   await p.getByRole("button", { name: "Preencher dados" }).click();
