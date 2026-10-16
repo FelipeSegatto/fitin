@@ -1801,3 +1801,66 @@ button:hover {
 .today-record-icon svg {
   display: block;
 }
+
+.home-banner.calorie-warning {
+  background: linear-gradient(115deg, #ffe4c0, #ffc9be);
+  min-height: 190px;
+  gap: 12px;
+}
+.home-banner.calorie-warning h2 {
+  color: #742e43;
+}
+.home-banner.calorie-warning p {
+  color: #683e46;
+}
+.home-banner.calorie-warning > div {
+  max-width: 65%;
+}
+.home-banner.calorie-warning .mascot {
+  width: 88px;
+  height: 150px;
+  flex: none;
+}
+.home-banner.calorie-warning .warning-consumption {
+  font-size: 10px;
+  margin-top: 10px;
+}
+@media (min-width: 1000px) {
+  .home-tab .home-banner.calorie-warning {
+    min-height: 380px;
+    box-shadow: 0 14px 34px #be1f4c15;
+  }
+  .home-tab .home-banner.calorie-warning > div {
+    max-width: 60%;
+  }
+  .home-tab .home-banner.calorie-warning h2 {
+    font-size: 34px;
+  }
+  .home-tab .home-banner.calorie-warning .mascot {
+    width: 145px;
+    height: 245px;
+    right: 20px;
+    bottom: 22px;
+  }
+  .home-tab .home-banner.calorie-warning .warning-consumption {
+    font-size: 13px;
+    line-height: 1.5;
+  }
+}
+@media (min-width: 1000px) and (max-width: 1279px) {
+  .home-tab .home-banner.calorie-warning {
+    padding: 24px;
+  }
+  .home-tab .home-banner.calorie-warning h2 {
+    font-size: 27px;
+  }
+  .home-tab .home-banner.calorie-warning p {
+    font-size: 15px;
+  }
+  .home-tab .home-banner.calorie-warning .mascot {
+    width: 100px;
+    height: 165px;
+    right: 8px;
+    bottom: 20px;
+  }
+}

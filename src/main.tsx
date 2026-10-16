@@ -211,6 +211,8 @@ function App() {
   const consumed = foods.reduce((s, i) => s + i.kcal, 0),
     burned = workouts.reduce((s, i) => s + i.kcal, 0),
     remaining = target - consumed + burned;
+  const overTarget = consumed > target;
+  const excessCalories = Math.max(0, consumed - target);
   const nextSignup = () => {
     const e: Record<string, string> = {};
     if (step === 0) {
@@ -1125,25 +1127,52 @@ function App() {
               <>
                 <div className="home-overview">
                   <div
-                    className={"home-banner " + (foods.length ? "started" : "")}
+                    className={
+                      "home-banner " +
+                      (overTarget
+                        ? "calorie-warning"
+                        : foods.length
+                          ? "started"
+                          : "")
+                    }
+                    role="status"
+                    aria-live="polite"
                   >
                     <div>
                       <h2>
-                        {streak > 1
-                          ? `Streak de ${streak} dias!`
-                          : foods.length
-                            ? "Você começou!"
-                            : "Vamos começar!"}
+                        {overTarget
+                          ? "Atenção à meta do dia"
+                          : streak > 1
+                            ? `Streak de ${streak} dias!`
+                            : foods.length
+                              ? "Você começou!"
+                              : "Vamos começar!"}
                       </h2>
                       <p>
-                        {streak > 1
-                          ? "Muito bem! Continue registrando e mantenha o progresso em dia."
-                          : foods.length
-                            ? "Cada registro é um passo na sua jornada."
-                            : "Registre sua primeira refeição para iniciar sua sequência de dias."}
+                        {overTarget
+                          ? `Você registrou ${excessCalories.toLocaleString("pt-BR")} kcal acima da meta de ${target.toLocaleString("pt-BR")} kcal.`
+                          : streak > 1
+                            ? "Muito bem! Continue registrando e mantenha o progresso em dia."
+                            : foods.length
+                              ? "Cada registro é um passo na sua jornada."
+                              : "Registre sua primeira refeição para iniciar sua sequência de dias."}
                       </p>
+                      {overTarget && (
+                        <p className="warning-consumption">
+                          Consumo: {consumed.toLocaleString("pt-BR")} kcal.
+                          Atividades contabilizadas à parte no resumo.
+                        </p>
+                      )}
                     </div>
-                    <Mascot name={foods.length ? "streak-buddy" : "buddy"} />
+                    <Mascot
+                      name={
+                        overTarget
+                          ? "attention-buddy"
+                          : foods.length
+                            ? "streak-buddy"
+                            : "buddy"
+                      }
+                    />
                   </div>
                   <div className="card daily">
                     <div className="card-title">

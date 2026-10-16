@@ -74,3 +74,5 @@ O cenário fictício tem meta de 2.000 kcal, 2.400 kcal registradas em refeiçõ
 Verificação: `npm run test:full-day-demo` cobre os registros, as cores, os totais, alterações pelo Diário, isolamento entre contas e larguras mobile/desktop.
 
 Os cards da home usam preenchimentos mais fortes, seguindo o roxo e o verde originais. Os ícones Lucide são escolhidos pelo tipo e nome do registro, com opções para café, frutas, sanduíches, peixe, ceia, caminhada, musculação, mobilidade, bicicleta, natação e outras atividades. No demo completo, os nove registros usam nove ícones diferentes.
+
+Quando as calorias consumidas ultrapassam a meta diária, o banner da home mostra “Atenção à meta do dia”, o excesso registrado e o personagem fornecido em `attention-buddy.svg`. A comparação usa consumo bruto (`consumidas > meta`): as atividades continuam no saldo do resumo, mas não escondem o aviso. No demo completo, 2.400 kcal consumidas para meta de 2.000 geram aviso de 400 kcal acima, mesmo com saldo ajustado de 0 kcal. Ao voltar à meta ou abaixo dela, o banner habitual retorna.

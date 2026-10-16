@@ -11,7 +11,14 @@ const login = async (button) => {
   await page.getByRole("button", { name: "Entrar", exact: true }).click();
   await page.getByRole("button", { name: button, exact: true }).click();
   await page.getByRole("button", { name: "Entrar", exact: true }).click();
-  await page.getByRole("heading", { name: "Streak de 7 dias!" }).waitFor();
+  await page
+    .getByRole("heading", {
+      name:
+        button === "Preencher dia completo"
+          ? "Atenção à meta do dia"
+          : "Streak de 7 dias!",
+    })
+    .waitFor();
 };
 const logout = async () => {
   await page.getByRole("button", { name: "Perfil", exact: true }).click();
@@ -25,6 +32,17 @@ try {
   assert.equal(await page.locator(".today-meals .today-record").count(), 6);
   assert.equal(await page.locator(".today-workouts .today-record").count(), 3);
   assert.equal(await page.locator(".ring strong").innerText(), "0");
+  assert(
+    (await page.locator(".home-banner.calorie-warning").innerText()).includes(
+      "400 kcal acima da meta de 2.000 kcal",
+    ),
+  );
+  const attentionMascot = page.locator(
+    '.home-banner img[src="/assets/attention-buddy.svg"]',
+  );
+  await attentionMascot.evaluate((image) => image.decode());
+  assert(await attentionMascot.evaluate((image) => image.naturalWidth > 0));
+
   assert.deepEqual(
     await page.locator(".daily-values strong").allTextContents(),
     ["2.000 kcal", "2400 kcal", "400 kcal"],
@@ -85,9 +103,47 @@ try {
   await page.getByRole("button", { name: "Home", exact: true }).click();
   assert.equal(await page.locator(".today-meals .today-record").count(), 5);
   assert.equal(await page.locator(".ring strong").innerText(), "284");
+  assert(
+    (await page.locator(".home-banner.calorie-warning").innerText()).includes(
+      "116 kcal acima",
+    ),
+  );
+
   await page.getByRole("button", { name: "Perfil", exact: true }).click();
   await page.getByRole("heading", { name: "Marina", exact: true }).waitFor();
   assert((await page.locator(".profile-month").innerText()).includes("5"));
+  // Exercise calories do not hide the warning. At the gross intake limit it clears;
+  // a one-kcal increase above that limit restores it.
+  await page.getByRole("button", { name: "Diário", exact: true }).click();
+  await page
+    .getByRole("button", { name: "Editar Ovos, aveia e banana", exact: true })
+    .click();
+  await page.getByLabel("Energia (kcal)").fill("274");
+  await page
+    .getByRole("button", { name: "Salvar alterações", exact: true })
+    .click();
+  await page.getByRole("button", { name: "Home", exact: true }).click();
+  assert.equal(await page.locator(".home-banner.calorie-warning").count(), 0);
+  assert.equal(
+    await page
+      .locator('.home-banner img[src="/assets/streak-buddy.svg"]')
+      .count(),
+    1,
+  );
+  await page.getByRole("button", { name: "Diário", exact: true }).click();
+  await page
+    .getByRole("button", { name: "Editar Ovos, aveia e banana", exact: true })
+    .click();
+  await page.getByLabel("Energia (kcal)").fill("275");
+  await page
+    .getByRole("button", { name: "Salvar alterações", exact: true })
+    .click();
+  await page.getByRole("button", { name: "Home", exact: true }).click();
+  assert(
+    (await page.locator(".home-banner.calorie-warning").innerText()).includes(
+      "1 kcal acima",
+    ),
+  );
   await logout();
   await login("Preencher dados");
   assert.equal(await page.locator(".today-meals .today-record").count(), 2);
