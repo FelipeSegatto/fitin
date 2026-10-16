@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { Check, Lock, X } from "lucide-react";
+import { Check, Image, Lock, X } from "lucide-react";
 import "./achievements.css";
 import { Challenges } from "./Challenges";
 import type { ChallengeSelection } from "./weeklyChallenges";
@@ -136,7 +136,8 @@ export function Achievements({
   onChallenges: (value: ChallengeSelection[]) => void;
 }) {
   const [selected, setSelected] = useState<Medal | null>(null),
-    [filter, setFilter] = useState("Todas");
+    [filter, setFilter] = useState("Todas"),
+    [showPreview, setShowPreview] = useState(false);
   const { medals, earned, xp, pending, levelIndex, level, levelProgress } =
     achievementSummary(streak, foods, workoutCalories, history);
   const closest = pending.reduce<Medal | null>(
@@ -215,6 +216,13 @@ export function Achievements({
           <span>Em progresso</span>
         </div>
       </div>
+      <button
+        className="medal-preview-button"
+        onClick={() => setShowPreview(true)}
+      >
+        <Image size={20} aria-hidden="true" /> Ver novas medalhas
+        <span>Prévia</span>
+      </button>
       <Challenges
         foods={foodRecords}
         workouts={workoutRecords}
@@ -281,7 +289,7 @@ export function Achievements({
             >
               <div className={"medal-art " + m.color}>
                 <img
-                  src={"/assets/achievements/medal-" + m.id + ".svg"}
+                  src={"/assets/medal-" + (done ? m.metal : "silver") + ".svg"}
                   alt=""
                 />
                 <span className="medal-status">
@@ -342,6 +350,7 @@ export function Achievements({
         Histórico e recompensas demonstrativos. XP é a soma das medalhas
         conquistadas.
       </p>
+      {showPreview && <MedalPreview close={() => setShowPreview(false)} />}
       {selected && (
         <MedalDialog medal={selected} close={() => setSelected(null)} />
       )}
@@ -391,7 +400,7 @@ function MedalDialog({ medal, close }: { medal: Medal; close: () => void }) {
         </button>
         <div className={"medal-art " + medal.color}>
           <img
-            src={"/assets/achievements/medal-" + medal.id + ".svg"}
+            src={"/assets/medal-" + (done ? medal.metal : "silver") + ".svg"}
             alt=""
           />
         </div>
@@ -408,6 +417,63 @@ function MedalDialog({ medal, close }: { medal: Medal; close: () => void }) {
             ? "A recompensa já está incluída no seu total de XP."
             : "A medalha é liberada automaticamente ao atingir a meta."}
         </small>
+      </div>
+    </div>
+  );
+}
+
+function MedalPreview({ close }: { close: () => void }) {
+  const ref = useRef<HTMLButtonElement>(null);
+  useEffect(() => {
+    const previousFocus = document.activeElement as HTMLElement | null;
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    ref.current?.focus();
+    const onKey = (event: KeyboardEvent) => {
+      if (event.key === "Escape") close();
+      if (event.key === "Tab") {
+        event.preventDefault();
+        ref.current?.focus();
+      }
+    };
+    document.addEventListener("keydown", onKey);
+    return () => {
+      document.body.style.overflow = previousOverflow;
+      document.removeEventListener("keydown", onKey);
+      previousFocus?.focus();
+    };
+  }, [close]);
+  return (
+    <div
+      className="modal-backdrop"
+      onClick={(event) => {
+        if (event.target === event.currentTarget) close();
+      }}
+    >
+      <div
+        className="modal medal-preview-dialog"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="medal-preview-title"
+        aria-describedby="medal-preview-description"
+      >
+        <button
+          ref={ref}
+          className="icon close"
+          aria-label="Fechar prévia"
+          onClick={close}
+        >
+          <X />
+        </button>
+        <h2 id="medal-preview-title">Novas medalhas</h2>
+        <p id="medal-preview-description">
+          Ouro, prata, bronze e diamante. Uma proposta para a coleção; os
+          halteres continuam como suas medalhas.
+        </p>
+        <img
+          src="/assets/achievements/medal-preview.png"
+          alt="Quatro propostas de medalhas: ouro com haltere, prata com calendário, bronze com broto e diamante azul com alvo."
+        />
       </div>
     </div>
   );

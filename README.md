@@ -60,4 +60,4 @@ A semana vai de segunda a domingo, pelo calendário local. Contam registros da s
 As escolhas sobrevivem à navegação entre abas, mas são limpas ao sair, recarregar ou iniciar outra conta. Na virada da semana, a seleção anterior deixa de aparecer. Verificação: `npm run test:achievements`, incluindo participação, saída, progresso compartilhado, limites da semana e limpeza da sessão.
 
 
-A identidade visual de Conquistas usa composições SVG locais com ícones Lucide (licença ISC), um tema para cada um dos quatro desafios e seis medalhas com símbolos e silhuetas próprios. Os mesmos badges aparecem nos detalhes e no Perfil. Créditos e licença em `public/assets/achievements/`.
+A identidade visual de Conquistas usa composições SVG locais com ícones Lucide (licença ISC), um tema para cada um dos quatro desafios. Os halteres originais continuam como medalhas em Conquistas, nos detalhes e no Perfil. O botão “Ver novas medalhas” abre uma prévia PNG em modal, sem alterar a coleção. Créditos e licença em `public/assets/achievements/`.

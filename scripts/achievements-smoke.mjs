@@ -22,14 +22,52 @@ try {
     "450",
   );
   assert.equal(await p.locator(".medal-card").count(), 6);
-  assert.equal(
-    new Set(
-      await p
-        .locator(".medal-card .medal-art img")
-        .evaluateAll((images) => images.map((img) => img.getAttribute("src"))),
-    ).size,
-    6,
+  const medalSources = await p
+    .locator(".medal-card .medal-art img")
+    .evaluateAll((images) => images.map((img) => img.getAttribute("src")));
+  assert(
+    medalSources.every((src) =>
+      /^\/assets\/medal-(gold|bronze|silver|diamond)\.svg$/.test(src),
+    ),
   );
+  const previewButton = p.getByRole("button", {
+    name: "Ver novas medalhas Prévia",
+    exact: true,
+  });
+  await previewButton.click();
+  const preview = p.getByRole("dialog", {
+    name: "Novas medalhas",
+    exact: true,
+  });
+  await preview.waitFor();
+  const previewImage = preview.locator("img");
+  await previewImage.evaluate((img) => img.decode());
+  assert(await previewImage.evaluate((img) => img.naturalWidth > 0));
+  assert.equal(await p.evaluate(() => document.body.style.overflow), "hidden");
+  await p.screenshot({
+    path: "/workspace/artifacts/fitin-medal-preview-mobile.png",
+  });
+  await p.setViewportSize({ width: 1440, height: 1000 });
+  await p.screenshot({
+    path: "/workspace/artifacts/fitin-medal-preview-desktop.png",
+  });
+  await p.keyboard.press("Tab");
+  assert(
+    await p
+      .getByRole("button", { name: "Fechar prévia" })
+      .evaluate((e) => e === document.activeElement),
+  );
+  await p.keyboard.press("Escape");
+  assert.equal(await p.getByRole("dialog").count(), 0);
+  assert(await previewButton.evaluate((e) => e === document.activeElement));
+  assert.notEqual(
+    await p.evaluate(() => document.body.style.overflow),
+    "hidden",
+  );
+  await p.setViewportSize({ width: 390, height: 844 });
+  await previewButton.click();
+  await p.getByRole("button", { name: "Fechar prévia" }).click();
+  assert.equal(await p.getByRole("dialog").count(), 0);
   assert.equal(
     new Set(
       await p
