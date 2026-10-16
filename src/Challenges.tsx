@@ -150,20 +150,36 @@ export function Challenges({
           </div>
         )}
       </section>
-      <section aria-labelledby="weekly-challenges-title">
-        <div className="challenge-heading weekly-heading">
-          <h2 id="weekly-challenges-title" ref={picker} tabIndex={-1}>
-            Desafios da semana
-          </h2>
-          <span>
-            <CalendarDays size={15} />
-            {dateLabel(week.start)} – {dateLabel(week.end)}
-          </span>
+      <section
+        className="weekly-challenge-banner"
+        aria-labelledby="weekly-challenges-title"
+      >
+        <div className="weekly-challenge-intro">
+          <div>
+            <div className="challenge-heading weekly-heading">
+              <h2 id="weekly-challenges-title" ref={picker} tabIndex={-1}>
+                Desafios da semana
+              </h2>
+              <span>
+                <CalendarDays size={15} />
+                {dateLabel(week.start)} – {dateLabel(week.end)}
+              </span>
+            </div>
+            <p className="challenge-intro">
+              Quatro convites para cuidar da sua rotina.
+              <span className="challenge-swipe-hint">
+                {" "}
+                Deslize para explorar.
+              </span>
+            </p>
+          </div>
+          <div className="weekly-guide-art" aria-hidden="true">
+            <img src="/assets/challenges-guide.svg" alt="" />
+            <span className="weekly-board-note">
+              Seu próximo passo começa aqui.
+            </span>
+          </div>
         </div>
-        <p className="challenge-intro">
-          Quatro convites para cuidar da sua rotina.
-          <span className="challenge-swipe-hint"> Deslize para explorar.</span>
-        </p>
         <div
           className="challenge-options"
           role="region"
