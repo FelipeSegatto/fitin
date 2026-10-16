@@ -83,7 +83,7 @@ export function Achievements({
           <small>NÍVEL {levelIndex + 1}</small>
           <h2>{level.name}</h2>
         </div>
-        <img src="/assets/happy.svg" alt="" />
+        <img src="/assets/achievements-buddy.svg" alt="" />
         <div
           className="level-segments"
           aria-label={`Progresso do nível: ${Math.round(levelProgress * 100)}%`}

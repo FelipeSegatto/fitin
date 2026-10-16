@@ -1356,3 +1356,24 @@
     font-size: 15px;
   }
 }
+
+.level-card > div:first-child { position: relative; z-index: 1; padding-right: 112px; }
+.level-card > img { right: 14px; top: 12px; width: 104px; height: 123px; object-fit: contain; }
+@media (min-width: 760px) {
+  .level-card > div:first-child { padding-right: 150px; }
+  .level-card > img { right: 22px; top: 12px; width: 132px; height: 156px; }
+}
+@media (max-width: 360px) {
+  .level-card h2 { font-size: 24px; overflow-wrap: anywhere; }
+  .level-card > div:first-child { padding-right: 88px; }
+  .level-card > img { right: 10px; width: 86px; height: 102px; }
+}
+
+.level-card > div:first-child { min-height: 120px; }
+@media (min-width: 760px) {
+  .level-card { min-height: 245px; }
+  .level-card > div:first-child { min-height: 152px; }
+}
+@media (max-width: 360px) {
+  .level-card > div:first-child { min-height: 105px; }
+}
