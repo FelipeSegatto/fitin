@@ -34,6 +34,7 @@ import {
   recordId,
 } from "./records";
 import { Achievements, type AchievementHistory } from "./Achievements";
+import type { ChallengeSelection } from "./challenges";
 type Screen =
   | "welcome"
   | "login"
@@ -150,6 +151,7 @@ function App() {
     [rate, setRate] = useState(0.55),
     [tab, setTab] = useState("Home"),
     [streak, setStreak] = useState(0),
+    [challenges, setChallenges] = useState<ChallengeSelection[]>([]),
     [achievementHistory, setAchievementHistory] = useState<AchievementHistory>({
       days: 0,
       meals: 0,
@@ -265,6 +267,7 @@ function App() {
       setWorkouts([]);
       setStreak(0);
       setAchievementHistory({ days: 0, meals: 0, burned: 0 });
+      setChallenges([]);
       go("loading");
       setTimeout(() => go("result"), 900);
     }
@@ -370,6 +373,7 @@ function App() {
       setTab("Home");
       setRate(0.4);
       setStreak(7);
+      setChallenges([]);
       setWeightGoal("70");
       setWeightRecords(
         [81, 80.5, 79.9, 79.3, 78.4, 78].map((weight, i) => {
@@ -1227,6 +1231,11 @@ function App() {
             )}
             {tab === "Conquistas" && (
               <Achievements
+                foodRecords={foodRecords}
+                workoutRecords={workoutRecords}
+                weights={weightRecords}
+                challenges={challenges}
+                onChallenges={setChallenges}
                 streak={streak}
                 foods={foods.length}
                 workoutCalories={burned}
@@ -1266,6 +1275,7 @@ function App() {
                   setSkippedMeasures([]);
                   setStreak(0);
                   setAchievementHistory({ days: 0, meals: 0, burned: 0 });
+                  setChallenges([]);
                   setFoods([]);
                   setWorkouts([]);
                   setRate(0.55);

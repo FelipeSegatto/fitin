@@ -32,7 +32,7 @@ O login abre com registros fictícios: 7 dias de sequência, meta de 2.000 kcal,
 
 ## Conquistas
 
-Página com coleção de seis medalhas, assets de halteres extraídos do SVG, filtros e detalhes, desafio de 30 dias e semana. XP deriva das medalhas conquistadas e não duplica ao abrir o card. Login tem histórico fictício separado (17 dias anteriores de registro, 14 refeições e 6.250 kcal de atividades), somado aos registros do dia; cadastro começa zerado. A sequência de sete dias mantém-se igual à home. Foco total mede 30 dias de registro, não necessariamente consecutivos; o desafio foi rotulado de 30 dias para manter coerência sem confundir dias registrados com dias de calendário. Os níveis/recompensas são regras demonstrativas. Os cards de medalhas seguem as variações e cores do segundo SVG fornecido pelo autor; as telas anteriores preservam suas variações próximas e tratamentos próprios. Verificação: `npm run test:achievements`.
+Página com coleção de seis medalhas, assets de halteres extraídos do SVG, filtros e detalhes e resumo da semana. XP deriva das medalhas conquistadas e não duplica ao abrir o card. Login tem histórico fictício separado (17 dias anteriores de registro, 14 refeições e 6.250 kcal de atividades), somado aos registros do dia; cadastro começa zerado. A sequência de sete dias mantém-se igual à home. Foco total mede 30 dias de registro, não necessariamente consecutivos; a medalha conta dias registrados, sem confundir esse total com dias de calendário. Os níveis/recompensas são regras demonstrativas. Os cards de medalhas seguem as variações e cores do segundo SVG fornecido pelo autor; as telas anteriores preservam suas variações próximas e tratamentos próprios. Verificação: `npm run test:achievements`.
 
 As três novas personagens foram extraídas dos SVGs fornecidos para acompanhar o personagem azul na composição desktop. Os cards de atividades e refeições da home usam amarelo e pêssego com fundos suaves e texto escuro, mantendo as outras variações de cor.
 
@@ -49,3 +49,12 @@ Verificação dos fluxos: `npm run test:diary-progress`. Dados continuam apenas 
 Perfil baseado no SVG fornecido, com cores ajustadas à paleta existente. Avatar por iniciais, nível/medalhas compartilhando o cálculo de Conquistas, jornada baseada nos pesos do Progresso e resumo mensal dos registros disponíveis no Diário. Atalhos abrem o registro de peso, a meta de peso, o ajuste de ritmo e a coleção. Nome/e-mail podem ser alterados somente na sessão; o FAQ explica os limites da demo e não inventa canais externos de suporte. Logout limpa a demonstração.
 
 Verificação: `npm run test:profile`.
+
+
+## Desafios semanais
+
+Conquistas permite escolher quatro desafios opcionais: refeições em três dias, duas atividades, um registro de peso e cinco dias com refeições ou atividades. “Meus desafios” mostra somente os escolhidos, permite sair e exibe progresso, prazo até domingo e um selo ao concluir. Os quatro convites aparecem em grade no desktop e em carrossel no mobile.
+
+A semana vai de segunda a domingo, pelo calendário local. Contam registros da semana até hoje, inclusive os anteriores à participação. Refeições no mesmo dia contam uma vez; datas futuras e histórico agregado fictício não contam. Alterar ou excluir registros recalcula o progresso. O registro de peso não exige ganho ou perda. Selos semanais não somam XP nem alteram as medalhas e o nível do Perfil.
+
+As escolhas sobrevivem à navegação entre abas, mas são limpas ao sair, recarregar ou iniciar outra conta. Na virada da semana, a seleção anterior deixa de aparecer. Verificação: `npm run test:achievements`, incluindo participação, saída, progresso compartilhado, limites da semana e limpeza da sessão.

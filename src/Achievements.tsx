@@ -1,6 +1,9 @@
 import { useEffect, useRef, useState } from "react";
 import { Check, Lock, X } from "lucide-react";
 import "./achievements.css";
+import { Challenges } from "./Challenges";
+import type { ChallengeSelection } from "./challenges";
+import type { DailyRecord } from "./records";
 export type AchievementHistory = {
   days: number;
   meals: number;
@@ -116,22 +119,31 @@ export function Achievements({
   foods,
   workoutCalories,
   history,
+  foodRecords,
+  workoutRecords,
+  weights,
+  challenges,
+  onChallenges,
 }: {
   streak: number;
   foods: number;
   workoutCalories: number;
   history: AchievementHistory;
+  foodRecords: DailyRecord[];
+  workoutRecords: DailyRecord[];
+  weights: { date: string; weight: number }[];
+  challenges: ChallengeSelection[];
+  onChallenges: (value: ChallengeSelection[]) => void;
 }) {
   const [selected, setSelected] = useState<Medal | null>(null),
     [filter, setFilter] = useState("Todas");
   const { medals, earned, xp, pending, levelIndex, level, levelProgress } =
     achievementSummary(streak, foods, workoutCalories, history);
-  const mission = medals.find((m) => m.id === "focus")!,
-    closest = pending.reduce<Medal | null>(
-      (best, m) =>
-        !best || m.current / m.target > best.current / best.target ? m : best,
-      null,
-    );
+  const closest = pending.reduce<Medal | null>(
+    (best, m) =>
+      !best || m.current / m.target > best.current / best.target ? m : best,
+    null,
+  );
   const now = new Date(),
     monday = new Date(now);
   monday.setHours(0, 0, 0, 0);
@@ -203,28 +215,13 @@ export function Achievements({
           <span>Em progresso</span>
         </div>
       </div>
-      <div className="mission-card">
-        <div>
-          <span>DESAFIO DE 30 DIAS</span>
-          <strong>+{mission.xp} XP</strong>
-        </div>
-        <h2>Foco total</h2>
-        <p>Registre sua jornada em 30 dias. Cada dia conta uma vez.</p>
-        <div className="ach-progress">
-          <i
-            style={{
-              width:
-                Math.min(100, (mission.current / mission.target) * 100) + "%",
-            }}
-          />
-        </div>
-        <div>
-          <strong>
-            {Math.min(mission.target, mission.current)} de 30 dias
-          </strong>
-          <span>{Math.max(0, 30 - mission.current)} dias para concluir</span>
-        </div>
-      </div>
+      <Challenges
+        foods={foodRecords}
+        workouts={workoutRecords}
+        weights={weights}
+        selection={challenges}
+        onSelection={onChallenges}
+      />
       <div className="week-card">
         <div className="section-title">
           <h2>Sua semana</h2>

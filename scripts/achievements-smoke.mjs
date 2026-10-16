@@ -22,6 +22,105 @@ try {
     "450",
   );
   assert.equal(await p.locator(".medal-card").count(), 6);
+  assert.equal(await p.locator(".challenge-option").count(), 4);
+  await p
+    .getByRole("button", { name: "Explorar desafios", exact: true })
+    .click();
+  assert.equal(
+    await p
+      .locator("#weekly-challenges-title")
+      .evaluate((e) => e === document.activeElement),
+    true,
+  );
+  for (const name of [
+    "Mesa em dia",
+    "Movimento na rotina",
+    "Um momento para acompanhar",
+    "Pequenos passos",
+  ]) {
+    await p
+      .getByRole("button", { name: `Participar de ${name}`, exact: true })
+      .click();
+  }
+  assert.equal(await p.locator(".active-challenge").count(), 4);
+  assert.equal(
+    await p
+      .getByRole("progressbar", {
+        name: "Progresso: Movimento na rotina",
+        exact: true,
+      })
+      .getAttribute("aria-valuenow"),
+    "1",
+  );
+  assert.equal(
+    await p
+      .getByRole("progressbar", { name: "Progresso: Mesa em dia", exact: true })
+      .getAttribute("aria-valuenow"),
+    "1",
+  );
+  assert.equal(
+    await p
+      .getByRole("progressbar", {
+        name: "Progresso: Pequenos passos",
+        exact: true,
+      })
+      .getAttribute("aria-valuenow"),
+    "1",
+  );
+  await p
+    .getByRole("button", { name: "Sair do desafio Mesa em dia", exact: true })
+    .click();
+  assert.equal(await p.locator(".active-challenge").count(), 3);
+  await p
+    .getByRole("button", { name: "Participar de Mesa em dia", exact: true })
+    .click();
+  assert.equal(await p.locator(".active-challenge").count(), 4);
+  // Validate calendar boundaries and deduplication against the actual browser module.
+  await p.evaluate(async () => {
+    const { weeklyProgress, challengeWeek } = await import(
+      "/src/challenges.ts"
+    );
+    const now = new Date(2026, 9, 14, 12);
+    const record = (date, id) => ({
+      date,
+      id,
+      name: "Teste",
+      time: "12:00",
+      kcal: 100,
+    });
+    const food = [
+      record("2026-10-11", "past"),
+      record("2026-10-12", "a"),
+      record("2026-10-12", "b"),
+      record("2026-10-14", "c"),
+      record("2026-10-15", "future"),
+    ];
+    const workouts = [
+      record("2026-10-13", "d"),
+      record("2026-10-14", "e"),
+      record("2026-10-19", "next"),
+    ];
+    const actual = weeklyProgress(
+      food,
+      workouts,
+      [{ date: "2026-10-14", weight: 70 }],
+      now,
+    );
+    if (
+      JSON.stringify(actual) !==
+      JSON.stringify({ meals: 2, activities: 2, weight: 1, days: 3 })
+    )
+      throw new Error("Incorrect weekly progress: " + JSON.stringify(actual));
+    if (challengeWeek(new Date(2026, 9, 18, 12)).start !== "2026-10-12")
+      throw new Error("Sunday week boundary");
+    if (challengeWeek(new Date(2026, 9, 19, 12)).start !== "2026-10-19")
+      throw new Error("Monday week boundary");
+    if (weeklyProgress(food, workouts, [], new Date(2026, 9, 26)).days !== 0)
+      throw new Error("Old week leaked");
+    if (weeklyProgress([], [], [], now).weight !== 0)
+      throw new Error("Empty records counted");
+  });
+
   assert.equal(await p.locator(".week-days .today.done").count(), 1);
   for (const img of await p.locator(".medal-art img").all()) {
     await img.scrollIntoViewIfNeeded();
@@ -55,6 +154,21 @@ try {
   await p.getByLabel("Energia (kcal)").fill("3600");
   await p.getByRole("button", { name: "Adicionar registro" }).click();
   await p.getByRole("button", { name: "Conquistas", exact: true }).click();
+  assert.equal(await p.locator(".active-challenge").count(), 4);
+  const activityChallenge = p.getByRole("article", {
+    name: "Movimento na rotina",
+    exact: true,
+  });
+  assert((await activityChallenge.innerText()).includes("Selo conquistado"));
+  assert.equal(
+    await p
+      .getByRole("progressbar", {
+        name: "Progresso: Movimento na rotina",
+        exact: true,
+      })
+      .getAttribute("aria-valuenow"),
+    "2",
+  );
   assert.equal(
     await p.locator(".ach-stats>div").nth(0).locator("strong").innerText(),
     "5/6",
@@ -78,8 +192,16 @@ try {
     await p.evaluate(() => document.documentElement.scrollWidth > innerWidth),
     false,
   );
+  await p.getByRole("button", { name: "Perfil", exact: true }).click();
+  await p.getByRole("button", { name: "Sair e limpar demonstração" }).click();
+  await p.getByRole("button", { name: "Entrar", exact: true }).click();
+  await p.getByRole("button", { name: "Preencher dados" }).click();
+  await p.getByRole("button", { name: "Entrar", exact: true }).click();
+  await p.getByRole("heading", { name: "Streak de 7 dias!" }).waitFor();
+  await p.getByRole("button", { name: "Conquistas", exact: true }).click();
+  assert.equal(await p.locator(".active-challenge").count(), 0);
   console.log(
-    "PASS: medalhas vetoriais, XP coerente, filtros, detalhes, semana, desbloqueio dinâmico sem XP duplicado e layouts mobile/desktop.",
+    "PASS: desafios semanais, participação/saída, progresso compartilhado, limites de datas, limpeza da sessão, medalhas, XP sem duplicação e layouts mobile/desktop.",
   );
 } finally {
   await b.close();
