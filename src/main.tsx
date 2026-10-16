@@ -342,11 +342,14 @@ function App() {
   const authHero = (
     <div className="auth-hero">
       <Mascot name={screen === "login" ? "login-buddy" : "welcome-buddy"} />
-      <div className="cream-wave" />
-      {screen === "login" && (
-        <svg className="resting-arms" viewBox="0 0 540 80" fill="none" aria-hidden="true">
-          <path d="M198 8C177 0 155 9 153 25C152 36 166 40 178 31L190 21M342 8C363 0 385 9 387 25C388 36 374 40 362 31L350 21" />
+      {screen === "login" ? (
+        <svg className="login-ledge" viewBox="0 0 540 100" preserveAspectRatio="none" aria-hidden="true">
+          <path className="login-ledge-surface" d="M-10 66Q270 -16 550 66V105H-10Z" />
+          <path className="login-resting-arm" d="M198 25C183 15 161 17 154 30C152 34 158 35 164 33L186 29" />
+          <path className="login-resting-arm" d="M342 25C357 15 379 17 386 30C388 34 382 35 376 33L354 29" />
         </svg>
+      ) : (
+        <div className="cream-wave" />
       )}
     </div>
   );

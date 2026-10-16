@@ -1252,18 +1252,27 @@ button:hover {
 .home-body > .card p .record-name {
   float: none;
 }
-.resting-arms {
+.login-ledge {
   position: absolute;
   width: 100%;
-  height: auto;
+  height: 100px;
   left: 0;
-  top: calc(100% - 83px);
-  z-index: 2;
+  bottom: 0;
   pointer-events: none;
+}
+.login-ledge-surface {
+  fill: var(--cream);
+  stroke: #30274b;
+  stroke-width: 3;
+  vector-effect: non-scaling-stroke;
+}
+.login-resting-arm {
+  fill: var(--cream);
   stroke: #111;
   stroke-width: 5;
   stroke-linecap: round;
   stroke-linejoin: round;
+  vector-effect: non-scaling-stroke;
 }
 
 @media (min-width: 1000px) {
