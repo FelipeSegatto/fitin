@@ -348,8 +348,9 @@ function App() {
       {screen === "login" ? (
         <svg className="login-ledge" viewBox="0 0 540 100" preserveAspectRatio="none" aria-hidden="true">
           <path className="login-ledge-surface" d="M-10 66Q270 -16 550 66V105H-10Z" />
-          <path className="login-resting-arm" d="M198 25C183 15 161 17 154 30C152 34 158 35 164 33L186 29" />
-          <path className="login-resting-arm" d="M342 25C357 15 379 17 386 30C388 34 382 35 376 33L354 29" />
+          {/* The lower contours follow the ledge curve exactly, keeping both arms in contact. */}
+          <path className="login-resting-arm" d="M202 27.419C185 8 158 9 150 32.531Q176 29.267 202 27.419Z" />
+          <path className="login-resting-arm" d="M338 27.419C355 8 382 9 390 32.531Q364 29.267 338 27.419Z" />
         </svg>
       ) : (
         <div className="cream-wave" />
