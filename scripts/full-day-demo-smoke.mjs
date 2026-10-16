@@ -39,6 +39,15 @@ try {
     ).size,
     6,
   );
+  const recordIcons = await page
+    .locator(".today-record-icon svg")
+    .evaluateAll((icons) => icons.map((icon) => icon.outerHTML));
+  assert.equal(recordIcons.length, 9);
+  assert.equal(
+    new Set(recordIcons).size,
+    9,
+    "Full-day records should have distinct, relevant icons",
+  );
   for (const width of [320, 390, 760, 1000, 1440]) {
     await page.setViewportSize({ width, height: 1000 });
     assert.equal(

@@ -1675,34 +1675,34 @@ button:hover {
   font-weight: 500;
 }
 .record-tone-purple {
-  --record-bg: #e8dff8;
-  --record-border: #b39ddb;
-  --record-accent: #7751aa;
+  --record-bg: #b39ddb;
+  --record-border: #a189ca;
+  --record-accent: #4d356b;
 }
 .record-tone-mint {
-  --record-bg: #dff3ed;
-  --record-border: #79cdbd;
-  --record-accent: #2c8575;
+  --record-bg: #5fc4b0;
+  --record-border: #50b4a0;
+  --record-accent: #184b42;
 }
 .record-tone-yellow {
-  --record-bg: #fff1d6;
-  --record-border: #f3c771;
-  --record-accent: #9e712b;
+  --record-bg: #ffca72;
+  --record-border: #efb85d;
+  --record-accent: #684512;
 }
 .record-tone-peach {
-  --record-bg: #fde7d7;
-  --record-border: #edb384;
-  --record-accent: #b36e35;
+  --record-bg: #f79b40;
+  --record-border: #e98d34;
+  --record-accent: #653710;
 }
 .record-tone-blue {
-  --record-bg: #e0ebfa;
-  --record-border: #9dbde7;
-  --record-accent: #4479ae;
+  --record-bg: #77aff2;
+  --record-border: #669ee1;
+  --record-accent: #243e64;
 }
 .record-tone-pink {
-  --record-bg: #fce5ee;
-  --record-border: #edacc7;
-  --record-accent: #ad5881;
+  --record-bg: #f389b1;
+  --record-border: #e578a3;
+  --record-accent: #63273f;
 }
 .today-record {
   background: var(--record-bg);
@@ -1785,4 +1785,19 @@ button:hover {
   .today-record-group > h4 {
     font-size: 12px;
   }
+}
+
+.today-record-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  flex: none;
+  border-radius: 11px;
+  background: #ffffff4d;
+  color: var(--record-accent);
+}
+.today-record-icon svg {
+  display: block;
 }

@@ -36,6 +36,7 @@ import {
 import { Achievements, type AchievementHistory } from "./Achievements";
 import type { ChallengeSelection } from "./weeklyChallenges";
 import { fullDayRecords } from "./demoAccounts";
+import { RecordIcon } from "./RecordIcon";
 type Screen =
   | "welcome"
   | "login"
@@ -1231,7 +1232,9 @@ function App() {
                         key={entry.id}
                       >
                         <div className="today-record-meta">
-                          <Dumbbell size={16} aria-hidden="true" />
+                          <span className="today-record-icon">
+                            <RecordIcon record={entry} kind="workout" />
+                          </span>
                           <span>Atividade · {entry.time}</span>
                           {entry.minutes && <span>{entry.minutes} min</span>}
                         </div>
@@ -1262,7 +1265,9 @@ function App() {
                         key={entry.id}
                       >
                         <div className="today-record-meta">
-                          <Utensils size={16} aria-hidden="true" />
+                          <span className="today-record-icon">
+                            <RecordIcon record={entry} kind="food" />
+                          </span>
                           <span>
                             {entry.meal || "Refeição"} · {entry.time}
                           </span>

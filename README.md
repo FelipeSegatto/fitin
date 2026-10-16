@@ -67,8 +67,10 @@ As definições de medalhas e os critérios ficam em `src/medalCollection.ts`. C
 
 ## Segunda conta de demonstração: dia completo
 
-No login, “Preencher dia completo” seleciona `completo@fitin.app` / `fitin123`. Depois, clique em “Entrar”. Marina tem seis refeições (café, lanche da manhã, almoço, lanche da tarde, jantar e ceia) e três atividades do dia. A home exibe nove cards individuais com horários e cores suaves derivadas da paleta do FitIn.
+No login, “Preencher dia completo” seleciona `completo@fitin.app` / `fitin123`. Depois, clique em “Entrar”. Marina tem seis refeições (café, lanche da manhã, almoço, lanche da tarde, jantar e ceia) e três atividades do dia. A home exibe nove cards individuais com horários e cores preenchidas da paleta do FitIn, seguindo o roxo e o verde da home original.
 
 O cenário fictício tem meta de 2.000 kcal, 2.400 kcal registradas em refeições e 400 kcal em atividades, resultando em saldo de 0 kcal. Os macros somam 140 g de proteína, 280 g de carboidratos e 80 g de gordura. Valores são apenas dados de interface, sem recomendação alimentar ou de exercícios. Home, Diário, Progresso, Conquistas e Perfil compartilham os mesmos registros da sessão. Sair limpa os dados; um novo login restaura o cenário original. João mantém os dois alimentos, uma atividade e saldo de 1.224 kcal anteriores.
 
 Verificação: `npm run test:full-day-demo` cobre os registros, as cores, os totais, alterações pelo Diário, isolamento entre contas e larguras mobile/desktop.
+
+Os cards da home usam preenchimentos mais fortes, seguindo o roxo e o verde originais. Os ícones Lucide são escolhidos pelo tipo e nome do registro, com opções para café, frutas, sanduíches, peixe, ceia, caminhada, musculação, mobilidade, bicicleta, natação e outras atividades. No demo completo, os nove registros usam nove ícones diferentes.
