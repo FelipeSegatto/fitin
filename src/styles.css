@@ -855,7 +855,7 @@ fieldset {
 .home-body > .card p {
   margin-top: 10px;
 }
-.home-body > .card p span {
+.home-body > .card p > span:not(.record-name) {
   float: right;
 }
 .home-body h1 {
@@ -1234,4 +1234,319 @@ button:hover {
 .home-body > .card.today-workouts p,
 .home-body > .card.today-meals p {
   color: #51405a;
+}
+
+/* Desktop dashboard follows the supplied FitIn desktop reference. */
+@font-face {
+  font-family: Figtree;
+  src: url('/assets/figtree-latin.woff2') format('woff2');
+  font-style: normal;
+  font-weight: 300 900;
+  font-display: swap;
+}
+.desktop-home-title,
+.nav-brand,
+.desktop-duration {
+  display: none;
+}
+.home-body > .card p .record-name {
+  float: none;
+}
+.resting-arms {
+  position: absolute;
+  width: 100%;
+  height: auto;
+  left: 0;
+  top: calc(100% - 83px);
+  z-index: 2;
+  pointer-events: none;
+  stroke: #111;
+  stroke-width: 5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+@media (min-width: 1000px) {
+  .app.dashboard-mode {
+    display: block;
+    max-width: 1440px;
+    padding: 0;
+  }
+  .dashboard-mode > .desktop-intro {
+    display: none;
+  }
+  .dashboard-mode > .surface.home {
+    min-height: 100dvh;
+    border-radius: 20px;
+    overflow: hidden;
+  }
+  .dashboard-mode .home-body {
+    margin-left: 260px;
+    padding: 40px 56px;
+    min-height: 100dvh;
+  }
+  .dashboard-mode .bottom-nav {
+    position: absolute;
+    inset: 0 auto 0 0;
+    width: 260px;
+    margin: 0;
+    border-radius: 0;
+    padding: 40px 24px;
+    border-right: 1px solid #f2e6da;
+    box-shadow: none;
+    flex-direction: column;
+    justify-content: flex-start;
+    gap: 6px;
+    font-family: Figtree, sans-serif;
+  }
+  .bottom-nav .nav-brand {
+    display: block;
+    padding: 0 12px;
+    margin-bottom: 42px;
+  }
+  .bottom-nav .nav-brand .logo {
+    width: 102px;
+  }
+  .dashboard-mode .bottom-nav button {
+    flex-direction: row;
+    gap: 14px;
+    padding: 14px 16px;
+    min-height: 64px;
+    border-radius: 16px;
+    color: #6b6177;
+    font-size: 17px;
+    font-weight: 500;
+    text-align: left;
+  }
+  .dashboard-mode .bottom-nav button svg {
+    box-sizing: content-box;
+    padding: 7px;
+    width: 22px;
+    height: 22px;
+    flex-shrink: 0;
+  }
+  .dashboard-mode .bottom-nav button:hover {
+    background: #fff4ec;
+  }
+  .dashboard-mode .bottom-nav button.active {
+    background: #ffe7e1;
+    color: #c2410c;
+    font-weight: 700;
+  }
+  .dashboard-mode .bottom-nav button.active svg {
+    background: #ff8a75;
+    border-radius: 50%;
+    color: #7c2d12;
+  }
+  .home-body.home-tab {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 28px;
+    align-content: start;
+    font-family: Figtree, sans-serif;
+    color: #2b2540;
+  }
+  .home-tab .home-overview {
+    grid-column: 1 / -1;
+    display: grid;
+    grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr);
+    gap: 28px;
+  }
+  .home-tab > header {
+    grid-column: 1 / -1;
+    margin: 0;
+    min-height: 52px;
+  }
+  .home-tab > header > .logo {
+    display: none;
+  }
+  .home-tab .desktop-home-title {
+    display: block;
+    font-size: 30px;
+    margin: 0;
+    line-height: 1.2;
+  }
+  .home-tab > header .icon {
+    width: 52px;
+    height: 52px;
+    color: #2b2540;
+    box-shadow: 0 6px 18px #783c141a;
+  }
+  .home-tab .home-banner {
+    position: relative;
+    min-height: 380px;
+    padding: 40px 44px;
+    border-radius: 28px;
+    overflow: hidden;
+    box-shadow: 0 14px 34px #ff8c4840;
+  }
+  .home-tab .home-banner.started {
+    background: linear-gradient(110deg, #ffd27e 0%, #ffae5c 55%, #ff8c48 100%);
+  }
+  .home-tab .home-banner > div {
+    max-width: 56%;
+    position: relative;
+    z-index: 1;
+  }
+  .home-tab .home-banner h2 {
+    font-size: 40px;
+    line-height: 1.08;
+    font-weight: 800;
+    letter-spacing: -.01em;
+  }
+  .home-tab .home-banner p {
+    font-size: 20px;
+    line-height: 1.45;
+    color: #7a4b1f;
+    margin-top: 14px;
+    max-width: none;
+  }
+  .home-tab .home-banner .mascot {
+    position: absolute;
+    right: 8px;
+    bottom: -4px;
+    width: 230px;
+    height: 230px;
+  }
+  .home-tab .daily {
+    margin: 0;
+    padding: 32px 36px;
+    border-radius: 28px;
+    box-shadow: 0 10px 30px #783c140f;
+  }
+  .home-body.home-tab .card-title {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 6px;
+  }
+  .home-body.home-tab .card-title h3 {
+    font-size: 26px;
+    white-space: nowrap;
+    font-weight: 700;
+  }
+  .home-body.home-tab .card-title small {
+    font-size: 18px;
+  }
+  .home-tab .daily-content {
+    margin-top: 24px;
+    justify-content: flex-start;
+    gap: 28px;
+  }
+  .home-tab .ring {
+    width: 180px;
+    height: 180px;
+    padding: 24px;
+  }
+  .home-tab .ring strong {
+    font-size: 40px;
+    line-height: 1;
+    font-weight: 800;
+  }
+  .home-tab .ring small {
+    font-size: 15px;
+    color: #6b6177;
+    margin-top: 6px;
+  }
+  .home-body.home-tab .daily-values {
+    margin: 0;
+    gap: 18px;
+  }
+  .home-body.home-tab .daily-values p {
+    gap: 14px;
+    font-size: 15px;
+    color: #6b6177;
+    white-space: nowrap;
+  }
+  .home-body.home-tab .daily-values strong {
+    font-size: 19px;
+    color: #2b2540;
+    font-weight: 700;
+  }
+  .home-body.home-tab .daily-values svg {
+    width: 26px;
+    height: 26px;
+    flex-shrink: 0;
+  }
+  .home-tab .home-actions {
+    grid-column: 1 / -1;
+    margin: 0;
+    gap: 28px;
+  }
+  .home-tab .home-actions button {
+    height: 76px;
+    border-radius: 38px;
+    background: white;
+    font-size: 21px;
+    font-weight: 700;
+    gap: 16px;
+    box-shadow: 0 8px 24px #783c140f;
+  }
+  .home-tab .home-actions svg {
+    width: 26px;
+    height: 26px;
+    color: #ea642e;
+  }
+  .home-tab > h3 {
+    grid-column: 1 / -1;
+    font-size: 28px;
+    font-weight: 700;
+    margin-bottom: -12px;
+  }
+  .home-tab > .card.today-workouts,
+  .home-tab > .card.today-meals {
+    margin: 0;
+    border: 0;
+    box-shadow: none;
+    border-radius: 24px;
+    padding: 28px 32px;
+    min-width: 0;
+  }
+  .home-tab > .card.today-workouts { background: #b39ddb; }
+  .home-tab > .card.today-meals { background: #5fc4b0; }
+  .home-tab > .card.today-workouts { grid-column: 1; }
+  .home-tab > .card.today-meals { grid-column: 2; }
+  .home-tab > .card > strong { font-size: 18px; }
+  .home-tab > .card:has(.record-name) > strong { display: none; }
+  .home-tab > .card:is(.today-workouts, .today-meals) p {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 16px;
+    margin-top: 0;
+    font-size: 21px;
+    color: #2b2540;
+  }
+  .home-tab > .card:is(.today-workouts, .today-meals) p + p { margin-top: 16px; }
+  .home-tab > .card .record-name {
+    font-size: 24px;
+    font-weight: 700;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    min-width: 0;
+  }
+  .home-tab > .card:is(.today-workouts, .today-meals) p > span:last-child { flex-shrink: 0; }
+  .home-tab .desktop-duration { display: inline; float: none; }
+  .home-tab > .demo-note { grid-column: 1 / -1; margin: 0; }
+}
+@media (min-width: 1000px) and (max-width: 1279px) {
+  .dashboard-mode .home-body { margin-left: 220px; padding: 32px; }
+  .dashboard-mode .bottom-nav { width: 220px; padding: 32px 16px; }
+  .home-body.home-tab { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 20px; }
+  .home-tab .home-banner { padding: 28px; }
+  .home-tab .home-banner h2 { font-size: 32px; }
+  .home-tab .home-banner p { font-size: 17px; }
+  .home-tab .home-banner .mascot { width: 170px; height: 170px; }
+  .home-tab .home-overview { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 20px; }
+  .home-tab .daily { padding: 28px 20px; }
+  .home-tab .daily-content { flex-wrap: wrap; gap: 18px; }
+  .home-tab .ring { width: 140px; height: 140px; padding: 18px; }
+  .home-tab .ring strong { font-size: 30px; }
+  .home-tab .ring small { font-size: 11px; }
+  .home-body.home-tab .daily-values p { font-size: 13px; gap: 8px; }
+  .home-body.home-tab .daily-values strong { font-size: 16px; }
+  .home-tab .home-actions button { font-size: 18px; }
+  .home-tab > .card.today-workouts, .home-tab > .card.today-meals { padding: 24px; }
+  .home-tab > .card .record-name { font-size: 19px; }
+  .home-tab > .card:is(.today-workouts, .today-meals) p { font-size: 16px; }
 }

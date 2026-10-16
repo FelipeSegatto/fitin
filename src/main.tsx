@@ -341,8 +341,13 @@ function App() {
   };
   const authHero = (
     <div className="auth-hero">
-      <Mascot name="welcome-buddy" />
+      <Mascot name={screen === "login" ? "login-buddy" : "welcome-buddy"} />
       <div className="cream-wave" />
+      {screen === "login" && (
+        <svg className="resting-arms" viewBox="0 0 540 80" fill="none" aria-hidden="true">
+          <path d="M198 8C177 0 155 9 153 25C152 36 166 40 178 31L190 21M342 8C363 0 385 9 387 25C388 36 374 40 362 31L350 21" />
+        </svg>
+      )}
     </div>
   );
   const loginSubmit = (e: React.FormEvent) => {
@@ -1035,10 +1040,11 @@ function App() {
           </div>
         )}
         {screen === "home" && (
-          <div className={"home-body " + (streak > 0 ? "demo-filled" : "")}>
+          <div className={"home-body " + (tab === "Home" ? "home-tab " : "") + (streak > 0 ? "demo-filled" : "")}>
             {tab !== "Diário" && tab !== "Progresso" && tab !== "Perfil" && (
               <header>
                 <Logo />
+                {tab === "Home" && <h1 className="desktop-home-title">Home</h1>}
                 <button
                   className="icon"
                   aria-label="Notificações"
@@ -1050,73 +1056,75 @@ function App() {
             )}
             {tab === "Home" && (
               <>
-                <div
-                  className={"home-banner " + (foods.length ? "started" : "")}
-                >
-                  <div>
-                    <h2>
-                      {streak > 1
-                        ? `Streak de ${streak} dias!`
-                        : foods.length
-                          ? "Você começou!"
-                          : "Vamos começar!"}
-                    </h2>
-                    <p>
-                      {streak > 1
-                        ? "Muito bem! Continue registrando e mantenha o progresso em dia."
-                        : foods.length
-                          ? "Cada registro é um passo na sua jornada."
-                          : "Registre sua primeira refeição para iniciar sua sequência de dias."}
-                    </p>
-                  </div>
-                  <Mascot name={foods.length ? "streak-buddy" : "buddy"} />
-                </div>
-                <div className="card daily">
-                  <div className="card-title">
-                    <h3>Resumo Diário</h3>
-                    {foods.length ? (
-                      <small className="daily-equation">
-                        {target} − <span>{consumed}</span> + <em>{burned}</em> ={" "}
-                        <strong>{remaining} kcal</strong>
-                      </small>
-                    ) : (
-                      <small>
-                        meta do dia = {target.toLocaleString("pt-BR")} kcal
-                      </small>
-                    )}
-                  </div>
-                  <div className="daily-content">
-                    <div
-                      className="ring"
-                      style={{
-                        background: `conic-gradient(#ff8774 ${Math.min(100, Math.max(0, (consumed / target) * 100))}%,#efe3d4 0)`,
-                      }}
-                    >
-                      <div>
-                        <strong>{remaining.toLocaleString("pt-BR")}</strong>
-                        <small>kcal restantes</small>
-                      </div>
+                <div className="home-overview">
+                  <div
+                    className={"home-banner " + (foods.length ? "started" : "")}
+                  >
+                    <div>
+                      <h2>
+                        {streak > 1
+                          ? `Streak de ${streak} dias!`
+                          : foods.length
+                            ? "Você começou!"
+                            : "Vamos começar!"}
+                      </h2>
+                      <p>
+                        {streak > 1
+                          ? "Muito bem! Continue registrando e mantenha o progresso em dia."
+                          : foods.length
+                            ? "Cada registro é um passo na sua jornada."
+                            : "Registre sua primeira refeição para iniciar sua sequência de dias."}
+                      </p>
                     </div>
-                    <div className="daily-values">
-                      <p>
-                        <Flame />
-                        <span>
-                          Meta diária
-                          <strong>{target.toLocaleString("pt-BR")} kcal</strong>
-                        </span>
-                      </p>
-                      <p>
-                        <Utensils />
-                        <span>
-                          Consumidas<strong>{consumed} kcal</strong>
-                        </span>
-                      </p>
-                      <p>
-                        <Dumbbell />
-                        <span>
-                          Exercícios<strong>{burned} kcal</strong>
-                        </span>
-                      </p>
+                    <Mascot name={foods.length ? "streak-buddy" : "buddy"} />
+                  </div>
+                  <div className="card daily">
+                    <div className="card-title">
+                      <h3>Resumo Diário</h3>
+                      {foods.length ? (
+                        <small className="daily-equation">
+                          {target} − <span>{consumed}</span> + <em>{burned}</em> ={" "}
+                          <strong>{remaining} kcal</strong>
+                        </small>
+                      ) : (
+                        <small>
+                          meta do dia = {target.toLocaleString("pt-BR")} kcal
+                        </small>
+                      )}
+                    </div>
+                    <div className="daily-content">
+                      <div
+                        className="ring"
+                        style={{
+                          background: `conic-gradient(#ff8774 ${Math.min(100, Math.max(0, (consumed / target) * 100))}%,#efe3d4 0)`,
+                        }}
+                      >
+                        <div>
+                          <strong>{remaining.toLocaleString("pt-BR")}</strong>
+                          <small>kcal restantes</small>
+                        </div>
+                      </div>
+                      <div className="daily-values">
+                        <p>
+                          <Flame />
+                          <span>
+                            Meta diária
+                            <strong>{target.toLocaleString("pt-BR")} kcal</strong>
+                          </span>
+                        </p>
+                        <p>
+                          <Utensils />
+                          <span>
+                            Consumidas<strong>{consumed} kcal</strong>
+                          </span>
+                        </p>
+                        <p>
+                          <Dumbbell />
+                          <span>
+                            Exercícios<strong>{burned} kcal</strong>
+                          </span>
+                        </p>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -1144,7 +1152,13 @@ function App() {
                   {workouts.length ? (
                     workouts.map((i, n) => (
                       <p key={n}>
-                        {i.name} <span>{i.kcal} kcal</span>
+                        <span className="record-name">{i.name}</span>
+                        <span>
+                          {i.minutes && (
+                            <span className="desktop-duration">{i.minutes} min · </span>
+                          )}
+                          {i.kcal} kcal
+                        </span>
                       </p>
                     ))
                   ) : (
@@ -1158,7 +1172,7 @@ function App() {
                   {foods.length ? (
                     foods.map((i, n) => (
                       <p key={n}>
-                        {i.name} <span>{i.kcal} kcal</span>
+                        <span className="record-name">{i.name}</span> <span>{i.kcal} kcal</span>
                       </p>
                     ))
                   ) : (
@@ -1262,6 +1276,7 @@ function App() {
               Dados desta sessão · Sem gravação de conta ou senha
             </p>
             <nav className="bottom-nav" aria-label="Navegação principal">
+              <div className="nav-brand"><Logo /></div>
               {[
                 [Home, "Home"],
                 [BookOpen, "Diário"],

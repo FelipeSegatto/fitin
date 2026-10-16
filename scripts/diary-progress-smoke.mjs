@@ -124,7 +124,7 @@ try {
       .locator(".daily-values strong")
       .first()
       .evaluate((e) => getComputedStyle(e).fontSize),
-    "14px",
+    "19px",
   );
   assert.equal(
     await p.evaluate(() => document.documentElement.scrollWidth > innerWidth),
