@@ -95,7 +95,7 @@ try {
   await p.getByRole("button", { name: "Conquistas", exact: true }).click();
   assert.equal(
     await p.locator(".ach-stats>div").nth(0).locator("strong").innerText(),
-    "0/6",
+    "0/36",
   );
   assert.equal(
     await p.locator(".ach-stats>div").nth(1).locator("strong").innerText(),
@@ -111,11 +111,11 @@ try {
   await p.getByRole("button", { name: "Conquistas", exact: true }).click();
   assert.equal(
     await p.locator(".ach-stats>div").nth(0).locator("strong").innerText(),
-    "1/6",
+    "3/36",
   );
   assert.equal(
     await p.locator(".ach-stats>div").nth(1).locator("strong").innerText(),
-    "50",
+    "75",
   );
   console.log(
     "PASS: idade editável e sincronizada, validação, medidas adiáveis individualmente/em conjunto, navegação preserva escolhas e IMC ausente sem medidas.",

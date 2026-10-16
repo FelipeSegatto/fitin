@@ -4,121 +4,14 @@ import "./achievements.css";
 import { Challenges } from "./Challenges";
 import type { ChallengeSelection } from "./weeklyChallenges";
 import type { DailyRecord } from "./records";
-export type AchievementHistory = {
-  days: number;
-  meals: number;
-  burned: number;
-};
-type Medal = {
-  id: string;
-  name: string;
-  description: string;
-  xp: number;
-  current: number;
-  target: number;
-  unit: string;
-  metal: string;
-  color: string;
-};
-export function medalAsset(metal: string, earned = true) {
-  if (metal === "pink") return "/assets/medal-pink.png";
-  return `/assets/medal-${earned ? metal : "silver"}.svg`;
-}
-
-export function achievementSummary(
-  streak: number,
-  foods: number,
-  workoutCalories: number,
-  history: AchievementHistory,
-) {
-  const medals: Medal[] = [
-    {
-      id: "workout",
-      name: "Treino em dia",
-      description: "Registre sua primeira atividade física.",
-      xp: 100,
-      current: history.burned + workoutCalories > 0 ? 1 : 0,
-      target: 1,
-      unit: "atividade",
-      metal: "gold",
-      color: "coral",
-    },
-    {
-      id: "meals",
-      name: "Rotina alimentar",
-      description: "Registre 10 refeições ao longo da sua jornada.",
-      xp: 100,
-      current: history.meals + foods,
-      target: 10,
-      unit: "refeições",
-      metal: "gold",
-      color: "yellow",
-    },
-    {
-      id: "week",
-      name: "7 dias seguidos",
-      description: "Mantenha sua sequência de registros por sete dias.",
-      xp: 200,
-      current: streak,
-      target: 7,
-      unit: "dias",
-      metal: "bronze",
-      color: "purple",
-    },
-    {
-      id: "focus",
-      name: "Foco total",
-      description:
-        "Registre refeições ou atividades em 30 dias. Os dias não precisam ser consecutivos.",
-      xp: 250,
-      current: history.days + (foods || workoutCalories ? 1 : 0),
-      target: 30,
-      unit: "dias",
-      metal: "gold",
-      color: "blue",
-    },
-    {
-      id: "energy",
-      name: "Grande energia",
-      description:
-        "Some 10.000 kcal em atividades registradas. Os valores são demonstrativos.",
-      xp: 300,
-      current: history.burned + workoutCalories,
-      target: 10000,
-      unit: "kcal",
-      metal: "pink",
-      color: "pink",
-    },
-    {
-      id: "first",
-      name: "Primeiro passo",
-      description: "Registre sua primeira refeição no FitIn.",
-      xp: 50,
-      current: history.meals + foods > 0 ? 1 : 0,
-      target: 1,
-      unit: "refeição",
-      metal: "bronze",
-      color: "mint",
-    },
-  ];
-  // Each medal awards XP once, derived from the current demo records.
-  const earned = medals.filter((m) => m.current >= m.target),
-    xp = earned.reduce((s, m) => s + m.xp, 0),
-    pending = medals.filter((m) => m.current < m.target);
-  const levels = [
-    { min: 0, max: 100, name: "Iniciante" },
-    { min: 100, max: 300, name: "Explorador" },
-    { min: 300, max: 700, name: "Colecionador" },
-    { min: 700, max: 1200, name: "Atleta" },
-    { min: 1200, max: Infinity, name: "Lenda FitIn" },
-  ];
-  const levelIndex = levels.findIndex((l) => xp < l.max),
-    level = levels[levelIndex],
-    levelProgress = Number.isFinite(level.max)
-      ? (xp - level.min) / (level.max - level.min)
-      : 1;
-  return { medals, earned, xp, pending, levelIndex, level, levelProgress };
-}
+import {
+  achievementSummary,
+  medalAsset,
+  type Medal,
+  type AchievementHistory,
+} from "./medalCollection";
+import { MedalCatalog } from "./MedalCatalog";
+export { type AchievementHistory } from "./medalCollection";
 export function Achievements({
   streak,
   foods,
@@ -144,7 +37,10 @@ export function Achievements({
     [filter, setFilter] = useState("Todas"),
     [showPreview, setShowPreview] = useState(false);
   const { medals, earned, xp, pending, levelIndex, level, levelProgress } =
-    achievementSummary(streak, foods, workoutCalories, history);
+    achievementSummary(streak, foods, workoutCalories, history, {
+      foods: foodRecords,
+      workouts: workoutRecords,
+    });
   const closest = pending.reduce<Medal | null>(
     (best, m) =>
       !best || m.current / m.target > best.current / best.target ? m : best,
@@ -165,13 +61,14 @@ export function Achievements({
     );
     return { date, today, done: age >= 0 && age < streak };
   });
-  const visible = medals.filter(
+  const matching = medals.filter(
     (m) =>
       filter === "Todas" ||
       (filter === "Conquistadas"
         ? m.current >= m.target
         : m.current < m.target),
   );
+  const visible = matching.slice(0, 6);
   return (
     <section className="achievements" aria-labelledby="achievements-title">
       <div className="ach-title">
@@ -209,7 +106,9 @@ export function Achievements({
       </div>
       <div className="ach-stats">
         <div>
-          <strong>{earned.length}/6</strong>
+          <strong>
+            {earned.length}/{medals.length}
+          </strong>
           <span>Medalhas</span>
         </div>
         <div>
@@ -225,8 +124,8 @@ export function Achievements({
         className="medal-preview-button"
         onClick={() => setShowPreview(true)}
       >
-        <Image size={20} aria-hidden="true" /> Ver novas medalhas
-        <span>Prévia</span>
+        <Image size={20} aria-hidden="true" /> Ver todas as medalhas
+        <span>{medals.length}</span>
       </button>
       <Challenges
         foods={foodRecords}
@@ -263,7 +162,9 @@ export function Achievements({
       </div>
       <div className="section-title collection-title">
         <h2>Coleção</h2>
-        <span>{earned.length} de 6 conquistadas</span>
+        <span>
+          {earned.length} de {medals.length} conquistadas
+        </span>
       </div>
       <div className="medal-filters" aria-label="Filtrar medalhas">
         {["Todas", "Conquistadas", "Em progresso"].map((f) => (
@@ -284,7 +185,11 @@ export function Achievements({
             <button
               key={m.id}
               className={
-                "medal-card medal-tone-" +
+                "medal-card medal-variant-" +
+                m.variant +
+                " medal-kind-" +
+                m.kind +
+                " medal-tone-" +
                 m.color +
                 " " +
                 (done ? "earned" : "locked")
@@ -293,12 +198,15 @@ export function Achievements({
               aria-label={`${m.name}, ${done ? "conquistada" : `${m.current} de ${m.target} ${m.unit}`}, ${m.xp} XP`}
             >
               <div className={"medal-art " + m.color}>
-                <img src={medalAsset(m.metal, done)} alt="" />
+                <img src={medalAsset(m.metal, done, m.kind)} alt="" />
                 <span className="medal-status">
                   {done ? <Check size={13} /> : <Lock size={12} />}
                 </span>
               </div>
               <h3>{m.name}</h3>
+              <span className="medal-tier">
+                {m.kind === "medallion" ? "Medalha" : "Haltere"}
+              </span>
               {done ? (
                 <span className="xp-pill">+{m.xp} XP</span>
               ) : (
@@ -321,6 +229,14 @@ export function Achievements({
           );
         })}
       </div>
+      {matching.length > visible.length && (
+        <p className="collection-more">
+          Mostrando {visible.length} de {matching.length}.{" "}
+          <button onClick={() => setShowPreview(true)}>
+            Consultar catálogo completo
+          </button>
+        </p>
+      )}
       {visible.length === 0 && (
         <p className="achievement-empty">
           Suas primeiras medalhas aparecem aqui. Cada registro conta!
@@ -352,7 +268,9 @@ export function Achievements({
         Histórico e recompensas demonstrativos. XP é a soma das medalhas
         conquistadas.
       </p>
-      {showPreview && <MedalPreview close={() => setShowPreview(false)} />}
+      {showPreview && (
+        <MedalCatalog medals={medals} close={() => setShowPreview(false)} />
+      )}
       {selected && (
         <MedalDialog medal={selected} close={() => setSelected(null)} />
       )}
@@ -400,12 +318,28 @@ function MedalDialog({ medal, close }: { medal: Medal; close: () => void }) {
         >
           <X />
         </button>
-        <div className={"medal-art " + medal.color}>
-          <img src={medalAsset(medal.metal, done)} alt="" />
+        <div
+          className={"medal-art medal-kind-" + medal.kind + " " + medal.color}
+        >
+          <img src={medalAsset(medal.metal, done, medal.kind)} alt="" />
         </div>
         <h2 id="medal-title">{medal.name}</h2>
+
         <span className="xp-pill">+{medal.xp} XP</span>
         <p>{medal.description}</p>
+        <div className="medal-challenge-list">
+          {medal.challenges.map((challenge) => (
+            <div key={challenge.name}>
+              <strong>{challenge.name}</strong>
+              <span>
+                {Math.min(challenge.current, challenge.target).toLocaleString(
+                  "pt-BR",
+                )}{" "}
+                / {challenge.target.toLocaleString("pt-BR")} {challenge.unit}
+              </span>
+            </div>
+          ))}
+        </div>
         <strong>
           {done
             ? "Medalha conquistada!"
@@ -416,68 +350,6 @@ function MedalDialog({ medal, close }: { medal: Medal; close: () => void }) {
             ? "A recompensa já está incluída no seu total de XP."
             : "A medalha é liberada automaticamente ao atingir a meta."}
         </small>
-      </div>
-    </div>
-  );
-}
-
-function MedalPreview({ close }: { close: () => void }) {
-  const ref = useRef<HTMLButtonElement>(null);
-  useEffect(() => {
-    const previousFocus = document.activeElement as HTMLElement | null;
-    const previousOverflow = document.body.style.overflow;
-    document.body.style.overflow = "hidden";
-    ref.current?.focus();
-    const onKey = (event: KeyboardEvent) => {
-      if (event.key === "Escape") close();
-      if (event.key === "Tab") {
-        event.preventDefault();
-        ref.current?.focus();
-      }
-    };
-    document.addEventListener("keydown", onKey);
-    return () => {
-      document.body.style.overflow = previousOverflow;
-      document.removeEventListener("keydown", onKey);
-      previousFocus?.focus();
-    };
-  }, [close]);
-  return (
-    <div
-      className="modal-backdrop"
-      onClick={(event) => {
-        if (event.target === event.currentTarget) close();
-      }}
-    >
-      <div
-        className="modal medal-preview-dialog"
-        role="dialog"
-        aria-modal="true"
-        aria-labelledby="medal-preview-title"
-        aria-describedby="medal-preview-description"
-      >
-        <button
-          ref={ref}
-          className="icon close"
-          aria-label="Fechar prévia"
-          onClick={close}
-        >
-          <X />
-        </button>
-        <h2 id="medal-preview-title">Novas medalhas</h2>
-        <p id="medal-preview-description">
-          Ouro, prata, bronze e diamante. Uma proposta para a coleção; os
-          halteres continuam como suas medalhas.
-        </p>
-        <img
-          src="/assets/achievements/medal-preview.png"
-          alt="Quatro propostas de medalhas: ouro com haltere, prata com calendário, bronze com broto e diamante azul com alvo."
-        />
-        <h3 className="pink-preview-title">Haltere rosa · Grande energia</h3>
-        <img
-          src="/assets/medal-pink.png"
-          alt="Haltere rosa metálico com barra vinho e reflexos claros, em teste na medalha Grande energia."
-        />
       </div>
     </div>
   );

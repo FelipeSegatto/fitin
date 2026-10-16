@@ -15,52 +15,105 @@ try {
   await p.getByRole("heading", { name: "Conquistas", exact: true }).waitFor();
   assert.equal(
     await p.locator(".ach-stats>div").nth(0).locator("strong").innerText(),
-    "4/6",
+    "13/36",
   );
   assert.equal(
     await p.locator(".ach-stats>div").nth(1).locator("strong").innerText(),
-    "450",
+    "525",
   );
   assert.equal(await p.locator(".medal-card").count(), 6);
   const medalSources = await p
     .locator(".medal-card .medal-art img")
     .evaluateAll((images) => images.map((img) => img.getAttribute("src")));
-  assert(
-    medalSources.every((src) =>
-      /^\/assets\/medal-((gold|bronze|silver|diamond)\.svg|pink\.png)$/.test(
-        src,
-      ),
-    ),
-  );
-  assert.equal(
-    await p.locator(".medal-tone-pink .medal-art img").getAttribute("src"),
-    "/assets/medal-pink.png",
-  );
+  assert(medalSources.some((src) => src.includes("medallion-")));
+  assert(medalSources.some((src) => src === "/assets/medal-pink.png"));
   const previewButton = p.getByRole("button", {
-    name: "Ver novas medalhas Prévia",
+    name: "Ver todas as medalhas 36",
     exact: true,
   });
   await previewButton.click();
-  const preview = p.getByRole("dialog", {
-    name: "Novas medalhas",
+  const catalog = p.getByRole("dialog", {
+    name: "Todas as medalhas",
     exact: true,
   });
-  await preview.waitFor();
-  const previewImage = preview.locator("img").first();
-  await previewImage.evaluate((img) => img.decode());
-  assert(await previewImage.evaluate((img) => img.naturalWidth > 0));
+  await catalog.waitFor();
+  assert.equal(await catalog.locator(".catalog-design").count(), 12);
+  assert.equal(await catalog.locator(".catalog-medal").count(), 36);
+  for (const design of await catalog.locator(".catalog-design").all()) {
+    const awards = design.locator(".catalog-medal");
+    assert.equal(await awards.count(), 3);
+    assert.equal(new Set(await awards.locator("h4").allTextContents()).size, 3);
+    assert.equal(
+      new Set(
+        await awards
+          .locator("img")
+          .evaluateAll((images) =>
+            images.map((img) => img.getAttribute("src")),
+          ),
+      ).size,
+      1,
+    );
+    assert.equal(
+      new Set(
+        await awards.evaluateAll((items) =>
+          items.map((item) => getComputedStyle(item).background),
+        ),
+      ).size,
+      3,
+    );
+  }
+  // Eagerly load the catalog for the asset check, including initially offscreen groups.
+  await catalog.locator("img").evaluateAll((images) =>
+    Promise.all(
+      images.map((img) => {
+        img.loading = "eager";
+        return img.decode();
+      }),
+    ),
+  );
+  await catalog.getByRole("button", { name: "Medalhas", exact: true }).click();
+  assert.equal(await catalog.locator(".catalog-design").count(), 6);
+  await catalog.getByLabel("Acabamento", { exact: true }).selectOption("green");
+  assert.equal(await catalog.locator(".catalog-medal").count(), 3);
+  assert(
+    (
+      await catalog.locator(".catalog-design-art img").getAttribute("src")
+    ).includes("medallion-green.png"),
+  );
+  await catalog.getByRole("button", { name: "Halteres", exact: true }).click();
+  assert.equal(await catalog.locator(".catalog-medal").count(), 3);
+  assert.equal(
+    await catalog.locator(".catalog-design-art img").getAttribute("src"),
+    "/assets/medal-green.png",
+  );
+  await catalog.getByRole("button", { name: "Todas", exact: true }).click();
+  await catalog.getByLabel("Acabamento", { exact: true }).selectOption("Todas");
+  await catalog
+    .getByRole("searchbox", { name: "Buscar medalhas" })
+    .fill("Constância cristalina");
+  assert.equal(await catalog.locator(".catalog-design").count(), 1);
+  await catalog
+    .getByRole("searchbox", { name: "Buscar medalhas" })
+    .fill("sem resultado algum");
+  assert.equal(await catalog.locator(".catalog-design").count(), 0);
+  await catalog.getByRole("searchbox", { name: "Buscar medalhas" }).fill("");
   assert.equal(await p.evaluate(() => document.body.style.overflow), "hidden");
-  await p.screenshot({
-    path: "/workspace/artifacts/fitin-medal-preview-mobile.png",
-  });
+  await p.screenshot({ path: "/workspace/artifacts/fitin-catalog-mobile.png" });
   await p.setViewportSize({ width: 1440, height: 1000 });
   await p.screenshot({
-    path: "/workspace/artifacts/fitin-medal-preview-desktop.png",
+    path: "/workspace/artifacts/fitin-catalog-desktop.png",
   });
+  await catalog.getByRole("button", { name: "Fechar catálogo" }).focus();
+  await p.keyboard.press("Shift+Tab");
+  assert(
+    await catalog
+      .getByLabel("Acabamento", { exact: true })
+      .evaluate((e) => e === document.activeElement),
+  );
   await p.keyboard.press("Tab");
   assert(
-    await p
-      .getByRole("button", { name: "Fechar prévia" })
+    await catalog
+      .getByRole("button", { name: "Fechar catálogo" })
       .evaluate((e) => e === document.activeElement),
   );
   await p.keyboard.press("Escape");
@@ -72,7 +125,7 @@ try {
   );
   await p.setViewportSize({ width: 390, height: 844 });
   await previewButton.click();
-  await p.getByRole("button", { name: "Fechar prévia" }).click();
+  await p.getByRole("button", { name: "Fechar catálogo" }).click();
   assert.equal(await p.getByRole("dialog").count(), 0);
   assert.equal(
     new Set(
@@ -142,6 +195,57 @@ try {
     .getByRole("button", { name: "Participar de Mesa em dia", exact: true })
     .click();
   assert.equal(await p.locator(".active-challenge").count(), 4);
+  await p.evaluate(async () => {
+    const { achievementSummary, medalAsset } = await import(
+      "/src/medalCollection.ts"
+    );
+    const { localDay } = await import("/src/records.ts");
+    const today = localDay();
+    const history = { days: 0, meals: 0, burned: 0 };
+    const workouts = Array.from({ length: 4 }, (_, i) => ({
+      id: String(i),
+      name: "Caminhada",
+      date: today,
+      time: "12:00",
+      kcal: 100,
+    }));
+    const result = achievementSummary(0, 0, 400, history, {
+      foods: [],
+      workouts,
+    });
+    if (
+      result.medals.length !== 36 ||
+      new Set(result.medals.map((medal) => medal.name)).size !== 36
+    )
+      throw new Error("Each award must have a unique name");
+    const green = result.medals.filter(
+      (medal) => medal.design === "green-movement",
+    );
+    if (
+      green.length !== 3 ||
+      new Set(green.map((medal) => medalAsset(medal.metal, true, medal.kind)))
+        .size !== 1
+    )
+      throw new Error("Shared artwork lost");
+    if (green.filter((medal) => medal.current >= medal.target).length !== 1)
+      throw new Error("Awards must unlock independently");
+    if (
+      result.xp !== 125 ||
+      achievementSummary(0, 0, 400, history, { foods: [], workouts }).xp !== 125
+    )
+      throw new Error("XP duplicated or incorrect");
+    if (
+      achievementSummary(0, 0, 0, history, { foods: [], workouts: [] }).earned
+        .length !== 0
+    )
+      throw new Error("Empty session received awards");
+    const future = [{ ...workouts[0], date: "2099-01-01" }];
+    if (
+      achievementSummary(0, 0, 100, history, { foods: [], workouts: future })
+        .earned.length !== 0
+    )
+      throw new Error("Future entry awarded a medal");
+  });
   // Validate calendar boundaries and deduplication against the actual browser module.
   await p.evaluate(async () => {
     const { weeklyProgress, challengeWeek } = await import(
@@ -194,9 +298,9 @@ try {
     assert(await img.evaluate((e) => e.complete && e.naturalWidth > 0));
   }
   await p.getByRole("button", { name: "Conquistadas", exact: true }).click();
-  assert.equal(await p.locator(".medal-card").count(), 4);
+  assert.equal(await p.locator(".medal-card").count(), 6);
   await p.getByRole("button", { name: "Em progresso", exact: true }).click();
-  assert.equal(await p.locator(".medal-card").count(), 2);
+  assert.equal(await p.locator(".medal-card").count(), 6);
   await p.getByRole("button", { name: /Grande energia, / }).click();
   await p.getByRole("dialog").waitFor();
   assert((await p.getByRole("dialog").innerText()).includes("6.400 de 10.000"));
@@ -238,17 +342,17 @@ try {
   );
   assert.equal(
     await p.locator(".ach-stats>div").nth(0).locator("strong").innerText(),
-    "5/6",
+    "14/36",
   );
   assert.equal(
     await p.locator(".ach-stats>div").nth(1).locator("strong").innerText(),
-    "750",
+    "625",
   );
   await p.getByRole("button", { name: /Grande energia, conquistada/ }).click();
   await p.keyboard.press("Escape");
   assert.equal(
     await p.locator(".ach-stats>div").nth(1).locator("strong").innerText(),
-    "750",
+    "625",
   );
   await p.setViewportSize({ width: 1440, height: 1000 });
   await p.screenshot({
@@ -260,9 +364,10 @@ try {
     false,
   );
   await p.getByRole("button", { name: "Perfil", exact: true }).click();
-  const pinkProfileMedal = p.locator('.profile-medal-list img[src="/assets/medal-pink.png"]');
-  assert.equal(await pinkProfileMedal.count(), 1);
-  await pinkProfileMedal.evaluate((img) => img.decode());
+  assert.equal(
+    await p.locator(".profile-medal-list .mini-medal img").count(),
+    3,
+  );
   await p.getByRole("button", { name: "Sair e limpar demonstração" }).click();
   await p.getByRole("button", { name: "Entrar", exact: true }).click();
   await p.getByRole("button", { name: "Preencher dados" }).click();
@@ -271,7 +376,7 @@ try {
   await p.getByRole("button", { name: "Conquistas", exact: true }).click();
   assert.equal(await p.locator(".active-challenge").count(), 0);
   console.log(
-    "PASS: desafios semanais, participação/saída, progresso compartilhado, limites de datas, limpeza da sessão, medalhas, XP sem duplicação e layouts mobile/desktop.",
+    "PASS: catálogo com 36 medalhas independentes, artes compartilhadas e fundos próprios, filtros, acessibilidade, desbloqueio e XP únicos, desafios semanais e layouts mobile/desktop.",
   );
 } finally {
   await b.close();

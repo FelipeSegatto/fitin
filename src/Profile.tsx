@@ -13,7 +13,7 @@ import {
   achievementSummary,
   medalAsset,
   type AchievementHistory,
-} from "./Achievements";
+} from "./medalCollection";
 import { type DailyRecord, localDay } from "./records";
 import { type WeightRecord } from "./Progress";
 import "./profile.css";
@@ -71,7 +71,10 @@ export function Profile({
     todayBurned = workouts
       .filter((e) => e.date === today)
       .reduce((s, e) => s + e.kcal, 0),
-    ach = achievementSummary(streak, todayFoods.length, todayBurned, history);
+    ach = achievementSummary(streak, todayFoods.length, todayBurned, history, {
+      foods,
+      workouts,
+    });
   const progress =
     first && current && goal !== null
       ? Math.max(
@@ -222,8 +225,12 @@ export function Profile({
                 onClick={onAchievements}
                 aria-label={"Ver coleção: " + m.name}
               >
-                <span className={"mini-medal " + m.color}>
-                  <img src={medalAsset(m.metal)} alt="" />
+                <span
+                  className={
+                    "mini-medal medal-variant-" + m.variant + " " + m.color
+                  }
+                >
+                  <img src={medalAsset(m.metal, true, m.kind)} alt="" />
                 </span>
                 <small>{m.name}</small>
               </button>
