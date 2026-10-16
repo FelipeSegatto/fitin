@@ -215,7 +215,7 @@ export function Profile({
                 aria-label={"Ver coleção: " + m.name}
               >
                 <span className={"mini-medal " + m.color}>
-                  <img src={"/assets/medal-" + m.metal + ".svg"} alt="" />
+                  <img src={"/assets/achievements/medal-" + m.id + ".svg"} alt="" />
                 </span>
                 <small>{m.name}</small>
               </button>

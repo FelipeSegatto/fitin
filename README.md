@@ -58,3 +58,6 @@ Conquistas permite escolher quatro desafios opcionais: refeições em três dias
 A semana vai de segunda a domingo, pelo calendário local. Contam registros da semana até hoje, inclusive os anteriores à participação. Refeições no mesmo dia contam uma vez; datas futuras e histórico agregado fictício não contam. Alterar ou excluir registros recalcula o progresso. O registro de peso não exige ganho ou perda. Selos semanais não somam XP nem alteram as medalhas e o nível do Perfil.
 
 As escolhas sobrevivem à navegação entre abas, mas são limpas ao sair, recarregar ou iniciar outra conta. Na virada da semana, a seleção anterior deixa de aparecer. Verificação: `npm run test:achievements`, incluindo participação, saída, progresso compartilhado, limites da semana e limpeza da sessão.
+
+
+A identidade visual de Conquistas usa composições SVG locais com ícones Lucide (licença ISC), um tema para cada um dos quatro desafios e seis medalhas com símbolos e silhuetas próprios. Os mesmos badges aparecem nos detalhes e no Perfil. Créditos e licença em `public/assets/achievements/`.

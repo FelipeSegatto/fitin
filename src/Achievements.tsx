@@ -281,7 +281,7 @@ export function Achievements({
             >
               <div className={"medal-art " + m.color}>
                 <img
-                  src={"/assets/medal-" + (done ? m.metal : "silver") + ".svg"}
+                  src={"/assets/achievements/medal-" + m.id + ".svg"}
                   alt=""
                 />
                 <span className="medal-status">
@@ -391,7 +391,7 @@ function MedalDialog({ medal, close }: { medal: Medal; close: () => void }) {
         </button>
         <div className={"medal-art " + medal.color}>
           <img
-            src={"/assets/medal-" + (done ? medal.metal : "silver") + ".svg"}
+            src={"/assets/achievements/medal-" + medal.id + ".svg"}
             alt=""
           />
         </div>

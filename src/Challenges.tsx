@@ -108,6 +108,11 @@ export function Challenges({
                       Sair
                     </button>
                   </div>
+                  <img
+                    className="challenge-illustration active-challenge-art"
+                    src={`/assets/achievements/challenge-${challenge.id}.svg`}
+                    alt=""
+                  />
                   <h3>{challenge.name}</h3>
                   <p>{challenge.description}</p>
                   <div
@@ -129,7 +134,11 @@ export function Challenges({
                     <span>Até {dateLabel(week.end)}</span>
                   </div>
                   <div className={`challenge-reward ${done ? "unlocked" : ""}`}>
-                    <Sparkles size={16} />
+                    <img
+                      className="challenge-seal"
+                      src={`/assets/achievements/challenge-${challenge.id}.svg`}
+                      alt=""
+                    />
                     <span>
                       {done ? "Selo conquistado" : "Recompensa"}:{" "}
                       <strong>{challenge.reward}</strong>
@@ -170,8 +179,13 @@ export function Challenges({
               >
                 <span className="challenge-number">
                   0{index + 1}
-                  <Flag size={19} />
+                  <span>SEMANA</span>
                 </span>
+                <img
+                  className="challenge-illustration"
+                  src={`/assets/achievements/challenge-${challenge.id}.svg`}
+                  alt=""
+                />
                 <h3>{challenge.name}</h3>
                 <p>{challenge.description}</p>
                 <span className="challenge-option-reward">

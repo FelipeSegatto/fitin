@@ -22,6 +22,29 @@ try {
     "450",
   );
   assert.equal(await p.locator(".medal-card").count(), 6);
+  assert.equal(
+    new Set(
+      await p
+        .locator(".medal-card .medal-art img")
+        .evaluateAll((images) => images.map((img) => img.getAttribute("src"))),
+    ).size,
+    6,
+  );
+  assert.equal(
+    new Set(
+      await p
+        .locator(".challenge-option .challenge-illustration")
+        .evaluateAll((images) => images.map((img) => img.getAttribute("src"))),
+    ).size,
+    4,
+  );
+  for (const img of await p
+    .locator(".challenge-option .challenge-illustration")
+    .all()) {
+    await img.scrollIntoViewIfNeeded();
+    assert(await img.evaluate((e) => e.complete && e.naturalWidth > 0));
+  }
+
   assert.equal(await p.locator(".challenge-option").count(), 4);
   await p
     .getByRole("button", { name: "Explorar desafios", exact: true })

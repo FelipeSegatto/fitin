@@ -871,3 +871,69 @@
     grid-template-columns: repeat(4, minmax(0, 1fr));
   }
 }
+
+/* Distinct Lucide compositions for each challenge and collectible badge. */
+.challenge-illustration {
+  width: 132px;
+  height: 116px;
+  display: block;
+  object-fit: contain;
+  align-self: center;
+  margin: -8px auto 12px;
+}
+.active-challenge-art {
+  width: 108px;
+  height: 95px;
+  margin: -4px 0 12px;
+}
+.challenge-number > span {
+  font-size: 9px;
+  letter-spacing: 1.4px;
+  opacity: 0.75;
+}
+.challenge-reward .challenge-seal {
+  width: 36px;
+  height: 32px;
+  flex: none;
+  object-fit: contain;
+}
+.achievements .medal-card .medal-art,
+.achievements .medal-dialog .medal-art {
+  background: transparent;
+  opacity: 1;
+  width: 110px;
+  height: 100px;
+  margin-bottom: 12px;
+}
+.achievements .medal-card .medal-art img {
+  width: 114px;
+  height: 100px;
+  transform: none;
+}
+.achievements .medal-card.locked .medal-art img {
+  filter: grayscale(0.9);
+  opacity: 0.65;
+}
+.achievements .medal-dialog .medal-art {
+  width: 160px;
+  height: 140px;
+}
+.achievements .medal-dialog .medal-art img {
+  width: 160px;
+  height: 140px;
+  transform: none;
+}
+.profile-page .mini-medal img {
+  width: 64px;
+  height: 56px;
+  transform: none;
+}
+@media (min-width: 1000px) {
+  .active-challenge-art {
+    float: right;
+    margin: 0 0 12px 14px;
+  }
+  .active-challenge .challenge-meter {
+    clear: both;
+  }
+}
