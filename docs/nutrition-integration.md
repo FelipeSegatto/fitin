@@ -6,13 +6,13 @@ Node 24, `npm ci`, `npm run dev`. Na home, abra **Adicionar alimentos → Buscar
 
 - **TACO:** acervo local de 597 alimentos da 4ª edição (2011). Funciona sem rede. Não é API oficial nem consulta à TBCA.
 - **Open Food Facts:** consulta externa para nomes de produtos ou códigos de barras. Dados colaborativos podem estar incompletos.
-- **USDA FoodData Central:** consulta externa a Foundation/SR Legacy e produtos Branded. Use termos em inglês. O servidor usa a chave pública `DEMO_KEY` se não houver configuração; seus limites são baixos. Para chave própria, copie `.env.example` para `.env.local` e configure `USDA_API_KEY`, ou defina essa variável no host. Nunca use o prefixo `VITE_` para a chave.
+- **USDA FoodData Central:** consulta externa a Foundation/SR Legacy e produtos Branded. Termos do catálogo são convertidos para inglês; consultas livres em inglês continuam disponíveis no filtro USDA. O servidor usa a chave pública `DEMO_KEY` se não houver configuração; seus limites são baixos. Para chave própria, copie `.env.example` para `.env.local` e configure `USDA_API_KEY`, ou defina essa variável no host. Nunca use o prefixo `VITE_` para a chave.
 
 As consultas externas dependem da rede, disponibilidade e cotas das fontes. O USDA foi validado ao vivo neste ambiente, inclusive em busca de whey pelo navegador, cálculo de porção e registro com atribuição. O Node 24 configura seu proxy a partir das variáveis HTTP_PROXY/HTTPS_PROXY quando presentes, respeitando NO_PROXY; sem proxy, as chamadas são diretas. Open Food Facts permanece sem validação ao vivo. Os testes automatizados de adaptadores usam respostas controladas; TACO foi exercitada com dados reais locais.
 
 ## Estrutura e contrato
 
-`GET /api/nutrition/search?source=taco|off|usda&q=...` retorna contrato `version: 1`, candidatos normalizados, fonte, versão da fonte, unidade de referência e instante da consulta. Uma requisição consulta uma fonte escolhida; não há três chamadas por busca nem combinação silenciosa de bases.
+`GET /api/nutrition/search?source=all|taco|off|usda&q=...` retorna contrato `version: 1`, candidatos normalizados, fonte, versão da fonte, unidade de referência e instante da consulta. A busca padrão consulta as fontes em paralelo e expõe a situação de cada uma; os filtros individuais continuam disponíveis. Os nutrientes dos candidatos não são combinados entre bases.
 
 1. `src/nutrition.ts`: extrai quantidade explícita e calcula porções, sem depender da interface.
 2. `server/nutrition/providers.mjs`: adaptadores isolados por fonte; URLs fixas, timeout de oito segundos e mensagens de erro sem credenciais.
@@ -50,3 +50,15 @@ O acervo foi extraído da planilha original `references/original-Taco_4a_edicao_
 ## Verificação
 
 `npm run test:nutrition` verifica normalização, unidades, valores ausentes, porções, dados TACO, contrato dos adaptadores, cache, concorrência e erros HTTP. `npm run test:nutrition-ui` requer o servidor e Chromium: testa busca TACO real, confirmação, registro, origem, edição e cenários externos simulados. Nenhum teste com fixture comprova disponibilidade de uma API externa.
+
+## Busca unificada e catálogo de equivalências
+
+A busca agora começa em **Todas as fontes** (`source=all`, também o padrão do endpoint). O backend consulta em paralelo TACO local, Open Food Facts e USDA, com cache/limites separados por fonte. A resposta agrega `foods` e `sources`: cada fonte informa sucesso, quantidade, consulta utilizada, cache ou motivo de falha/omissão. Os resultados são intercalados por fonte, deduplicados apenas pelo identificador com namespace; alimentos de fontes distintas permanecem separados. Nunca se somam ou se misturam seus nutrientes. O instante original da consulta de cada candidato é preservado no registro.
+
+O catálogo editorial próprio fica em `server/nutrition/data/equivalences.json`, com versão, nomes/sinônimos e qualificadores. `server/nutrition/equivalences.mjs` resolve expressões completas antes de termos menores, normaliza acentos e conserva os qualificadores reconhecidos. Exemplo: “arroz integral cozido” → “cooked brown rice”; “peito de frango grelhado sem pele” → “grilled skinless chicken breast”. Cada expressão precisa ser totalmente reconhecida para habilitar o USDA na busca unificada. Palavras desconhecidas não são descartadas nem traduzidas por aproximação. “Peito de peru” pede especificar cru ou defumado.
+
+TACO e Open Food Facts recebem a consulta original. O USDA recebe a equivalência em inglês, quando disponível. Um código de barras consulta somente Open Food Facts. Sem equivalência, o USDA é omitido com aviso e as outras fontes continuam; no filtro individual USDA, a equivalência é aplicada se existir, e outros termos são enviados como digitados, permitindo busca explícita em inglês ou por marca. Não há IA nem serviço de tradução contratado. O catálogo trata termos de busca, não traduz automaticamente nomes, marcas e descrições retornados pelo USDA.
+
+Para ampliar o catálogo, adicione um alimento/sinônimos ou qualificador e cubra combinações representativas em `scripts/nutrition-unit.test.mjs`. Preserve distinções de preparo/tipo e evite equivalências que prometam identidade nutricional entre produtos brasileiros e americanos. A equivalência orienta a pesquisa; o usuário ainda escolhe o candidato e confirma a porção.
+
+Verificação ao vivo em 17/10/2026: “arroz integral cozido” trouxe um resultado TACO e oito USDA com consulta “cooked brown rice”. Open Food Facts ficou indisponível; a resposta parcial preservou os demais resultados e informou a falha. A apresentação com todas as três fontes também foi exercitada com fixtures, sem afirmar que o Open Food Facts respondeu ao vivo.

@@ -16,13 +16,14 @@ export function FoodSearch({
 }) {
   const [open, setOpen] = useState(false),
     [query, setQuery] = useState(""),
-    [source, setSource] = useState("taco");
+    [source, setSource] = useState("all");
   const [results, setResults] = useState<FoodCandidate[]>([]),
     [selected, setSelected] = useState<FoodCandidate | null>(null);
   const [amount, setAmount] = useState("100"),
     [busy, setBusy] = useState(false),
     [message, setMessage] = useState(""),
     [retrievedAt, setRetrievedAt] = useState("");
+  const [sourceNotes, setSourceNotes] = useState<string[]>([]);
   const controller = useRef<AbortController | null>(null);
   const hint = useRef<ReturnType<typeof parseFoodQuery>>({ query: "" });
   useEffect(() => () => controller.current?.abort(), []);
@@ -32,6 +33,7 @@ export function FoodSearch({
     setResults([]);
     setSelected(null);
     setMessage("");
+    setSourceNotes([]);
   };
   const search = async () => {
     const parsed = parseFoodQuery(query);
@@ -51,6 +53,7 @@ export function FoodSearch({
     setSelected(null);
     setResults([]);
     setMessage("");
+    setSourceNotes([]);
     try {
       const response = await fetch(
         `/api/nutrition/search?${new URLSearchParams({ source, q: parsed.query })}`,
@@ -74,7 +77,18 @@ export function FoodSearch({
         throw new Error("Invalid response");
       const foods = data.foods
         .filter(isFoodCandidate)
-        .filter((food: FoodCandidate) => food.source === source);
+        .filter((food: FoodCandidate) => source === "all" || food.source === source);
+      const names: Record<string, string> = {taco:"TACO",off:"Open Food Facts",usda:"USDA"};
+      if (source === "all" && Array.isArray(data.sources)) {
+        setSourceNotes(data.sources.map((status: {source: string; status: string; count?: number; message?: string; query?: string}) => {
+          const name = names[status.source] || status.source;
+          return status.status === "ok"
+            ? `${name}: ${status.count ?? 0} resultados${status.source === "usda" && status.query ? ` · busca: ${status.query}` : ""}.`
+            : `${name}: ${status.message || "fonte indisponível"}`;
+        }));
+      } else if(source === "usda" && data.translation?.status === "matched") {
+        setSourceNotes([`Busca no USDA: ${data.translation.query}.`]);
+      }
       setResults(foods);
       setRetrievedAt(data.retrievedAt);
       setMessage(
@@ -121,6 +135,7 @@ export function FoodSearch({
                 setSource(event.target.value);
               }}
             >
+              <option value="all">Todas as fontes · busca unificada</option>
               <option value="taco">TACO · alimentos brasileiros</option>
               <option value="off">
                 Open Food Facts · produtos e código de barras
@@ -129,11 +144,13 @@ export function FoodSearch({
             </select>
           </label>
           <p className="food-source-note">
-            {source === "taco"
+            {source === "all"
+              ? "Uma busca na TACO local, no Open Food Facts e no USDA. O catálogo traduz os termos conhecidos para o USDA; cada resultado informa sua fonte. Confira produto, marca e preparo."
+              : source === "taco"
               ? "Acervo local de 597 alimentos da TACO (2011). Não é uma consulta à TBCA nem uma API oficial da TACO."
               : source === "off"
                 ? "Base colaborativa: confira o produto, a marca e os valores do rótulo. Você também pode digitar um código de barras."
-                : "Dados do USDA, incluindo produtos de marca. Busque em inglês, como “whey protein”. O acesso de demonstração tem limite de consultas."}
+                : "Dados do USDA, incluindo produtos de marca. Termos conhecidos são traduzidos pelo catálogo; para outros, tente pesquisar em inglês. O acesso de demonstração tem limite de consultas."}
           </p>
           <label className="field">
             <span>Buscar alimento ou código de barras</span>
@@ -172,6 +189,7 @@ export function FoodSearch({
           <p className="food-search-status" role="status">
             {message}
           </p>
+          {sourceNotes.length > 0 && <ul className="food-source-status" aria-label="Situação das fontes">{sourceNotes.map((note,index)=><li key={index}>{note}</li>)}</ul>}
           <div className="food-search-results">
             {results.map((food) => (
               <button
@@ -230,7 +248,7 @@ export function FoodSearch({
                     onApply({
                       food: selected,
                       amount: Number(amount),
-                      retrievedAt,
+                      retrievedAt: selected.retrievedAt || retrievedAt,
                     });
                     setOpen(false);
                     reset();

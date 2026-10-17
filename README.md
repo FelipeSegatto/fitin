@@ -81,7 +81,7 @@ A seção “Desafios da semana” fica em um banner com a personagem e o quadro
 
 ## Busca nutricional
 
-O formulário de alimentos agora consulta um acervo local de 597 alimentos da TACO e oferece adaptadores para Open Food Facts e USDA. É possível pesquisar `150 g de arroz cozido`, escolher o resultado e confirmar a porção. Calorias/macros e origem seguem para o registro; o preenchimento manual continua disponível.
+O formulário de alimentos faz uma busca unificada na TACO local (597 alimentos), no Open Food Facts e no USDA, com a origem em cada resultado e aviso por fonte quando houver falha. Um catálogo próprio de equivalências no backend converte alimentos e qualificadores conhecidos para inglês na consulta ao USDA, sem IA ou serviço pago de tradução. Os filtros individuais continuam disponíveis. É possível pesquisar `150 g de arroz cozido`, escolher o resultado e confirmar a porção. Calorias/macros e origem seguem para o registro; o preenchimento manual continua disponível.
 
 `npm run dev` já inicia a pequena API Node junto do Vite. Para uma chave USDA própria, consulte `.env.example` (opcional). Uma hospedagem apenas estática de `dist/` precisa de um backend para essa API. Arquitetura, limitações, atribuições, hospedagem e evolução para texto livre: [integração nutricional](docs/nutrition-integration.md). Verificação: `npm run test:nutrition` e, com o servidor ativo, `npm run test:nutrition-ui`.
 

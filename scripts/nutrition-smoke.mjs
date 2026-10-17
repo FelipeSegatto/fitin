@@ -10,6 +10,7 @@ try {
   await page.getByRole('button',{name:'Entrar',exact:true}).click();
   await page.getByRole('button',{name:'Adicionar alimentos',exact:true}).click();
   await page.getByRole('button',{name:'Buscar na base nutricional'}).click();
+  await page.getByLabel('Fonte nutricional').selectOption('taco');
   await page.getByLabel('Buscar alimento ou código de barras').fill('150 g de arroz cozido');
   await page.getByRole('button',{name:'Pesquisar alimentos',exact:true}).click();
   await page.getByRole('button',{name:/Arroz, tipo 1, cozido/}).click();
@@ -60,6 +61,32 @@ try {
   await page.getByRole('button',{name:'Adicionar registro',exact:true}).click();
   await page.getByRole('button',{name:'Diário',exact:true}).click();
   await page.getByText('Registro manual após erro',{exact:true}).waitFor();
+  await page.getByRole('button',{name:'Home',exact:true}).click();
+  await page.getByRole('button',{name:'Adicionar alimentos',exact:true}).click();
+  await page.getByRole('button',{name:'Buscar na base nutricional'}).click();
+  assert.equal(await page.getByLabel('Fonte nutricional').inputValue(),'all');
+  await page.unroute('**/api/nutrition/search?**');
+  const sourceNames={taco:'TACO · acervo local',off:'Open Food Facts',usda:'USDA FoodData Central'};
+  const fixtures=['taco','off','usda'].map((source,index)=>({id:`${source}:fixture`,source,sourceName:sourceNames[source],sourceId:'fixture',sourceUrl:'https://example.org/food',sourceVersion:'fixture',name:`Arroz de teste ${source.toUpperCase()}`,basis:{amount:100,unit:'g'},per100:{kcal:100+50*index,protein:10,carbs:20,fat:2},qualifiers:{},retrievedAt:'2026-10-01T12:00:00.000Z'}));
+  await page.route('**/api/nutrition/search?**',route=>{
+    assert.equal(new URL(route.request().url()).searchParams.get('source'),'all');
+    return route.fulfill({status:200,json:{version:1,source:'all',retrievedAt:new Date().toISOString(),foods:fixtures,sources:['taco','off','usda'].map(source=>({source,status:'ok',count:1,query:source==='usda'?'cooked rice':'arroz cozido'}))}});
+  });
+  await page.getByLabel('Buscar alimento ou código de barras').fill('150 g de arroz cozido');
+  await page.getByRole('button',{name:'Pesquisar alimentos',exact:true}).click();
+  await page.getByRole('button',{name:/Arroz de teste USDA/}).waitFor();
+  assert.equal(await page.locator('.food-search-results > button').count(),3);
+  for(const name of Object.values(sourceNames)) assert.ok((await page.locator('.food-search-results').innerText()).includes(name));
+  assert.ok((await page.getByRole('list',{name:'Situação das fontes'}).innerText()).includes('cooked rice'));
+  await page.setViewportSize({width:390,height:844});
+  assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth),false);
+  await page.screenshot({path:'/tmp/fitin-unified-search-mobile.png',fullPage:true});
+  await page.getByRole('button',{name:/Arroz de teste USDA/}).click();
+  await page.getByRole('button',{name:'Usar alimento',exact:true}).click();
+  assert.equal(await page.getByLabel('Energia (kcal)').inputValue(),'300');
+  await page.getByRole('button',{name:'Adicionar registro',exact:true}).click();
+  await page.getByRole('button',{name:'Diário',exact:true}).click();
+  await page.locator('.entry-nutrition-source').getByRole('link',{name:'USDA FoodData Central'}).waitFor();
   assert.deepEqual(errors,[]);
-  console.log('PASS: real local TACO search, portions/macros/provenance, manual correction, liquid/zero/missing nutrient fixture, mobile and desktop.');
+  console.log('PASS: real local TACO search, portions/macros/provenance, manual correction, liquid/zero/missing nutrient and unified three-source fixtures, source attribution, mobile and desktop.');
 } finally {await browser.close();}

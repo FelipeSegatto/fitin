@@ -1,5 +1,6 @@
 export type NutrientKey = "kcal" | "protein" | "carbs" | "fat";
 export type FoodCandidate = {
+  retrievedAt?: string;
   id: string;
   name: string;
   source: "taco" | "off" | "usda";

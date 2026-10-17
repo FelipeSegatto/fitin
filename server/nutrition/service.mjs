@@ -1,5 +1,6 @@
 import { createProviders, SourceError } from "./providers.mjs";
 import { textKey } from "./normalize.mjs";
+import { resolveUsdaQuery } from "./equivalences.mjs";
 
 // Replace this bounded, source-separated memory cache with Redis when running replicas.
 export function createNutritionService({
@@ -9,7 +10,7 @@ export function createNutritionService({
   const cache = new Map(),
     inFlight = new Map(),
     nextAllowed = new Map();
-  return async function search(source, query) {
+  async function searchSource(source, query) {
     if (!Object.hasOwn(providers, source))
       throw new SourceError("bad_source", "Escolha uma fonte válida.", 400);
     if (
@@ -56,6 +57,42 @@ export function createNutritionService({
     } finally {
       inFlight.delete(key);
     }
+  }
+  return async function search(source, query) {
+    if (typeof query !== "string" || query.trim().length < 2 || query.length > 100)
+      throw new SourceError("bad_query", "Digite entre 2 e 100 caracteres.", 400);
+    query = query.trim();
+    const translation = resolveUsdaQuery(query);
+    if (source !== "all") {
+      const resolved = source === "usda" && translation.status === "matched" ? translation.query : query;
+      return {...await searchSource(source, resolved), ...(source === "usda" ? {translation} : {})};
+    }
+    const barcode = /^\d{8,14}$/.test(query);
+    const statuses = await Promise.all(["taco", "off", "usda"].map(async name => {
+      if (barcode && name !== "off")
+        return {source:name, status:"skipped", message:"Código de barras consultado no Open Food Facts.", foods:[]};
+      if (name === "usda" && translation.status !== "matched")
+        return {source:name, status:"skipped", message:translation.message, translation, foods:[]};
+      const sourceQuery = name === "usda" ? translation.query : query;
+      try {
+        const data = await searchSource(name, sourceQuery);
+        return {source:name, status:"ok", query:sourceQuery, mode:data.mode, cached:data.cached, count:data.foods.length, retrievedAt:data.retrievedAt,
+          ...(name === "usda" ? {translation} : {}),
+          foods:data.foods.map(food=>({...food,retrievedAt:data.retrievedAt}))};
+      } catch(error) {
+        return {source:name, status:"error", error:error instanceof SourceError ? error.code : "unavailable",
+          message:error instanceof SourceError ? error.message : "Esta fonte está indisponível. Os resultados das outras fontes continuam disponíveis.", foods:[]};
+      }
+    }));
+    // Interleave sources fairly; never merge nutrient values from different foods.
+    const foods = [], seen = new Set();
+    for(let index=0;index<Math.max(...statuses.map(s=>s.foods.length));index++)
+      for(const status of statuses) {
+        const food=status.foods[index];
+        if(food && !seen.has(food.id)) {seen.add(food.id); foods.push(food);}
+      }
+    return {version:1, source:"all", foods, retrievedAt:new Date(clock()).toISOString(),
+      sources:statuses.map(({foods,...status})=>status)};
   };
 }
 export function createNutritionHandler(options) {
@@ -78,7 +115,7 @@ export function createNutritionHandler(options) {
     try {
       const url = new URL(req.url, "http://localhost");
       const data = await search(
-        url.searchParams.get("source") || "taco",
+        url.searchParams.get("source") || "all",
         url.searchParams.get("q") || "",
       );
       res.statusCode = 200;

@@ -67,9 +67,59 @@ test('cache, coalescing, source cooldown, expiry and failed requests', async () 
 });
 test('HTTP handler rejects methods and sanitizes unexpected errors', async () => {
   const handler=createNutritionHandler({providers:{taco:{search:async()=>{throw Error('private-key');}}}});
-  const invoke=async method=>{const res={setHeader(){},end(body){this.body=JSON.parse(body);}};await handler({method,url:'/?q=rice'},res);return res;};
+  const invoke=async method=>{const res={setHeader(){},end(body){this.body=JSON.parse(body);}};await handler({method,url:'/?q=rice&source=taco'},res);return res;};
   assert.equal((await invoke('POST')).statusCode,405);
   const result=await invoke('GET');
   assert.equal(result.statusCode,503);
   assert.equal(JSON.stringify(result.body).includes('private-key'),false);
+});
+
+const {resolveUsdaQuery} = await import('../server/nutrition/equivalences.mjs');
+test('catalog preserves compound names, preparation, accents and qualifiers',()=>{
+ for(const [input,expected] of [
+  ['arroz integral cozido','cooked brown rice'],
+  ['Peito de frango grelhado sem pele','grilled skinless chicken breast'],
+  ['leite desnatado','skim milk'],
+  ['proteína do soro do leite','whey protein powder'],
+  ['cooked brown rice','cooked brown rice'],
+  ['café com leite sem açúcar','unsweetened coffee with milk'],
+  ['feijão','beans']
+ ]) assert.equal(resolveUsdaQuery(input).query,expected,input);
+ for(const input of ['arroz integral cozido especial','arroz com frango','produto MarcaInventada','leite desnatado da fazenda'])
+  assert.equal(resolveUsdaQuery(input).status,'missing',input);
+ assert.equal(resolveUsdaQuery('peito de peru').status,'ambiguous');
+ assert.equal(resolveUsdaQuery('peito de peru defumado').query,'smoked turkey breast');
+});
+test('unified requests start concurrently, translate only USDA and preserve all sources',async()=>{
+ const calls=[];let release;
+ const gate=new Promise(resolve=>release=resolve);
+ const providers=Object.fromEntries(['taco','off','usda'].map(source=>[source,{mode:'test',search:async query=>{
+  calls.push([source,query]);await gate;
+  return [{id:`${source}:1`,source,name:'Rice',per100:{kcal:100}},{id:`${source}:2`,source,name:'Rice',per100:{kcal:110}}];
+ }}]));
+ const search=createNutritionService({providers});
+ const pending=search('all','arroz integral cozido');
+ await new Promise(resolve=>setImmediate(resolve));
+ assert.deepEqual(calls,[['taco','arroz integral cozido'],['off','arroz integral cozido'],['usda','cooked brown rice']]);
+ release();const result=await pending;
+ assert.deepEqual(result.foods.map(f=>f.id),['taco:1','off:1','usda:1','taco:2','off:2','usda:2']);
+ assert.equal(result.sources.every(s=>s.status==='ok'),true);
+ assert.equal((await search('all','arroz integral cozido')).sources.every(s=>s.cached),true);
+});
+test('unified search returns partial results, skips unknown translations and routes barcodes',async()=>{
+ const calls=[];
+ const search=createNutritionService({providers:{
+  taco:{search:async q=>{calls.push(['taco',q]);return [{id:'taco:1',source:'taco'}];}},
+  off:{search:async q=>{calls.push(['off',q]);throw Error('private error');}},
+  usda:{search:async q=>{calls.push(['usda',q]);return [];}}
+ }});
+ const result=await search('all','alimento desconhecido');
+ assert.equal(result.foods[0].source,'taco');
+ assert.equal(result.sources.find(s=>s.source==='off').status,'error');
+ assert.equal(result.sources.find(s=>s.source==='usda').status,'skipped');
+ assert.equal(JSON.stringify(result).includes('private error'),false);
+ assert.equal(calls.some(([source])=>source==='usda'),false);
+ const barcode=await search('all','12345678');
+ assert.equal(barcode.sources.find(s=>s.source==='taco').status,'skipped');
+ assert.equal(barcode.sources.find(s=>s.source==='usda').status,'skipped');
 });
