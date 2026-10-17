@@ -1885,3 +1885,17 @@ button:hover {
 .diary-hero .food-excess-note strong {font-size:inherit;}
 .balance-caption {color:#756184;}
 .card-title:has(.balance-caption) {flex-wrap:wrap;}
+
+/* Native scrolling with a slim thumb; keyboard and touch scrolling stay native. */
+.modal, .activity-options, .food-search-results, .personal-list {
+  scrollbar-width: thin;
+  scrollbar-color: #bda5d2 transparent;
+}
+:is(.modal, .activity-options, .food-search-results, .personal-list)::-webkit-scrollbar {width:6px;height:6px;}
+:is(.modal, .activity-options, .food-search-results, .personal-list)::-webkit-scrollbar-track {background:transparent;}
+:is(.modal, .activity-options, .food-search-results, .personal-list)::-webkit-scrollbar-thumb {background:#bda5d2;border-radius:20px;}
+:is(.modal, .activity-options, .food-search-results, .personal-list)::-webkit-scrollbar-thumb:hover {background:#9875b4;}
+:is(.modal, .activity-options, .food-search-results, .personal-list)::-webkit-scrollbar-button {display:none;width:0;height:0;}
+@media (forced-colors: active) {
+  .modal, .activity-options, .food-search-results, .personal-list {scrollbar-color:auto;}
+}

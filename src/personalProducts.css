@@ -16,3 +16,7 @@
 .personal-actions {display:flex;flex-wrap:wrap;align-items:center;gap:7px;margin-top:8px;}
 .personal-actions button {padding:8px 10px;border-radius:10px;background:#e8dff8;color:#30274b;font-size:10px;}
 .personal-actions .personal-delete {margin-left:auto;background:#fce7ef;color:#be1f4c;}
+
+.personal-primary-actions {display:grid;grid-template-columns:minmax(0,1fr)40px;gap:8px;align-items:stretch;}
+.personal-primary-actions button {min-height:40px;display:flex;align-items:center;justify-content:center;border-radius:12px;font-weight:600;}
+.personal-primary-actions .personal-delete {margin:0;width:40px;padding:0;}
