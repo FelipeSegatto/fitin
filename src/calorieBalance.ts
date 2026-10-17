@@ -2,7 +2,7 @@
 export function calorieBalance(target: number, consumed: number, activity: number) {
   return {
     foodBalance: target - consumed,
-    adjustedBalance: target - consumed + activity,
+    netBalance: consumed - target - activity,
     foodExcess: Math.max(0, consumed - target),
   };
 }

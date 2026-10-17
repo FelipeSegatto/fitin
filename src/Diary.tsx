@@ -40,7 +40,7 @@ export function Diary({
       .sort((a, b) => a.time.localeCompare(b.time));
   const consumed = foodDay.reduce((s, i) => s + i.kcal, 0),
     burned = workoutDay.reduce((s, i) => s + i.kcal, 0);
-  const {adjustedBalance: remaining, foodExcess} = calorieBalance(target, consumed, burned);
+  const {netBalance: netCalories, foodExcess} = calorieBalance(target, consumed, burned);
   const macros = [
     {
       key: "protein" as const,
@@ -225,9 +225,9 @@ export function Diary({
           </strong>
         </div>
         <div>
-          <span>{remaining < 0 ? "A mais após atividades" : "Saldo com atividades"}</span>
-          <strong className={remaining < 0 ? "calorie-excess" : undefined}>
-            {format(Math.abs(remaining))} <small>kcal</small>
+          <span>{netCalories > 0 ? "Calorias a mais" : netCalories < 0 ? "Déficit após atividades" : "Saldo equilibrado"}</span>
+          <strong className={netCalories > 0 ? "calorie-excess" : undefined}>
+            {format(netCalories)} <small>kcal</small>
           </strong>
         </div>
         {foodExcess > 0 && <p className="food-excess-note">Alimentação: <strong>{format(foodExcess)} kcal a mais</strong> que a meta antes do ajuste por atividades.</p>}

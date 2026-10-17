@@ -28,7 +28,7 @@ Na etapa de medidas, a idade é editável e sincroniza a data de nascimento. Pes
 
 ## Home da conta demonstrativa
 
-O login abre com registros fictícios: 7 dias de sequência, meta de 2.000 kcal, duas refeições somando 926 kcal e musculação de 150 kcal. O saldo alimentar é 1.074 kcal; com as 150 kcal de atividade, o saldo ajustado mostrado na rodinha é 1.224 kcal. Quem conclui o cadastro começa sem registros. O logo usa o asset fornecido no SVG de referência da home.
+O login abre com registros fictícios: 7 dias de sequência, meta de 2.000 kcal, duas refeições somando 926 kcal e musculação de 150 kcal. O saldo alimentar é 1.074 kcal; com as 150 kcal de atividade, o saldo mostrado na rodinha é -1.224 kcal (déficit). Quem conclui o cadastro começa sem registros. O logo usa o asset fornecido no SVG de referência da home.
 
 ## Conquistas
 
@@ -69,13 +69,13 @@ As definições de medalhas e os critérios ficam em `src/medalCollection.ts`. C
 
 No login, “Preencher dia completo” seleciona `completo@fitin.app` / `fitin123`. Depois, clique em “Entrar”. Marina tem seis refeições (café, lanche da manhã, almoço, lanche da tarde, jantar e ceia) e três atividades do dia. A home exibe nove cards individuais com horários e cores preenchidas da paleta do FitIn, seguindo o roxo e o verde da home original.
 
-O cenário fictício tem meta de 2.000 kcal, 2.400 kcal registradas em refeições e 400 kcal em atividades, resultando em 400 kcal a mais na alimentação. As atividades entram no saldo ajustado, que fica em 0 kcal; o excesso alimentar de 400 kcal continua destacado separadamente. Os macros somam 140 g de proteína, 280 g de carboidratos e 80 g de gordura. Valores são apenas dados de interface, sem recomendação alimentar ou de exercícios. Home, Diário, Progresso, Conquistas e Perfil compartilham os mesmos registros da sessão. Sair limpa os dados; um novo login restaura o cenário original. João mantém os dois alimentos, uma atividade e saldo ajustado de 1.224 kcal.
+O cenário fictício tem meta de 2.000 kcal, 2.400 kcal registradas em refeições e 400 kcal em atividades, resultando em 400 kcal a mais na alimentação. As atividades entram no saldo ajustado, que fica em 0 kcal; o excesso alimentar de 400 kcal continua destacado separadamente. Os macros somam 140 g de proteína, 280 g de carboidratos e 80 g de gordura. Valores são apenas dados de interface, sem recomendação alimentar ou de exercícios. Home, Diário, Progresso, Conquistas e Perfil compartilham os mesmos registros da sessão. Sair limpa os dados; um novo login restaura o cenário original. João mantém os dois alimentos, uma atividade e saldo de -1.224 kcal (déficit).
 
 Verificação: `npm run test:full-day-demo` cobre os registros, as cores, os totais, alterações pelo Diário, isolamento entre contas e larguras mobile/desktop.
 
 Os cards da home usam preenchimentos mais fortes, seguindo o roxo e o verde originais. Os ícones Lucide são escolhidos pelo tipo e nome do registro, com opções para café, frutas, sanduíches, peixe, ceia, caminhada, musculação, mobilidade, bicicleta, natação e outras atividades. No demo completo, os nove registros usam nove ícones diferentes.
 
-Quando as calorias consumidas ultrapassam a meta diária, o banner da home mostra “Atenção à meta do dia”, o excesso registrado e o personagem fornecido em `attention-buddy.svg`. A comparação usa consumo bruto (`consumidas > meta`): o banner e o aviso alimentar mostram consumo bruto acima da meta. Gráfico, equação e Diário mostram o saldo ajustado (meta − consumo + atividades), com rótulo explícito. No demo completo, 2.400 kcal consumidas para meta de 2.000 geram aviso alimentar de 400 kcal a mais, em vermelho; as 400 kcal de atividades levam o saldo ajustado a zero, sem apagar o aviso. Ao voltar à meta ou abaixo dela, o banner habitual retorna.
+Quando as calorias consumidas ultrapassam a meta diária, o banner da home mostra “Atenção à meta do dia”, o excesso registrado e o personagem fornecido em `attention-buddy.svg`. A comparação usa consumo bruto (`consumidas > meta`): o banner e o aviso alimentar mostram consumo bruto acima da meta. Gráfico, equação e Diário mostram o saldo ajustado (consumo − meta − atividades), com rótulo explícito. No demo completo, 2.400 kcal consumidas para meta de 2.000 geram aviso alimentar de 400 kcal a mais, em vermelho; as 400 kcal de atividades levam o saldo ajustado a zero, sem apagar o aviso. Ao voltar à meta ou abaixo dela, o banner habitual retorna.
 
 A seção “Desafios da semana” fica em um banner com a personagem e o quadro fornecidos pelo autor (`challenges-guide.svg`). Os cards semanais e os desafios ativos usam preenchimentos verde, roxo, azul e amarelo da paleta, com textos escuros e pequenos elementos de cada tema. No mobile, as quatro opções continuam no carrossel.
 
@@ -102,3 +102,5 @@ O Open Food Facts foi verificado por código no próprio FitIn. A API também re
 Atividades agora têm 47 opções, busca, categorias, cards e durações rápidas. Verificações: `npm run test:products`, `npm run test:products-ui`, `npm run test:activities-ui`.
 
 O resumo distingue excesso alimentar e saldo ajustado por atividades. Registrar, editar ou excluir uma atividade atualiza o saldo ajustado e a equação. A meta alimentar e o aviso por consumo acima dela permanecem independentes. Verificação: `npm run test:calories`.
+
+O saldo usa sempre consumo − meta − atividades: negativo indica déficit, zero indica equilíbrio e positivo indica calorias a mais (vermelho). A equação não inverte a ordem conforme o sinal.

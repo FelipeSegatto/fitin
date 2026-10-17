@@ -32,8 +32,8 @@ try {
   assert.equal(await page.locator(".today-meals .today-record").count(), 6);
   assert.equal(await page.locator(".today-workouts .today-record").count(), 3);
   assert.equal(await page.locator(".ring strong").innerText(), "0");
-  assert.equal(await page.locator(".ring small").innerText(), "kcal restantes");
-  assert.equal(await page.locator(".daily-equation strong").innerText(), "0 kcal restantes");
+  assert.equal(await page.locator(".ring small").innerText(), "kcal · saldo equilibrado");
+  assert.equal(await page.locator(".daily-equation strong").innerText(), "0 kcal · saldo equilibrado");
   assert.equal(await page.locator(".food-excess-note strong").innerText(), "400 kcal a mais");
   assert.equal(await page.locator(".food-excess-note strong").evaluate(e => getComputedStyle(e).color), "rgb(190, 31, 76)");
   await page.getByRole("button", { name: "Adicionar alimentos", exact: true }).click();
@@ -58,7 +58,9 @@ try {
   await page.getByLabel("Atividade",{exact:true}).fill("Atividade extra");
   await page.getByLabel("Energia (kcal)").fill("100");
   await page.getByRole("button",{name:"Adicionar registro",exact:true}).click();
-  assert.equal(await page.locator(".ring strong").innerText(),"100");
+  assert.equal(await page.locator(".ring strong").innerText(),"-100");
+  assert.equal(await page.locator(".ring small").innerText(),"kcal de déficit");
+  assert.equal(await page.locator(".daily-equation strong").innerText(),"-100 kcal de déficit");
   assert.equal(await page.locator(".daily-equation em").innerText(),"500");
   assert.equal(await page.locator(".food-excess-note strong").innerText(),"400 kcal a mais");
   await page.getByRole("button",{name:"Diário",exact:true}).click();
@@ -131,7 +133,7 @@ try {
   await page.getByRole("button", { name: "Sim, excluir", exact: true }).click();
   await page.getByRole("button", { name: "Home", exact: true }).click();
   assert.equal(await page.locator(".today-meals .today-record").count(), 5);
-  assert.equal(await page.locator(".ring strong").innerText(), "284");
+  assert.equal(await page.locator(".ring strong").innerText(), "-284");
   assert(
     (await page.locator(".home-banner.calorie-warning").innerText()).includes(
       "116 kcal acima",
@@ -187,28 +189,28 @@ try {
   await page.getByRole("button", { name: "Excluir Teste de excesso", exact: true }).click();
   await page.getByRole("button", { name: "Sim, excluir", exact: true }).click();
   await page.getByRole("button", { name: "Home", exact: true }).click();
-  assert.equal(await page.locator(".ring strong").innerText(), "399");
-  assert.equal(await page.locator(".ring small").innerText(), "kcal restantes");
+  assert.equal(await page.locator(".ring strong").innerText(), "-399");
+  assert.equal(await page.locator(".ring small").innerText(), "kcal de déficit");
   await page.getByRole("button", { name: "Diário", exact: true }).click();
   await page.getByRole("button", { name: "Editar Ovos, aveia e banana", exact: true }).click();
   await page.getByLabel("Energia (kcal)").fill("274");
   await page.getByRole("button", { name: "Salvar alterações", exact: true }).click();
   await page.getByRole("button", { name: "Home", exact: true }).click();
-  assert.equal(await page.locator(".ring strong").innerText(), "400");
-  assert.equal(await page.locator(".ring small").innerText(), "kcal restantes");
+  assert.equal(await page.locator(".ring strong").innerText(), "-400");
+  assert.equal(await page.locator(".ring small").innerText(), "kcal de déficit");
   assert.equal(await page.locator(".ring.calorie-excess").count(), 0);
   await page.getByRole("button", { name: "Diário", exact: true }).click();
   await page.getByRole("button", { name: "Editar Ovos, aveia e banana", exact: true }).click();
   await page.getByLabel("Energia (kcal)").fill("273");
   await page.getByRole("button", { name: "Salvar alterações", exact: true }).click();
   await page.getByRole("button", { name: "Home", exact: true }).click();
-  assert.equal(await page.locator(".ring strong").innerText(), "401");
-  assert.equal(await page.locator(".ring small").innerText(), "kcal restantes");
+  assert.equal(await page.locator(".ring strong").innerText(), "-401");
+  assert.equal(await page.locator(".ring small").innerText(), "kcal de déficit");
   await logout();
   await login("Preencher dados");
   assert.equal(await page.locator(".today-meals .today-record").count(), 2);
   assert.equal(await page.locator(".today-workouts .today-record").count(), 1);
-  assert.equal(await page.locator(".ring strong").innerText(), "1.224");
+  assert.equal(await page.locator(".ring strong").innerText(), "-1.224");
   await page.getByRole("button", { name: "Perfil", exact: true }).click();
   await page.getByRole("heading", { name: "João", exact: true }).waitFor();
   await logout();

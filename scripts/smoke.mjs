@@ -63,7 +63,7 @@ try {
   const goal = Number(target.replace(/[^0-9]/g, ""));
   assert.equal(
     await p.locator(".ring strong").innerText(),
-    (goal - 450 + 150).toLocaleString("pt-BR"),
+    (450 - goal - 150).toLocaleString("pt-BR"),
   );
   assert.equal(
     await p.evaluate(() => document.documentElement.scrollWidth > innerWidth),
@@ -81,7 +81,7 @@ try {
   await p.getByRole("button", { name: "Preencher dados" }).click();
   await p.getByRole("button", { name: "Entrar", exact: true }).click();
   await p.getByRole("heading", { name: "Streak de 7 dias!" }).waitFor();
-  assert.equal(await p.locator(".ring strong").innerText(), "1.224");
+  assert.equal(await p.locator(".ring strong").innerText(), "-1.224");
   assert((await p.locator(".daily-values").innerText()).includes("926 kcal"));
   assert((await p.locator(".daily-values").innerText()).includes("150 kcal"));
   await p.setViewportSize({ width: 1440, height: 1000 });
