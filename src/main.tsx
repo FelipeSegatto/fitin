@@ -39,6 +39,8 @@ import { fullDayRecords } from "./demoAccounts";
 import { RecordIcon } from "./RecordIcon";
 import { FoodSearch } from "./FoodSearch";
 import { portionValues, type NutritionReference } from "./nutrition";
+import { ActivityEstimator } from "./ActivityEstimator";
+import { weightAtDate, type ActivityReference } from "./activities";
 type Screen =
   | "welcome"
   | "login"
@@ -1456,6 +1458,7 @@ function App() {
           <Modal
             kind={modal}
             initial={initialRecord}
+            defaultWeight={weightAtDate(weightRecords, modalDate)}
             close={() => {
               setModal("");
               setEditingRecord(null);
@@ -1488,7 +1491,9 @@ function Modal({
   close,
   add,
   initial,
+  defaultWeight,
 }: {
+  defaultWeight?: number;
   initial?: DailyRecord;
   kind: string;
   close: () => void;
@@ -1509,6 +1514,9 @@ function Modal({
   const [nutrition, setNutrition] = useState<NutritionReference | undefined>(
     initial?.nutrition,
   );
+  const [activity, setActivity] = useState<ActivityReference | undefined>(initial?.activity);
+  const [calorieOrigin, setCalorieOrigin] = useState<"manual" | "device" | "met">(initial?.calorieOrigin || (initial?.activity ? "met" : "manual"));
+  const clearEstimate = () => { setActivity(undefined); if (calorieOrigin === "met") setCalorieOrigin("manual"); };
   const ref = React.useRef<HTMLDivElement>(null);
   React.useEffect(() => {
     const previous = document.activeElement as HTMLElement;
@@ -1595,16 +1603,18 @@ function Modal({
                             .map(([k, v]) => [k, Number(v)]),
                         ),
                       }
-                    : minutes
-                      ? { minutes: Number(minutes) }
-                      : {}),
+                    : {
+                        calorieOrigin,
+                        ...(activity ? {activity} : {}),
+                        ...(minutes ? {minutes: Number(minutes)} : {}),
+                      }),
                 });
             }}
           >
             <p className="subtitle">
               {kind === "food"
                 ? "Busque um alimento e confirme a porção, ou informe os valores manualmente."
-                : "Registro demonstrativo. Informe um valor de exemplo."}
+                : "Registre modalidade, duração e calorias do relógio/app, ou use uma estimativa."}
             </p>
             {kind === "food" && (
               <FoodSearch
@@ -1630,6 +1640,28 @@ function Modal({
                 }}
               />
             )}
+            {kind === "workout" && <>
+              <ActivityEstimator defaultWeight={defaultWeight} initial={activity} onApply={reference => {
+                setName(reference.name);
+                setMinutes(String(reference.minutes));
+                setKcal(String(reference.kcal));
+                setActivity(reference);
+                setCalorieOrigin("met");
+              }} />
+              {activity && <p className="activity-provenance">
+                ≈ {activity.kcal} kcal ativas estimadas · {activity.detail}<br />
+                {activity.minutes} min · {activity.weightKg} kg · {activity.met} MET · <a href={activity.source.url} target="_blank" rel="noreferrer">{activity.source.name}</a>
+              </p>}
+              <label className="field activity-origin"><span>Origem das calorias</span><select value={calorieOrigin} onChange={e => {
+                if (activity) setKcal("");
+                setCalorieOrigin(e.target.value as "manual" | "device");
+                setActivity(undefined);
+              }}>
+                <option value="manual">Informadas manualmente</option>
+                <option value="device">Relógio ou aplicativo · calorias ativas</option>
+                {activity && <option value="met">Estimativa do FitIn · MET</option>}
+              </select></label>
+            </>}
             {nutrition && (
               <p className="food-provenance">
                 {nutrition.amount} {nutrition.food.basis.unit} ·{" "}
@@ -1655,6 +1687,7 @@ function Modal({
                 onChange={(e) => {
                   setName(e.target.value);
                   setNutrition(undefined);
+                  clearEstimate();
                 }}
                 required
                 maxLength={80}
@@ -1671,6 +1704,7 @@ function Modal({
                 onChange={(e) => {
                   setKcal(e.target.value);
                   setNutrition(undefined);
+                  clearEstimate();
                 }}
                 required
               />
@@ -1712,7 +1746,7 @@ function Modal({
                     min="1"
                     max="1440"
                     value={minutes}
-                    onChange={(e) => setMinutes(e.target.value)}
+                    onChange={(e) => {setMinutes(e.target.value); if (activity) setKcal(""); clearEstimate();}}
                   />
                 </label>
               )}

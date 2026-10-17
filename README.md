@@ -84,3 +84,9 @@ A seção “Desafios da semana” fica em um banner com a personagem e o quadro
 O formulário de alimentos agora consulta um acervo local de 597 alimentos da TACO e oferece adaptadores para Open Food Facts e USDA. É possível pesquisar `150 g de arroz cozido`, escolher o resultado e confirmar a porção. Calorias/macros e origem seguem para o registro; o preenchimento manual continua disponível.
 
 `npm run dev` já inicia a pequena API Node junto do Vite. Para uma chave USDA própria, consulte `.env.example` (opcional). Uma hospedagem apenas estática de `dist/` precisa de um backend para essa API. Arquitetura, limitações, atribuições, hospedagem e evolução para texto livre: [integração nutricional](docs/nutrition-integration.md). Verificação: `npm run test:nutrition` e, com o servidor ativo, `npm run test:nutrition-ui`.
+
+## Atividades físicas
+
+“Adicionar atividades” aceita calorias manuais ou do relógio/app e oferece uma estimativa local por modalidade/ritmo, peso e duração. A estimativa usa METs de referência, identifica o valor como aproximado e calcula somente energia ativa acima do repouso. O Diário guarda e mostra sua origem. Não há conexão com dispositivos nem API paga. Consulte [registro de atividades](docs/activity-recording.md). Verificação: `npm run test:activities` e `npm run test:activities-ui`.
+
+A [avaliação da TBCA](docs/tbca-assessment.md) registra as condições publicadas e uma consulta preparada à coordenação; a TBCA ainda não foi integrada.

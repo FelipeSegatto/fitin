@@ -99,6 +99,9 @@ export function Diary({
       {kind === "workout" && e.minutes && (
         <p>{e.minutes} minutos de atividade</p>
       )}
+      {kind === "workout" && e.calorieOrigin && <p className="entry-activity-source">
+        {e.activity ? <>Estimativa · {e.activity.detail} · {e.activity.weightKg} kg · <a href={e.activity.source.url} target="_blank" rel="noreferrer">{e.activity.source.name}</a></> : e.calorieOrigin === "device" ? "Calorias ativas informadas · relógio ou aplicativo" : "Calorias informadas manualmente"}
+      </p>}
       {kind === "food" && (
         <p className="entry-macros">
           {e.protein !== undefined ? `P ${format(e.protein)} g` : "P —"} ·{" "}
