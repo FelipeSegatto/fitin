@@ -39,7 +39,7 @@ export function Diary({
       .sort((a, b) => a.time.localeCompare(b.time));
   const consumed = foodDay.reduce((s, i) => s + i.kcal, 0),
     burned = workoutDay.reduce((s, i) => s + i.kcal, 0),
-    remaining = target - consumed + burned;
+    remaining = target - consumed;
   const macros = [
     {
       key: "protein" as const,
@@ -226,13 +226,13 @@ export function Diary({
           </strong>
         </div>
         <div>
-          <span>{remaining < 0 ? "Acima da meta" : "Restante"}</span>
-          <strong>
+          <span>{remaining < 0 ? "Calorias a mais" : "Restante"}</span>
+          <strong className={remaining < 0 ? "calorie-excess" : undefined}>
             {format(Math.abs(remaining))} <small>kcal</small>
           </strong>
         </div>
         {burned > 0 && (
-          <p>Inclui +{format(burned)} kcal de atividades registradas.</p>
+          <p>Atividades: {format(burned)} kcal, contabilizadas à parte da meta alimentar.</p>
         )}
       </div>
       <section className="macro-summary" aria-labelledby="macro-title">

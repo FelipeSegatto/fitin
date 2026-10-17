@@ -214,7 +214,7 @@ function App() {
         ) * 50;
   const consumed = foods.reduce((s, i) => s + i.kcal, 0),
     burned = workouts.reduce((s, i) => s + i.kcal, 0),
-    remaining = target - consumed + burned;
+    remaining = target - consumed;
   const overTarget = consumed > target;
   const excessCalories = Math.max(0, consumed - target);
   const nextSignup = () => {
@@ -1183,9 +1183,11 @@ function App() {
                       <h3>Resumo Diário</h3>
                       {foods.length ? (
                         <small className="daily-equation">
-                          {target} − <span>{consumed}</span> + <em>{burned}</em>{" "}
-                          = <strong className={remaining < 0 ? "calorie-excess" : undefined}>
-                            {Math.abs(remaining).toLocaleString("pt-BR")} kcal{remaining < 0 ? " a mais" : ""}
+                          {remaining < 0
+                            ? `${consumed.toLocaleString("pt-BR")} consumidas − ${target.toLocaleString("pt-BR")} de meta`
+                            : `${target.toLocaleString("pt-BR")} de meta − ${consumed.toLocaleString("pt-BR")} consumidas`}
+                          {" = "}<strong className={remaining < 0 ? "calorie-excess" : undefined}>
+                            {Math.abs(remaining).toLocaleString("pt-BR")} kcal{remaining < 0 ? " a mais" : " restantes"}
                           </strong>
                         </small>
                       ) : (
@@ -1225,7 +1227,7 @@ function App() {
                         <p>
                           <Dumbbell />
                           <span>
-                            Exercícios<strong>{burned} kcal</strong>
+                            Exercícios (à parte)<strong>{burned} kcal</strong>
                           </span>
                         </p>
                       </div>

@@ -1139,7 +1139,9 @@ button:hover {
   }
 }
 .daily-equation {
-  white-space: nowrap;
+  white-space: normal;
+  min-width: 0;
+  line-height: 1.6;
 }
 .daily-equation span {
   color: #ff7e68;
@@ -1865,6 +1867,7 @@ button:hover {
   }
 }
 
+.diary-hero strong.calorie-excess,
 .daily-equation strong.calorie-excess,
 .ring.calorie-excess strong,
 .ring.calorie-excess small {

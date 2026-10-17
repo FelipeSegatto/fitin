@@ -20,7 +20,7 @@ A demo estima **energia ativa acima do repouso**:
 kcal ativas = arredondar((MET − 1) × 3,5 × peso_kg ÷ 200 × minutos)
 ```
 
-Subtrair 1 MET evita acrescentar novamente o repouso ao orçamento que já contém gasto basal. Exemplo: bicicleta de passeio, 4 MET, 78 kg, 30 min → aproximadamente 123 kcal ativas. Isso difere de energia total/bruta, que inclui repouso. Não são usadas APIs nem modelos de IA para esse cálculo.
+Subtrair 1 MET isola o gasto adicional da atividade, sem incluir novamente o gasto de repouso. Exemplo: bicicleta de passeio, 4 MET, 78 kg, 30 min → aproximadamente 123 kcal ativas. Isso difere de energia total/bruta, que inclui repouso. Não são usadas APIs nem modelos de IA para esse cálculo.
 
 O peso sugerido é o último disponível na data da atividade ou antes dela, nunca um peso futuro. Na ausência de peso, o campo fica vazio e a estimativa exige preenchimento. Alterar o peso no Progresso não recalcula retroativamente registros salvos.
 
@@ -32,6 +32,6 @@ O Diário identifica a origem e permite abrir a referência. Cada estimativa arm
 
 O registro atual não depende de catálogo externo. Mais tarde, uma API própria pode servir o catálogo versionado, persistir registros e aceitar texto livre com confirmação de modalidade/ritmo/duração. Integrações com dispositivos exigirão autenticação e consentimento específicos. Um catálogo de exercícios de musculação descreve movimentos e equipamentos; não fornece automaticamente gasto individual confiável.
 
-A aplicação continua em memória: recarregar ou sair limpa os registros. O resumo da home soma as calorias ativas informadas ou estimadas ao saldo diário, mantendo a regra anterior; o banner de excesso compara o consumo bruto à meta.
+A aplicação continua em memória: recarregar ou sair limpa os registros. O resumo mostra as calorias ativas informadas ou estimadas à parte. Elas não aumentam a meta alimentar nem compensam consumo acima dela. Banner, gráfico, equação e Diário usam a mesma comparação entre consumo alimentar e meta.
 
 Verificação: `npm run test:activities`; com Vite e Chromium ativos, `npm run test:activities-ui`.
