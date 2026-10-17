@@ -6,9 +6,9 @@ Node 24, `npm ci`, `npm run dev`. Na home, abra **Adicionar alimentos → Buscar
 
 - **TACO:** acervo local de 597 alimentos da 4ª edição (2011). Funciona sem rede. Não é API oficial nem consulta à TBCA.
 - **Open Food Facts:** consulta externa para nomes de produtos ou códigos de barras. Dados colaborativos podem estar incompletos.
-- **USDA FoodData Central:** consulta externa a Foundation/SR Legacy. Use termos em inglês. O servidor usa a chave pública `DEMO_KEY` se não houver configuração; seus limites são baixos. Para chave própria, copie `.env.example` para `.env.local` e configure `USDA_API_KEY`, ou defina essa variável no host. Nunca use o prefixo `VITE_` para a chave.
+- **USDA FoodData Central:** consulta externa a Foundation/SR Legacy e produtos Branded. Use termos em inglês. O servidor usa a chave pública `DEMO_KEY` se não houver configuração; seus limites são baixos. Para chave própria, copie `.env.example` para `.env.local` e configure `USDA_API_KEY`, ou defina essa variável no host. Nunca use o prefixo `VITE_` para a chave.
 
-As consultas externas dependem da rede, disponibilidade e cotas das fontes. Neste ambiente de desenvolvimento, o proxy bloqueou os domínios externos: os adaptadores foram testados com respostas controladas, mas ainda precisam de validação ao vivo em uma rede autorizada. TACO e o fluxo no navegador foram exercitados com dados reais locais.
+As consultas externas dependem da rede, disponibilidade e cotas das fontes. O USDA foi validado ao vivo neste ambiente, inclusive em busca de whey pelo navegador, cálculo de porção e registro com atribuição. O Node 24 configura seu proxy a partir das variáveis HTTP_PROXY/HTTPS_PROXY quando presentes, respeitando NO_PROXY; sem proxy, as chamadas são diretas. Open Food Facts permanece sem validação ao vivo. Os testes automatizados de adaptadores usam respostas controladas; TACO foi exercitada com dados reais locais.
 
 ## Estrutura e contrato
 
@@ -45,7 +45,7 @@ O acervo foi extraído da planilha original `references/original-Taco_4a_edicao_
 
 **USDA FoodData Central:** https://fdc.nal.usda.gov/ — dados do Departamento de Agricultura dos Estados Unidos. Documentação e condições: https://fdc.nal.usda.gov/api-guide.html. A referência do alimento é preservada em cada candidato.
 
-**TBCA:** não integrada nesta etapa. Precisa de avaliação separada de acesso e condições de uso.
+**TBCA:** https://www.tbca.net.br/ — não integrada nesta etapa. O site oferece preparações e medidas caseiras, mas publica restrições de comercialização e alteração do conteúdo. A integração requer avaliação específica das condições de uso e de acesso, sem presumir disponibilidade de API pública.
 
 ## Verificação
 

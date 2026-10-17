@@ -20,7 +20,8 @@ test('OFF normalizes energy, liquid basis and unknown macros', () => {
   assert.equal(normalizeOff({code:'1',product_name:'Teste',nutriments:{energy_100g:100,energy_unit:'kcal'}}).per100.kcal,100);
 });
 test('USDA uses nutrient IDs and verifies nutrient units', () => {
-  const food = normalizeUsda({fdcId:123, description:'Rice',foodNutrients:[{nutrientId:1008,unitName:'KCAL',value:130},{nutrientId:1003,unitName:'G',value:2.5},{nutrientId:1004,unitName:'MG',value:99}]});
+  const food = normalizeUsda({fdcId:123, description:'Rice',brandOwner:'Test brand',foodNutrients:[{nutrientId:1008,unitName:'KCAL',value:130},{nutrientId:1003,unitName:'G',value:2.5},{nutrientId:1004,unitName:'MG',value:99}]});
+  assert.equal(food.name,'Rice · Test brand');
   assert.deepEqual(food.per100,{kcal:130,protein:2.5,carbs:null,fat:null});
 });
 test('real TACO data calculates an explicit portion and retains attribution', async () => {
@@ -42,7 +43,7 @@ test('external adapters construct fixed provider URLs; never expose USDA key', a
   assert.equal((await providers.off.search('12345678'))[0].sourceId,'12345678');
   assert.deepEqual(await providers.usda.search('rice'),[]);
   assert.equal(urls[1].searchParams.get('api_key'),'test-only-secret');
-  assert.equal(urls[1].searchParams.get('dataType'),'Foundation,SR Legacy');
+  assert.equal(urls[1].searchParams.get('dataType'),'Foundation,SR Legacy,Branded');
 });
 test('cache, coalescing, source cooldown, expiry and failed requests', async () => {
   let now=10000,calls=0;

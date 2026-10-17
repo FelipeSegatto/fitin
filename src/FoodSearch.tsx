@@ -125,7 +125,7 @@ export function FoodSearch({
               <option value="off">
                 Open Food Facts · produtos e código de barras
               </option>
-              <option value="usda">USDA · ingredientes em inglês</option>
+              <option value="usda">USDA · alimentos e produtos em inglês</option>
             </select>
           </label>
           <p className="food-source-note">
@@ -133,7 +133,7 @@ export function FoodSearch({
               ? "Acervo local de 597 alimentos da TACO (2011). Não é uma consulta à TBCA nem uma API oficial da TACO."
               : source === "off"
                 ? "Base colaborativa: confira o produto, a marca e os valores do rótulo. Você também pode digitar um código de barras."
-                : "Dados do USDA. Busque em inglês, como “cooked rice”. O acesso de demonstração tem limite de consultas."}
+                : "Dados do USDA, incluindo produtos de marca. Busque em inglês, como “whey protein”. O acesso de demonstração tem limite de consultas."}
           </p>
           <label className="field">
             <span>Buscar alimento ou código de barras</span>

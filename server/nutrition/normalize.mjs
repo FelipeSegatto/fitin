@@ -98,7 +98,9 @@ export function normalizeUsda(food) {
     source: "usda",
     sourceName: "USDA FoodData Central",
     sourceId: food.fdcId,
-    name: food.description,
+    name: food.description && (food.brandOwner || food.brandName)
+      ? `${food.description} · ${food.brandOwner || food.brandName}`
+      : food.description,
     url: `https://fdc.nal.usda.gov/food-details/${encodeURIComponent(food.fdcId)}/nutrients`,
     version: "FDC API v1",
     per100: {

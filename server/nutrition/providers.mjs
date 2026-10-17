@@ -1,3 +1,9 @@
+import { setGlobalProxyFromEnv } from "node:http";
+// Node 24 fetch must explicitly honor the host proxy, including NO_PROXY.
+// Hosts without a configured proxy continue making direct HTTPS requests.
+if (process.env.HTTPS_PROXY || process.env.https_proxy || process.env.HTTP_PROXY || process.env.http_proxy)
+  setGlobalProxyFromEnv();
+
 import dataset from "./data/taco.json" with { type: "json" };
 import {
   normalizeOff,
@@ -135,7 +141,7 @@ export function createProviders({
           api_key: usdaKey,
           query,
           pageSize: "8",
-          dataType: "Foundation,SR Legacy",
+          dataType: "Foundation,SR Legacy,Branded",
         }).forEach(([key, value]) => url.searchParams.set(key, value));
         const data = await request(url);
         return (data.foods || []).map(normalizeUsda).filter(Boolean);
