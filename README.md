@@ -99,4 +99,4 @@ No desktop, Conquistas omite o cabeçalho com logo acima do conteúdo, seguindo 
 
 O Open Food Facts foi verificado por código no próprio FitIn. A API também respondeu a buscas diretas por nome, mas o aplicativo recebeu 503 intermitentes por limitação/alta demanda; a UI indica a falha e oferece alternativas. Evidências e limites: [verificação OFF](docs/open-food-facts-check.md).
 
-Atividades agora têm 33 opções, busca, categorias, cards e durações rápidas. Verificações: `npm run test:products`, `npm run test:products-ui`, `npm run test:activities-ui`.
+Atividades agora têm 47 opções, busca, categorias, cards e durações rápidas. Verificações: `npm run test:products`, `npm run test:products-ui`, `npm run test:activities-ui`.

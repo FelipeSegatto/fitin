@@ -1,10 +1,11 @@
 import { useState } from "react";
-import { Bike, ChevronDown, Search, Footprints, Dumbbell, Waves, Music2, Trophy, PersonStanding, Clock3, HeartPulse } from "lucide-react";
+import { Bike, ChevronDown, Search, Footprints, Dumbbell, Waves, Music2, Trophy, PersonStanding, Clock3, HeartPulse, Swords, Mountain } from "lucide-react";
 import { activityOptions, activityCategories, activityCategory, activitySource, estimateActivity, type ActivityReference } from "./activities";
 import "./activities.css";
-const icons = {Cardio:Footprints,Força:Dumbbell,Mobilidade:PersonStanding,Aquáticas:Waves,Esportes:Trophy,Dança:Music2};
+const icons = {Cardio:Footprints,Força:Dumbbell,Mobilidade:PersonStanding,Aquáticas:Waves,Esportes:Trophy,Dança:Music2,Lutas:Swords};
 function activityIcon(id: string) {
   if (id.startsWith("cycling")) return Bike;
+  if (id.startsWith("climbing")) return Mountain;
   if (id === "rowing") return Waves;
   if (id === "elliptical" || id === "rope") return HeartPulse;
   return icons[activityCategory(id) as keyof typeof icons] || Footprints;
@@ -17,7 +18,7 @@ export function ActivityEstimator({ defaultWeight, initial, onApply }: {
   const [weight,setWeight]=useState(String(initial?.weightKg??defaultWeight??''));
   const [minutes,setMinutes]=useState(String(initial?.minutes??30));
   const activity=activityOptions.find(item=>item.id===activityId)!;
-  const normalize=(s:string)=>s.normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase();
+  const normalize=(s:string)=>s.normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().replace(/\bbale\b/g,'ballet').replace(/[^a-z0-9]/g,'');
   const filtered=activityOptions.filter(item=>(category==='Todas'||activityCategory(item.id)===category)&&normalize(`${item.name} ${item.detail}`).includes(normalize(query)));
   let estimate:ActivityReference|undefined,error='';
   try{estimate=estimateActivity(activityId,Number(weight),Number(minutes));}catch(e){error=(e as Error).message;}
@@ -34,6 +35,7 @@ export function ActivityEstimator({ defaultWeight, initial, onApply }: {
         return <button type="button" key={item.id} aria-label={`${item.name} · ${item.detail}`} aria-pressed={activityId===item.id} onClick={()=>setActivityId(item.id)}><span className={`activity-option-icon activity-color-${group}`}><Icon size={20}/></span><span><strong>{item.name}</strong><small>{item.detail}</small><em>{item.intensity}</em></span></button>;
       })}{!filtered.length&&<p>Nenhuma atividade encontrada. Tente outro termo ou informe os dados manualmente.</p>}</div>
       <div className="activity-selected"><SelectedIcon size={22}/><div><strong>{activity.name}</strong><span>{activity.detail}</span></div><small>Selecionada</small></div>
+      {"referenceNote" in activity && <p className="activity-reference-note">{activity.referenceNote}</p>}
       <div className="activity-inputs">
         <label className="field"><span>Peso usado na estimativa (kg)</span><input type="number" min="20" max="350" step="0.1" value={weight} onChange={e=>setWeight(e.target.value)}/></label>
         <label className="field"><span>Tempo da atividade (min)</span><input type="number" min="1" max="1440" step="1" value={minutes} onChange={e=>setMinutes(e.target.value)}/></label>

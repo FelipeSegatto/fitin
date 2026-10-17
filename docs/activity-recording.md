@@ -6,7 +6,7 @@ Abra **Adicionar atividades** na home, ou adicione pelo Diário na data desejada
 - **Relógio ou aplicativo:** selecione essa origem e informe as **calorias ativas** exibidas pelo dispositivo. Não há sincronização com dispositivos nesta etapa.
 - **Estimativa:** abra “Estimar calorias da atividade”, escolha modalidade/ritmo, confirme peso e duração e clique “Usar estimativa”. É necessário confirmar os campos antes de adicionar o registro.
 
-O catálogo tem 33 opções de modalidade/ritmo, incluindo caminhada, trilha, bicicleta, ergométrica, corrida, remo, musculação, calistenia, pilates, yoga, natação, hidroginástica, esportes, dança e ginástica. A seleção oferece busca com normalização de acentos, categorias, cards com intensidade, resumo da seleção e atalhos de 15/30/45/60 minutos. É uma seleção local, sem API paga ou chamadas externas. As modalidades e parâmetros estão em `src/activities.ts`; o formulário está em `src/ActivityEstimator.tsx`.
+O catálogo tem 47 opções de modalidade/ritmo, incluindo caminhada, trilha, bicicleta, ergométrica, corrida, remo, musculação, calistenia, pilates, yoga, natação, hidroginástica, esportes, ballet, dança, escalada/rapel, CrossFit e lutas (boxe, jiu-jítsu, judô, karatê, taekwondo e muay thai). A seleção oferece busca com normalização de acentos, categorias, cards com intensidade, resumo da seleção e atalhos de 15/30/45/60 minutos. É uma seleção local, sem API paga ou chamadas externas. As modalidades e parâmetros estão em `src/activities.ts`; o formulário está em `src/ActivityEstimator.tsx`.
 
 ## Referência e cálculo
 
@@ -35,3 +35,5 @@ O registro atual não depende de catálogo externo. Mais tarde, uma API própria
 A aplicação continua em memória: recarregar ou sair limpa os registros. O resumo mostra as calorias ativas informadas ou estimadas à parte. Elas não aumentam a meta alimentar nem compensam consumo acima dela. Banner, gráfico, equação e Diário usam a mesma comparação entre consumo alimentar e meta.
 
 Verificação: `npm run test:activities`; com Vite e Chromium ativos, `npm run test:activities-ui`.
+
+CrossFit usa equivalência com treino em circuito (moderado ou vigoroso), identificada como aproximação na seleção e preservada em `referenceNote` no registro. Os treinos gerais de luta usam uma referência do grupo artes marciais; não representam uma medição específica para cada modalidade. Pausas longas e tempo de aula não ativo não devem ser tratados como esforço vigoroso contínuo.

@@ -26,6 +26,24 @@ try{
  assert.equal(await page.locator('.activity-options > button').count(),3);
  await page.getByLabel('Buscar atividade').fill('nao-existe');
  await page.getByText('Nenhuma atividade encontrada.',{exact:false}).waitFor();
+ await page.getByLabel('Buscar atividade').fill('');
+ await page.getByRole('button',{name:'Lutas',exact:true}).click();
+ assert.equal(await page.locator('.activity-options > button').count(),7);
+ await page.getByLabel('Buscar atividade').fill('jiu jitsu');
+ await page.getByRole('button',{name:/^Jiu-jítsu ·/}).click();
+ assert.ok((await page.locator('.activity-selected').innerText()).includes('Jiu-jítsu'));
+ await page.getByRole('button',{name:'Dança',exact:true}).click();
+ await page.getByLabel('Buscar atividade').fill('balé');
+ assert.equal(await page.locator('.activity-options > button').count(),2);
+ await page.getByRole('button',{name:'Ballet · Prática geral de balé, esforço moderado',exact:true}).click();
+ await page.getByRole('button',{name:'Esportes',exact:true}).click();
+ await page.getByLabel('Buscar atividade').fill('escalada');
+ await page.getByRole('button',{name:'Escalada · Subida em rocha ou parede, esforço vigoroso',exact:true}).click();
+ await page.getByRole('button',{name:'Força',exact:true}).click();
+ await page.getByLabel('Buscar atividade').fill('cross fit');
+ assert.equal(await page.locator('.activity-options > button').count(),2);
+ await page.getByRole('button',{name:'CrossFit · Circuito vigoroso, poucas pausas; aproximação',exact:true}).click();
+ await page.locator('.activity-reference-note').waitFor();
  await page.getByRole('button',{name:'Cardio',exact:true}).click();
 
  await page.getByLabel('Buscar atividade').fill('Bicicleta');

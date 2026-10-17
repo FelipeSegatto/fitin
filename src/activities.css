@@ -44,3 +44,6 @@
 .activity-selected > small {font-size:9px;background:#d4ebdf;padding:5px 7px;border-radius:20px;}
 .activity-time-presets {display:flex;align-items:center;gap:6px;margin:0 0 15px;color:#526c60;flex-wrap:wrap;}
 @media (min-width:760px) {.activity-options {grid-template-columns:1fr 1fr;max-height:310px;}.modal:has(.activity-estimator){width:600px;max-width:calc(100vw - 44px);}}
+
+.activity-color-Lutas {background:#fce0dc;color:#a34439;}
+.activity-panel .activity-reference-note {background:#fff0d5;color:#79551f;padding:10px;border-radius:10px;margin:0 0 14px;}

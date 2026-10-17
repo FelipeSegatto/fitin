@@ -39,6 +39,20 @@ export const activityOptions = [
   { id: "aerobics-low", name: "Ginástica aeróbica", detail: "Baixo impacto, esforço moderado", intensity: "Moderada", met: 5 },
   { id: "aerobics-high", name: "Ginástica aeróbica", detail: "Alto impacto, esforço vigoroso", intensity: "Vigorosa", met: 7.3 },
   { id: "rope", name: "Pular corda", detail: "Ritmo moderado, 100 a 120 saltos/min", intensity: "Vigorosa", met: 11.8 },
+  { id: "dance-ballet", name: "Ballet", detail: "Prática geral de balé, esforço moderado", intensity: "Moderada", met: 4.8 },
+  { id: "dance-ballet-vigorous", name: "Ballet", detail: "Aula ou apresentação, esforço vigoroso", intensity: "Vigorosa", met: 6.8 },
+  { id: "dance-general", name: "Dança em geral", detail: "Referência de dança geral, esforço moderado", intensity: "Moderada", met: 4.8 },
+  { id: "climbing-ascent", name: "Escalada", detail: "Subida em rocha ou parede, esforço vigoroso", intensity: "Vigorosa", met: 8 },
+  { id: "climbing-rappel", name: "Rapel", detail: "Descida em corda, referência de escalada/rapel", intensity: "Moderada", met: 5 },
+  { id: "crossfit-moderate", name: "CrossFit", detail: "Circuito moderado, com pausas; aproximação", intensity: "Moderada", met: 4.3, referenceNote: "Estimativa por equivalência com treino em circuito, não um MET específico de CrossFit. Considere somente o tempo de treino compatível com esse esforço." },
+  { id: "crossfit-vigorous", name: "CrossFit", detail: "Circuito vigoroso, poucas pausas; aproximação", intensity: "Vigorosa", met: 8, referenceNote: "Estimativa por equivalência com treino em circuito, não um MET específico de CrossFit. Considere somente o tempo de treino compatível com esse esforço." },
+  { id: "combat-boxing-bag", name: "Boxe", detail: "Treino em saco de pancadas", intensity: "Moderada", met: 5.5 },
+  { id: "combat-boxing-sparring", name: "Boxe", detail: "Sparring, esforço vigoroso", intensity: "Vigorosa", met: 7.8 },
+  { id: "combat-jiujitsu", name: "Jiu-jítsu", detail: "Treino geral; referência do grupo artes marciais", intensity: "Vigorosa", met: 10.3 },
+  { id: "combat-judo", name: "Judô", detail: "Treino geral; referência do grupo artes marciais", intensity: "Vigorosa", met: 10.3 },
+  { id: "combat-karate", name: "Karatê", detail: "Treino geral; referência do grupo artes marciais", intensity: "Vigorosa", met: 10.3 },
+  { id: "combat-taekwondo", name: "Taekwondo", detail: "Treino geral; referência do grupo artes marciais", intensity: "Vigorosa", met: 10.3 },
+  { id: "combat-muaythai", name: "Muay Thai", detail: "Treino geral; aproximação por artes marciais", intensity: "Vigorosa", met: 10.3 },
 ] as const;
 export type ActivityReference = {
   activityId: string;
@@ -49,6 +63,7 @@ export type ActivityReference = {
   weightKg: number;
   minutes: number;
   kcal: number;
+  referenceNote?: string;
   method: "net-met-v1";
   source: typeof activitySource;
 };
@@ -59,18 +74,19 @@ export function estimateActivity(activityId: string, weightKg: number, minutes: 
   // Active energy only: subtract 1 MET of resting expenditure to avoid adding it twice.
   const kcal = Math.round((activity.met - 1) * 3.5 * weightKg / 200 * minutes);
   if (kcal < 1 || kcal > 10000) throw new Error("A estimativa está fora do limite do registro. Confira os valores.");
-  return {activityId: activity.id, name: activity.name, detail: activity.detail, intensity: activity.intensity, met: activity.met, weightKg, minutes, kcal, method: "net-met-v1", source: activitySource};
+  return {activityId: activity.id, name: activity.name, detail: activity.detail, intensity: activity.intensity, met: activity.met, weightKg, minutes, kcal, ...("referenceNote" in activity ? {referenceNote: activity.referenceNote} : {}), method: "net-met-v1", source: activitySource};
 }
 export function weightAtDate(weights: {date: string; weight: number}[], date: string): number | undefined {
   return [...weights].filter(w => w.date <= date && Number.isFinite(w.weight) && w.weight >= 20 && w.weight <= 350).sort((a,b) => b.date.localeCompare(a.date))[0]?.weight;
 }
 
-export const activityCategories = ["Todas", "Cardio", "Força", "Mobilidade", "Aquáticas", "Esportes", "Dança"] as const;
+export const activityCategories = ["Todas", "Cardio", "Força", "Mobilidade", "Aquáticas", "Esportes", "Dança", "Lutas"] as const;
 export function activityCategory(id: string): string {
-  if (/^(strength|calisthenics)/.test(id)) return "Força";
+  if (/^(strength|calisthenics|crossfit)/.test(id)) return "Força";
   if (/^(yoga|stretching|pilates)/.test(id)) return "Mobilidade";
   if (/^(swimming|water)/.test(id)) return "Aquáticas";
-  if (/^(soccer|basketball|volleyball|tennis|badminton)/.test(id)) return "Esportes";
+  if (/^(soccer|basketball|volleyball|tennis|badminton|climbing)/.test(id)) return "Esportes";
+  if (id.startsWith("combat-")) return "Lutas";
   if (/^(dance|aerobics)/.test(id)) return "Dança";
   return "Cardio";
 }

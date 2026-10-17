@@ -25,3 +25,10 @@ test('weight suggestions never use a future measurement and preserve original hi
  assert.equal(weightAtDate(weights,'2026-09-01'),undefined);
  assert.equal(JSON.stringify(weights),snapshot);
 });
+
+test('CrossFit retains its approximation reference and effort levels differ',()=>{
+ const moderate=estimateActivity('crossfit-moderate',78,30);
+ const vigorous=estimateActivity('crossfit-vigorous',78,30);
+ assert.ok(vigorous.kcal>moderate.kcal);
+ assert.ok(vigorous.referenceNote.includes('não um MET específico de CrossFit'));
+});
