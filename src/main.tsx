@@ -37,6 +37,8 @@ import { Achievements, type AchievementHistory } from "./Achievements";
 import type { ChallengeSelection } from "./weeklyChallenges";
 import { fullDayRecords } from "./demoAccounts";
 import { RecordIcon } from "./RecordIcon";
+import { FoodSearch } from "./FoodSearch";
+import { portionValues, type NutritionReference } from "./nutrition";
 type Screen =
   | "welcome"
   | "login"
@@ -1502,6 +1504,9 @@ function Modal({
       carbs: initial?.carbs === undefined ? "" : String(initial.carbs),
       fat: initial?.fat === undefined ? "" : String(initial.fat),
     });
+  const [nutrition, setNutrition] = useState<NutritionReference | undefined>(
+    initial?.nutrition,
+  );
   const ref = React.useRef<HTMLDivElement>(null);
   React.useEffect(() => {
     const previous = document.activeElement as HTMLElement;
@@ -1510,7 +1515,7 @@ function Modal({
       if (e.key === "Escape") close();
       if (e.key === "Tab") {
         const els = ref.current?.querySelectorAll<HTMLElement>(
-          "button,input,select",
+          "button:not(:disabled),input:not(:disabled),select:not(:disabled)",
         );
         if (!els?.length) return;
         const first = els[0],
@@ -1568,7 +1573,12 @@ function Modal({
           <form
             onSubmit={(e) => {
               e.preventDefault();
-              if (name.trim() && Number(kcal) > 0 && Number(kcal) <= 10000)
+              if (
+                name.trim() &&
+                kcal !== "" &&
+                Number(kcal) >= (kind === "food" ? 0 : 1) &&
+                Number(kcal) <= 10000
+              )
                 add({
                   name: name.trim(),
                   kcal: Number(kcal),
@@ -1576,6 +1586,7 @@ function Modal({
                   ...(kind === "food"
                     ? {
                         meal,
+                        ...(nutrition ? { nutrition } : {}),
                         ...Object.fromEntries(
                           Object.entries(macros)
                             .filter(([, v]) => v !== "")
@@ -1589,15 +1600,60 @@ function Modal({
             }}
           >
             <p className="subtitle">
-              Registro demonstrativo. Informe um valor de exemplo.
+              {kind === "food"
+                ? "Busque um alimento e confirme a porção, ou informe os valores manualmente."
+                : "Registro demonstrativo. Informe um valor de exemplo."}
             </p>
+            {kind === "food" && (
+              <FoodSearch
+                onApply={(reference) => {
+                  const values = portionValues(
+                    reference.food,
+                    reference.amount,
+                  );
+                  setName(
+                    `${reference.food.name} (${reference.amount} ${reference.food.basis.unit})`.slice(
+                      0,
+                      80,
+                    ),
+                  );
+                  setKcal(String(values.kcal));
+                  setMacros({
+                    protein:
+                      values.protein === null ? "" : String(values.protein),
+                    carbs: values.carbs === null ? "" : String(values.carbs),
+                    fat: values.fat === null ? "" : String(values.fat),
+                  });
+                  setNutrition(reference);
+                }}
+              />
+            )}
+            {nutrition && (
+              <p className="food-provenance">
+                {nutrition.amount} {nutrition.food.basis.unit} ·{" "}
+                <a
+                  href={nutrition.food.sourceUrl}
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  {nutrition.food.sourceName}
+                </a>{" "}
+                · {nutrition.food.sourceVersion}
+                <br />
+                Valores calculados a partir de 100 {nutrition.food.basis.unit}.
+                Nutrientes ausentes permanecem sem informação.
+              </p>
+            )}
             <label className="field">
               <span>
                 {kind === "food" ? "Alimento ou refeição" : "Atividade"}
               </span>
               <input
                 value={name}
-                onChange={(e) => setName(e.target.value)}
+                onChange={(e) => {
+                  setName(e.target.value);
+                  setNutrition(undefined);
+                }}
                 required
                 maxLength={80}
               />
@@ -1606,11 +1662,14 @@ function Modal({
               <span>Energia (kcal)</span>
               <input
                 type="number"
-                min="1"
+                min={kind === "food" ? "0" : "1"}
                 max="10000"
                 step="1"
                 value={kcal}
-                onChange={(e) => setKcal(e.target.value)}
+                onChange={(e) => {
+                  setKcal(e.target.value);
+                  setNutrition(undefined);
+                }}
                 required
               />
             </label>
@@ -1674,9 +1733,10 @@ function Modal({
                         max="1000"
                         step="0.1"
                         value={macros[key]}
-                        onChange={(e) =>
-                          setMacros((m) => ({ ...m, [key]: e.target.value }))
-                        }
+                        onChange={(e) => {
+                          setMacros((m) => ({ ...m, [key]: e.target.value }));
+                          setNutrition(undefined);
+                        }}
                       />
                     </label>
                   ))}

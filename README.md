@@ -78,3 +78,9 @@ Os cards da home usam preenchimentos mais fortes, seguindo o roxo e o verde orig
 Quando as calorias consumidas ultrapassam a meta diária, o banner da home mostra “Atenção à meta do dia”, o excesso registrado e o personagem fornecido em `attention-buddy.svg`. A comparação usa consumo bruto (`consumidas > meta`): as atividades continuam no saldo do resumo, mas não escondem o aviso. No demo completo, 2.400 kcal consumidas para meta de 2.000 geram aviso de 400 kcal acima, mesmo com saldo ajustado de 0 kcal. Ao voltar à meta ou abaixo dela, o banner habitual retorna.
 
 A seção “Desafios da semana” fica em um banner com a personagem e o quadro fornecidos pelo autor (`challenges-guide.svg`). Os cards semanais e os desafios ativos usam preenchimentos verde, roxo, azul e amarelo da paleta, com textos escuros e pequenos elementos de cada tema. No mobile, as quatro opções continuam no carrossel.
+
+## Busca nutricional
+
+O formulário de alimentos agora consulta um acervo local de 597 alimentos da TACO e oferece adaptadores para Open Food Facts e USDA. É possível pesquisar `150 g de arroz cozido`, escolher o resultado e confirmar a porção. Calorias/macros e origem seguem para o registro; o preenchimento manual continua disponível.
+
+`npm run dev` já inicia a pequena API Node junto do Vite. Para uma chave USDA própria, consulte `.env.example` (opcional). Uma hospedagem apenas estática de `dist/` precisa de um backend para essa API. Arquitetura, limitações, atribuições, hospedagem e evolução para texto livre: [integração nutricional](docs/nutrition-integration.md). Verificação: `npm run test:nutrition` e, com o servidor ativo, `npm run test:nutrition-ui`.

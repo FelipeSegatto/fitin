@@ -1,3 +1,4 @@
+import type { NutritionReference } from "./nutrition";
 export type DailyRecord = {
   id: string;
   date: string;
@@ -9,6 +10,7 @@ export type DailyRecord = {
   carbs?: number;
   fat?: number;
   minutes?: number;
+  nutrition?: NutritionReference;
 };
 export type RecordDraft = Omit<DailyRecord, "id" | "date">;
 export function localDay(date = new Date()): string {

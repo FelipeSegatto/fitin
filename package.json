@@ -12,7 +12,9 @@
     "test:achievements": "node scripts/achievements-smoke.mjs",
     "test:diary-progress": "node scripts/diary-progress-smoke.mjs",
     "test:profile": "node scripts/profile-smoke.mjs",
-    "test:full-day-demo": "node scripts/full-day-demo-smoke.mjs"
+    "test:full-day-demo": "node scripts/full-day-demo-smoke.mjs",
+    "test:nutrition": "node --test scripts/nutrition-unit.test.mjs",
+    "test:nutrition-ui": "node scripts/nutrition-smoke.mjs"
   },
   "dependencies": {
     "@fontsource/poppins": "^5.2.7",

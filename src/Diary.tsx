@@ -106,6 +106,14 @@ export function Diary({
           {e.fat !== undefined ? `G ${format(e.fat)} g` : "G —"}
         </p>
       )}
+      {kind === "food" && e.nutrition && (
+        <p className="entry-nutrition-source">
+          {e.nutrition.amount} {e.nutrition.food.basis.unit} ·{" "}
+          <a href={e.nutrition.food.sourceUrl} target="_blank" rel="noreferrer">
+            {e.nutrition.food.sourceName}
+          </a>
+        </p>
+      )}
       <div className="entry-bottom">
         <strong>{e.kcal} kcal</strong>
         <div>
