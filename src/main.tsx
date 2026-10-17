@@ -357,31 +357,7 @@ function App() {
   };
   const authHero = (
     <div className="auth-hero">
-      <Mascot name={screen === "login" ? "login-buddy" : "welcome-buddy"} />
-      {screen === "login" ? (
-        <svg
-          className="login-ledge"
-          viewBox="0 0 540 100"
-          preserveAspectRatio="none"
-          aria-hidden="true"
-        >
-          <path
-            className="login-ledge-surface"
-            d="M-10 66Q270 -16 550 66V105H-10Z"
-          />
-          {/* The lower contours follow the ledge curve exactly, keeping both arms in contact. */}
-          <path
-            className="login-resting-arm"
-            d="M202 27.419C185 8 158 9 150 32.531Q176 29.267 202 27.419Z"
-          />
-          <path
-            className="login-resting-arm"
-            d="M338 27.419C355 8 382 9 390 32.531Q364 29.267 338 27.419Z"
-          />
-        </svg>
-      ) : (
-        <div className="cream-wave" />
-      )}
+      <img className="auth-support-art" src="/assets/auth-support-buddy.svg" alt="" />
     </div>
   );
   const loginSubmit = (e: React.FormEvent) => {
