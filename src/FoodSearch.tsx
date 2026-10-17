@@ -8,10 +8,14 @@ import {
   type NutritionReference,
 } from "./nutrition";
 import "./nutrition.css";
+import { PersonalProducts } from "./PersonalProducts";
+import { findPersonalProducts } from "./personalProducts";
 
 export function FoodSearch({
   onApply,
+  account,
 }: {
+  account: string;
   onApply: (reference: NutritionReference) => void;
 }) {
   const [open, setOpen] = useState(false),
@@ -54,6 +58,14 @@ export function FoodSearch({
     setResults([]);
     setMessage("");
     setSourceNotes([]);
+    let personal: FoodCandidate[] = [];
+    try {if(source === "all" || source === "personal") personal = findPersonalProducts(account, parsed.query);}
+    catch {setSourceNotes(["Não foi possível ler seus produtos pessoais. O conteúdo salvo foi preservado."]);}
+    if (source === "personal") {
+      setResults(personal); setRetrievedAt(new Date().toISOString()); setBusy(false);
+      setMessage(personal.length ? `${personal.length} produtos pessoais encontrados.` : "Nenhum produto pessoal encontrado. Abra Meus produtos para cadastrar.");
+      return;
+    }
     try {
       const response = await fetch(
         `/api/nutrition/search?${new URLSearchParams({ source, q: parsed.query })}`,
@@ -62,6 +74,8 @@ export function FoodSearch({
       const data = await response.json();
       if (request.signal.aborted) return;
       if (!response.ok) {
+        setResults(personal);
+        setRetrievedAt(new Date().toISOString());
         setMessage(
           typeof data.message === "string"
             ? data.message
@@ -80,27 +94,29 @@ export function FoodSearch({
         .filter((food: FoodCandidate) => source === "all" || food.source === source);
       const names: Record<string, string> = {taco:"TACO",off:"Open Food Facts",usda:"USDA"};
       if (source === "all" && Array.isArray(data.sources)) {
-        setSourceNotes(data.sources.map((status: {source: string; status: string; count?: number; message?: string; query?: string}) => {
+        setSourceNotes(previous => [...previous, ...data.sources.map((status: {source: string; status: string; count?: number; message?: string; query?: string}) => {
           const name = names[status.source] || status.source;
           return status.status === "ok"
             ? `${name}: ${status.count ?? 0} resultados${status.source === "usda" && status.query ? ` · busca: ${status.query}` : ""}.`
             : `${name}: ${status.message || "fonte indisponível"}`;
-        }));
+        })]);
       } else if(source === "usda" && data.translation?.status === "matched") {
         setSourceNotes([`Busca no USDA: ${data.translation.query}.`]);
       }
-      setResults(foods);
+      setResults([...personal, ...foods]);
       setRetrievedAt(data.retrievedAt);
       setMessage(
-        foods.length
-          ? `${foods.length} resultados. Confira o alimento e a forma de preparo antes de selecionar.`
+        foods.length + personal.length
+          ? `${foods.length + personal.length} resultados. Confira o alimento e a forma de preparo antes de selecionar.`
           : "Nenhum alimento encontrado. Tente outro nome ou preencha manualmente.",
       );
     } catch {
-      if (!request.signal.aborted)
+      if (!request.signal.aborted) {
+        setResults(personal); setRetrievedAt(new Date().toISOString());
         setMessage(
-          "Não foi possível consultar a fonte. Confira a conexão ou registre manualmente.",
+          "Não foi possível consultar a fonte. Seus produtos pessoais continuam disponíveis; você também pode registrar manualmente.",
         );
+      }
     } finally {
       if (!request.signal.aborted) setBusy(false);
     }
@@ -126,6 +142,7 @@ export function FoodSearch({
       </button>
       {open && (
         <div className="food-search-panel">
+          <PersonalProducts account={account} onApply={reference=>{onApply(reference);setOpen(false);reset();}} />
           <label className="field">
             <span>Fonte nutricional</span>
             <select
@@ -136,6 +153,7 @@ export function FoodSearch({
               }}
             >
               <option value="all">Todas as fontes · busca unificada</option>
+              <option value="personal">Meus produtos · rótulos cadastrados</option>
               <option value="taco">TACO · alimentos brasileiros</option>
               <option value="off">
                 Open Food Facts · produtos e código de barras
@@ -144,7 +162,7 @@ export function FoodSearch({
             </select>
           </label>
           <p className="food-source-note">
-            {source === "all"
+            {source === "personal" ? "Produtos pessoais salvos neste navegador, sem publicação no catálogo geral." : source === "all"
               ? "Uma busca na TACO local, no Open Food Facts e no USDA. O catálogo traduz os termos conhecidos para o USDA; cada resultado informa sua fonte. Confira produto, marca e preparo."
               : source === "taco"
               ? "Acervo local de 597 alimentos da TACO (2011). Não é uma consulta à TBCA nem uma API oficial da TACO."

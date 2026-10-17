@@ -123,3 +123,13 @@ test('unified search returns partial results, skips unknown translations and rou
  assert.equal(barcode.sources.find(s=>s.source==='taco').status,'skipped');
  assert.equal(barcode.sources.find(s=>s.source==='usda').status,'skipped');
 });
+
+test('OFF name search uses text API, preserves brand, and reports temporary name limits',async()=>{
+ const urls=[];
+ const providers=createProviders({fetchImpl:async url=>{urls.push(new URL(url));return {ok:true,status:200,json:async()=>({products:[{code:'3017620422003',product_name:'Nutella',brands:'Ferrero',quantity:'350 g',nutriments:{'energy-kcal_100g':539}}]})};}});
+ const result=await providers.off.search('nutella');
+ assert.equal(urls[0].pathname,'/cgi/search.pl');assert.equal(urls[0].searchParams.get('search_terms'),'nutella');
+ assert.equal(urls[0].searchParams.has('lc'),false);assert.equal(result[0].brand,'Ferrero');assert.ok(result[0].name.includes('Ferrero'));
+ const limited=createProviders({fetchImpl:async()=>({ok:false,status:503})});
+ await assert.rejects(limited.off.search('nutella'),e=>e.code==='temporarily_unavailable'&&e.message.includes('código de barras'));
+});

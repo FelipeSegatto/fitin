@@ -57,11 +57,13 @@ export function normalizeOff(product) {
     /\d\s*(?:ml|cl|l)\b/i.test(product.quantity || "")
       ? "ml"
       : "g";
-  return normalizedFood({
+  const result = normalizedFood({
     source: "off",
     sourceName: "Open Food Facts",
     sourceId: product.code,
-    name: product.product_name_pt || product.product_name,
+    name: (product.product_name_pt || product.product_name) && product.brands
+      ? `${product.product_name_pt || product.product_name} · ${product.brands}`
+      : product.product_name_pt || product.product_name,
     unit,
     url: `https://world.openfoodfacts.org/product/${encodeURIComponent(product.code)}`,
     version: "API v2 / search v1",
@@ -76,6 +78,7 @@ export function normalizeOff(product) {
       fat: n.fat_100g,
     },
   });
+  return result ? {...result, brand: product.brands || "", barcode: String(product.code)} : null;
 }
 export function normalizeUsda(food) {
   if (!food || !Array.isArray(food.foodNutrients)) return null;

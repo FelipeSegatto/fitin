@@ -10,7 +10,7 @@ Node 24 foi usado na validação. Instale as dependências com `npm ci` e execut
 
 Boas-vindas, login demonstrativo, recuperação de senha simulada, cadastro em cinco etapas, apresentação de resultado, plano em quatro telas, ajuste de ritmo e home com registro manual de refeições e atividades. Desktop adaptado da identidade mobile; não existe protótipo desktop de referência. Diário, Progresso, Conquistas e Perfil possuem estados iniciais próprios, sem fingir histórico persistido.
 
-Logins: `demo@fitin.app` / `fitin123` (João, dia em andamento) e `completo@fitin.app` / `fitin123` (Marina, dia completo). As contas apenas liberam navegação local; não existe autenticação de backend. O cadastro não cria uma conta e recuperação não envia e-mails. Dados ficam apenas na memória da sessão; senha descartada ao terminar o formulário e todos os dados são limpos ao sair. Use dados fictícios.
+Logins: `demo@fitin.app` / `fitin123` (João, dia em andamento) e `completo@fitin.app` / `fitin123` (Marina, dia completo). As contas apenas liberam navegação local; não existe autenticação de backend. O cadastro não cria uma conta e recuperação não envia e-mails. Registros do dia ficam na memória da sessão e são limpos ao sair; senha descartada ao terminar o formulário. A exceção são produtos pessoais, salvos por conta de demonstração neste navegador, sem sincronização entre dispositivos. Use dados fictícios.
 
 As metas e projeções são um cenário demonstrativo de manutenção de 2.450 kcal. Sexo e medidas não são usados para prescrição; parâmetros reais precisam ser definidos e validados antes de transformar isso em recurso de saúde. A meta se mantém consistente no resultado/plano/home, e refeições/exercícios atualizam o mesmo resumo.
 
@@ -92,3 +92,11 @@ O formulário de alimentos faz uma busca unificada na TACO local (597 alimentos)
 A [avaliação da TBCA](docs/tbca-assessment.md) registra as condições publicadas e uma consulta preparada à coordenação; a TBCA ainda não foi integrada.
 
 No desktop, Conquistas omite o cabeçalho com logo acima do conteúdo, seguindo as outras seções. O logo do menu lateral e o cabeçalho mobile permanecem.
+
+## Produtos pessoais e Open Food Facts
+
+É possível cadastrar produtos pelo rótulo em **Adicionar alimentos → Buscar na base nutricional → Meus produtos**. Nome, marca, referência em g/ml e nutrientes são validados e normalizados. Os produtos permanecem na mesma conta demo/navegador após recarga ou logout e aparecem na busca unificada, sem publicação automática. A estrutura para revisão futura guarda rótulo original, versão, avisos e estado não enviado; não existe pipeline de aprovação implementada. Veja [produtos pessoais](docs/personal-products.md).
+
+O Open Food Facts foi verificado por código no próprio FitIn. A API também respondeu a buscas diretas por nome, mas o aplicativo recebeu 503 intermitentes por limitação/alta demanda; a UI indica a falha e oferece alternativas. Evidências e limites: [verificação OFF](docs/open-food-facts-check.md).
+
+Atividades agora têm 33 opções, busca, categorias, cards e durações rápidas. Verificações: `npm run test:products`, `npm run test:products-ui`, `npm run test:activities-ui`.

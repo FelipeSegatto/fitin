@@ -3,7 +3,9 @@ export type FoodCandidate = {
   retrievedAt?: string;
   id: string;
   name: string;
-  source: "taco" | "off" | "usda";
+  source: "taco" | "off" | "usda" | "personal";
+  brand?: string;
+  barcode?: string;
   sourceName: string;
   sourceId: string;
   sourceUrl: string;
@@ -69,11 +71,11 @@ export function isFoodCandidate(value: unknown): value is FoodCandidate {
   return (
     typeof food.id === "string" &&
     typeof food.name === "string" &&
-    ["taco", "off", "usda"].includes(food.source) &&
+    ["taco", "off", "usda", "personal"].includes(food.source) &&
     typeof food.sourceName === "string" &&
     typeof food.sourceId === "string" &&
     typeof food.sourceVersion === "string" &&
-    /^https:\/\//.test(food.sourceUrl) &&
+    (food.source === "personal" ? food.sourceUrl === "" : /^https:\/\//.test(food.sourceUrl)) &&
     food.basis?.amount === 100 &&
     ["g", "ml"].includes(food.basis.unit) &&
     food.per100?.kcal !== null &&

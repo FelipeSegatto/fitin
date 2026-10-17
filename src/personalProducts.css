@@ -1,0 +1,18 @@
+.personal-products {margin-bottom:16px;}
+.personal-toggle,.personal-create {display:flex;align-items:center;gap:8px;padding:12px;border-radius:12px;background:#fff0d5;color:#6b4a1e;font-size:12px;font-weight:600;width:100%;}
+.personal-panel {background:#fff9ef;padding:14px;border:1px solid #ead8ba;border-radius:14px;margin-top:8px;}
+.personal-panel h3 {font-size:14px;margin-bottom:8px;}
+.personal-panel p,.personal-panel small {font-size:10px;line-height:1.7;margin:8px 0;color:#6b5a48;}
+.personal-panel .personal-error {color:#be1f4c;}
+.personal-grid {display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.personal-grid .field {min-width:0;}
+.personal-grid input {width:100%;min-width:0;}
+.personal-fields {border:0;padding:0;margin-top:14px;min-width:0;}
+.personal-fields legend {font-size:12px;font-weight:600;margin-bottom:10px;}
+.personal-list {display:grid;gap:10px;max-height:340px;overflow:auto;margin-top:12px;}
+.personal-list article {padding:12px;background:white;border-radius:12px;border:1px solid #ead8ba;}
+.personal-list strong,.personal-list span {display:block;font-size:11px;overflow-wrap:anywhere;}
+.personal-list small {display:flex;align-items:center;gap:5px;}
+.personal-actions {display:flex;flex-wrap:wrap;align-items:center;gap:7px;margin-top:8px;}
+.personal-actions button {padding:8px 10px;border-radius:10px;background:#e8dff8;color:#30274b;font-size:10px;}
+.personal-actions .personal-delete {margin-left:auto;background:#fce7ef;color:#be1f4c;}

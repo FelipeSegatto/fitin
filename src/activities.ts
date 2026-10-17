@@ -17,6 +17,28 @@ export const activityOptions = [
   { id: "strength-vigorous", name: "Musculação", detail: "Esforço vigoroso", intensity: "Vigorosa", met: 6 },
   { id: "stretching", name: "Alongamento", detail: "Alongamento leve", intensity: "Leve", met: 2.3 },
   { id: "yoga-hatha", name: "Yoga", detail: "Hatha yoga", intensity: "Leve", met: 2.5 },
+  { id: "walking-slow", name: "Caminhada", detail: "Passeio em piso plano, aproximadamente 3,2 km/h", intensity: "Leve", met: 2.8 },
+  { id: "hiking", name: "Trilha", detail: "Caminhada em terreno irregular, sem carga", intensity: "Vigorosa", met: 6 },
+  { id: "jogging", name: "Trote", detail: "Trote geral em ritmo confortável", intensity: "Vigorosa", met: 7 },
+  { id: "elliptical", name: "Elíptico", detail: "Esforço moderado", intensity: "Moderada", met: 5 },
+  { id: "cycling-stationary", name: "Bicicleta ergométrica", detail: "Sessão geral em bicicleta estacionária", intensity: "Vigorosa", met: 6.8 },
+  { id: "rowing", name: "Remo ergométrico", detail: "Esforço moderado, aproximadamente 100 W", intensity: "Vigorosa", met: 7 },
+  { id: "calisthenics-moderate", name: "Calistenia", detail: "Exercícios com peso corporal, esforço moderado", intensity: "Moderada", met: 3.8 },
+  { id: "calisthenics-vigorous", name: "Calistenia", detail: "Exercícios com peso corporal, esforço vigoroso", intensity: "Vigorosa", met: 8 },
+  { id: "pilates", name: "Pilates", detail: "Sessão geral", intensity: "Moderada", met: 3 },
+  { id: "swimming-slow", name: "Natação", detail: "Nado livre lento, recreativo", intensity: "Moderada", met: 5.8 },
+  { id: "swimming-fast", name: "Natação", detail: "Nado livre rápido, esforço vigoroso", intensity: "Vigorosa", met: 9.8 },
+  { id: "water-aerobics", name: "Hidroginástica", detail: "Sessão geral", intensity: "Moderada", met: 5.5 },
+  { id: "soccer", name: "Futebol", detail: "Recreativo, sem competição", intensity: "Vigorosa", met: 7 },
+  { id: "basketball", name: "Basquete", detail: "Jogo recreativo, geral", intensity: "Vigorosa", met: 6.5 },
+  { id: "volleyball", name: "Vôlei", detail: "Recreativo, sem competição", intensity: "Moderada", met: 3 },
+  { id: "tennis-singles", name: "Tênis", detail: "Jogo de simples", intensity: "Vigorosa", met: 8 },
+  { id: "tennis-doubles", name: "Tênis", detail: "Jogo em duplas", intensity: "Vigorosa", met: 6 },
+  { id: "badminton", name: "Badminton", detail: "Recreativo, geral", intensity: "Moderada", met: 5.5 },
+  { id: "dance-ballroom", name: "Dança de salão", detail: "Ritmo lento, valsa ou foxtrote", intensity: "Moderada", met: 3 },
+  { id: "aerobics-low", name: "Ginástica aeróbica", detail: "Baixo impacto, esforço moderado", intensity: "Moderada", met: 5 },
+  { id: "aerobics-high", name: "Ginástica aeróbica", detail: "Alto impacto, esforço vigoroso", intensity: "Vigorosa", met: 7.3 },
+  { id: "rope", name: "Pular corda", detail: "Ritmo moderado, 100 a 120 saltos/min", intensity: "Vigorosa", met: 11.8 },
 ] as const;
 export type ActivityReference = {
   activityId: string;
@@ -41,4 +63,14 @@ export function estimateActivity(activityId: string, weightKg: number, minutes: 
 }
 export function weightAtDate(weights: {date: string; weight: number}[], date: string): number | undefined {
   return [...weights].filter(w => w.date <= date && Number.isFinite(w.weight) && w.weight >= 20 && w.weight <= 350).sort((a,b) => b.date.localeCompare(a.date))[0]?.weight;
+}
+
+export const activityCategories = ["Todas", "Cardio", "Força", "Mobilidade", "Aquáticas", "Esportes", "Dança"] as const;
+export function activityCategory(id: string): string {
+  if (/^(strength|calisthenics)/.test(id)) return "Força";
+  if (/^(yoga|stretching|pilates)/.test(id)) return "Mobilidade";
+  if (/^(swimming|water)/.test(id)) return "Aquáticas";
+  if (/^(soccer|basketball|volleyball|tennis|badminton)/.test(id)) return "Esportes";
+  if (/^(dance|aerobics)/.test(id)) return "Dança";
+  return "Cardio";
 }

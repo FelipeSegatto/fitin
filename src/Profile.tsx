@@ -361,7 +361,7 @@ export function Profile({
               <summary>Meus dados ficam salvos?</summary>
               <p>
                 Os registros ficam somente nesta sessão. Recarregar a página ou
-                sair limpa a demonstração.
+                sair limpa a demonstração. Seus produtos pessoais permanecem neste navegador até você excluí-los ou limpar os dados do site; não há sincronização entre dispositivos.
               </p>
             </details>
             <details>

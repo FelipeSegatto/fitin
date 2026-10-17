@@ -52,6 +52,8 @@ export function createProviders({
         "access_denied",
         "O acesso à fonte não está disponível. No USDA, confira a chave no servidor.",
       );
+    if (response.status === 503 && url.hostname === "world.openfoodfacts.org" && url.pathname === "/cgi/search.pl")
+      throw new SourceError("temporarily_unavailable", "Open Food Facts está limitando a busca por nome neste momento. Tente o código de barras ou cadastre o produto pelo rótulo.");
     if (!response.ok)
       throw new SourceError(
         "unavailable",
@@ -107,9 +109,10 @@ export function createProviders({
           barcode ? `/api/v2/product/${query}.json` : "/cgi/search.pl",
           "https://world.openfoodfacts.org",
         );
-        url.searchParams.set(
-          "fields",
-          "code,product_name,product_name_pt,nutriments,product_quantity_unit,quantity",
+        // Full-text v1 returns complete product records. Field/locale combinations
+        // returned 503 in live checks; keep this request to its basic search parameters.
+        if (barcode) url.searchParams.set(
+          "fields", "code,product_name,product_name_pt,brands,nutriments,product_quantity_unit,quantity",
         );
         if (!barcode)
           Object.entries({
@@ -118,8 +121,6 @@ export function createProviders({
             action: "process",
             json: "1",
             page_size: "8",
-            lc: "pt",
-            cc: "br",
           }).forEach(([key, value]) => url.searchParams.set(key, value));
         const data = await request(url);
         return (

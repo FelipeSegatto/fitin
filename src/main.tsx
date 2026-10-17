@@ -148,6 +148,7 @@ function Mascot({
 function App() {
   const [screen, setScreen] = useState<Screen>("welcome"),
     [profile, setProfile] = useState<UserProfile>(initial),
+    [catalogAccount, setCatalogAccount] = useState(""),
     [step, setStep] = useState(0),
     [skippedMeasures, setSkippedMeasures] = useState<MeasureKey[]>([]),
     [planStep, setPlanStep] = useState(0),
@@ -461,6 +462,7 @@ function App() {
               },
             ],
       );
+      setCatalogAccount(email.trim().toLowerCase());
       setProfile({
         ...initial,
         email,
@@ -474,6 +476,7 @@ function App() {
     }, 450);
   };
   const enterHome = () => {
+    if (!catalogAccount) setCatalogAccount(profile.email.trim().toLowerCase());
     setScreen("home");
     setTab("Home");
   };
@@ -1414,6 +1417,7 @@ function App() {
                 }
                 onLogout={() => {
                   setProfile(initial);
+                  setCatalogAccount("");
                   setWeightRecords([]);
                   setStepRecords([]);
                   setWeightGoal("");
@@ -1432,7 +1436,7 @@ function App() {
               />
             )}
             <p className="demo-note">
-              Dados desta sessão · Sem gravação de conta ou senha
+              Registros do dia nesta sessão · Produtos pessoais salvos neste navegador
             </p>
             <nav className="bottom-nav" aria-label="Navegação principal">
               <div className="nav-brand">
@@ -1467,6 +1471,7 @@ function App() {
         {modal && (
           <Modal
             kind={modal}
+            catalogAccount={catalogAccount}
             initial={initialRecord}
             defaultWeight={weightAtDate(weightRecords, modalDate)}
             close={() => {
@@ -1502,7 +1507,9 @@ function Modal({
   add,
   initial,
   defaultWeight,
+  catalogAccount,
 }: {
+  catalogAccount: string;
   defaultWeight?: number;
   initial?: DailyRecord;
   kind: string;
@@ -1628,6 +1635,7 @@ function Modal({
             </p>
             {kind === "food" && (
               <FoodSearch
+                account={catalogAccount}
                 onApply={(reference) => {
                   const values = portionValues(
                     reference.food,
@@ -1675,13 +1683,7 @@ function Modal({
             {nutrition && (
               <p className="food-provenance">
                 {nutrition.amount} {nutrition.food.basis.unit} ·{" "}
-                <a
-                  href={nutrition.food.sourceUrl}
-                  target="_blank"
-                  rel="noreferrer"
-                >
-                  {nutrition.food.sourceName}
-                </a>{" "}
+                {nutrition.food.sourceUrl ? <a href={nutrition.food.sourceUrl} target="_blank" rel="noreferrer">{nutrition.food.sourceName}</a> : <span>{nutrition.food.sourceName}</span>}{" "}
                 · {nutrition.food.sourceVersion}
                 <br />
                 Valores calculados a partir de 100 {nutrition.food.basis.unit}.

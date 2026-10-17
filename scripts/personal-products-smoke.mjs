@@ -1,0 +1,32 @@
+import {chromium} from 'playwright';import assert from 'node:assert/strict';
+const b=await chromium.launch({executablePath:process.env.CHROMIUM_PATH||'/usr/bin/chromium',args:['--no-sandbox']});
+const p=await b.newPage({viewport:{width:390,height:844}});const errors=[];p.on('pageerror',e=>errors.push(e.message));
+const login=async(name='Preencher dados')=>{await p.getByRole('button',{name:'Entrar',exact:true}).click();await p.getByRole('button',{name,exact:true}).click();await p.getByRole('button',{name:'Entrar',exact:true}).click();await p.getByRole('button',{name:'Adicionar alimentos',exact:true}).waitFor();};
+const open=async()=>{await p.getByRole('button',{name:'Adicionar alimentos',exact:true}).click();await p.getByRole('button',{name:'Buscar na base nutricional'}).click();};
+try{
+ await p.goto(process.env.BASE_URL||'http://localhost:5200');await login();await open();
+ await p.getByRole('button',{name:'Meus produtos',exact:true}).click();
+ await p.getByRole('button',{name:'Cadastrar produto pelo rótulo',exact:true}).click();
+ for(const [name,value] of [['Nome do produto','Whey teste'],['Marca do produto','Marca teste'],['Quantidade no rótulo','30'],['Proteína no rótulo (g)','24'],['Carboidratos no rótulo (g)','3'],['Gorduras no rótulo (g)','1.5']])await p.getByLabel(name,{exact:true}).fill(value);
+ await p.getByRole('button',{name:'Salvar meu produto',exact:true}).click();await p.getByRole('alert').waitFor();
+ await p.getByLabel('Calorias do rótulo (kcal)',{exact:true}).fill('120');
+ await p.getByRole('button',{name:'Salvar meu produto',exact:true}).click();await p.getByText('Produto salvo só no seu catálogo pessoal.',{exact:false}).waitFor();
+ assert.equal(await p.evaluate(()=>document.documentElement.scrollWidth>innerWidth),false);
+ await p.screenshot({path:'/tmp/fitin-personal-products-mobile.png',fullPage:true});
+ await p.getByLabel('Quantidade que vou consumir',{exact:true}).fill('30');
+ await p.getByRole('button',{name:'Usar 30 g de Whey teste',exact:true}).click();
+ assert.equal(await p.getByLabel('Energia (kcal)').inputValue(),'120');
+ await p.getByRole('button',{name:'Adicionar registro',exact:true}).click();
+ await p.getByRole('button',{name:'Diário',exact:true}).click();await p.getByText('Meu produto · rótulo informado',{exact:true}).waitFor();
+ await p.reload();await login();await open();await p.getByLabel('Fonte nutricional').selectOption('personal');
+ await p.getByLabel('Buscar alimento ou código de barras').fill('Whey teste');await p.getByRole('button',{name:'Pesquisar alimentos',exact:true}).click();
+ await p.getByRole('button',{name:/Whey teste · Marca teste/}).waitFor();
+ await p.getByRole('button',{name:'Fechar',exact:true}).click();await p.getByRole('button',{name:'Perfil',exact:true}).click();await p.getByRole('button',{name:'Sair e limpar demonstração'}).click();
+ await login('Preencher dia completo');await open();await p.getByLabel('Fonte nutricional').selectOption('personal');await p.getByLabel('Buscar alimento ou código de barras').fill('Whey teste');await p.getByRole('button',{name:'Pesquisar alimentos',exact:true}).click();
+ await p.getByText('Nenhum produto pessoal encontrado.',{exact:false}).waitFor();
+ await p.getByRole('button',{name:'Fechar',exact:true}).click();await p.getByRole('button',{name:'Perfil',exact:true}).click();await p.getByRole('button',{name:'Sair e limpar demonstração'}).click();
+ await login();await open();await p.getByRole('button',{name:'Meus produtos',exact:true}).click();
+ await p.getByRole('button',{name:'Excluir produto Whey teste',exact:true}).click();await p.getByRole('button',{name:'Confirmar exclusão',exact:true}).click();
+ await p.getByText('Você ainda não tem produtos salvos.',{exact:false}).waitFor();assert.deepEqual(errors,[]);
+ console.log('PASS: personal product validation, normalization, portions, persistence/relogin, account separation and deletion.');
+}finally{await b.close()}

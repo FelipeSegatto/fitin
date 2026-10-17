@@ -14,11 +14,32 @@ try{
  await page.getByLabel('Peso usado na estimativa (kg)',{exact:true}).fill('');
  assert.equal(await page.getByRole('button',{name:'Usar estimativa',exact:true}).isDisabled(),true);
  await page.getByLabel('Peso usado na estimativa (kg)',{exact:true}).fill('78');
- await page.getByLabel('Modalidade e ritmo').selectOption('cycling-leisure');
+ await page.getByRole('button',{name:'Mobilidade',exact:true}).click();
+ await page.getByLabel('Buscar atividade').fill('pilates');
+ assert.equal(await page.locator('.activity-options > button').count(),1);
+ await page.getByRole('button',{name:'Pilates · Sessão geral',exact:true}).click();
+ await page.getByRole('button',{name:'Definir duração de 45 minutos',exact:true}).click();
+ assert.equal(await page.getByLabel('Tempo da atividade (min)',{exact:true}).inputValue(),'45');
+ assert.ok((await page.locator('.activity-selected').innerText()).includes('Pilates'));
+ await page.getByLabel('Buscar atividade').fill('');
+ await page.getByRole('button',{name:'Aquáticas',exact:true}).click();
+ assert.equal(await page.locator('.activity-options > button').count(),3);
+ await page.getByLabel('Buscar atividade').fill('nao-existe');
+ await page.getByText('Nenhuma atividade encontrada.',{exact:false}).waitFor();
+ await page.getByRole('button',{name:'Cardio',exact:true}).click();
+
+ await page.getByLabel('Buscar atividade').fill('Bicicleta');
+ await page.getByRole('button',{name:'Bicicleta · Passeio, abaixo de 16 km/h',exact:true}).click();
  await page.getByLabel('Tempo da atividade (min)',{exact:true}).fill('30');
  assert.ok((await page.locator('.activity-estimate').innerText()).includes('123 kcal ativas'));
  assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth),false);
  await page.screenshot({path:'/tmp/fitin-activity-mobile.png',fullPage:true});
+ for (const width of [320, 390, 1440]) {
+   await page.setViewportSize({width,height:1000});
+   assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth),false,`Activity picker overflow at ${width}`);
+ }
+ await page.screenshot({path:'/tmp/fitin-activity-picker-desktop.png',fullPage:true});
+ await page.setViewportSize({width:390,height:844});
  await page.getByRole('button',{name:'Usar estimativa',exact:true}).click();
  assert.equal(await page.getByLabel('Energia (kcal)').inputValue(),'123');
  assert.equal(await page.getByLabel('Duração (min)',{exact:true}).inputValue(),'30');

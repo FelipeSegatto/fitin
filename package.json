@@ -16,7 +16,9 @@
     "test:nutrition": "node --test scripts/nutrition-unit.test.mjs",
     "test:nutrition-ui": "node scripts/nutrition-smoke.mjs",
     "test:activities": "node --test scripts/activities-unit.test.mjs",
-    "test:activities-ui": "node scripts/activities-smoke.mjs"
+    "test:activities-ui": "node scripts/activities-smoke.mjs",
+    "test:products": "node --test scripts/personal-products.test.mjs",
+    "test:products-ui": "node scripts/personal-products-smoke.mjs"
   },
   "dependencies": {
     "@fontsource/poppins": "^5.2.7",

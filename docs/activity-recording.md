@@ -6,7 +6,7 @@ Abra **Adicionar atividades** na home, ou adicione pelo Diário na data desejada
 - **Relógio ou aplicativo:** selecione essa origem e informe as **calorias ativas** exibidas pelo dispositivo. Não há sincronização com dispositivos nesta etapa.
 - **Estimativa:** abra “Estimar calorias da atividade”, escolha modalidade/ritmo, confirme peso e duração e clique “Usar estimativa”. É necessário confirmar os campos antes de adicionar o registro.
 
-O catálogo inicial tem caminhada, bicicleta, corrida, musculação, alongamento e hatha yoga, com 11 referências de ritmo/esforço no total. É uma seleção local, sem API paga ou chamadas externas. As modalidades e parâmetros estão em `src/activities.ts`; o formulário está em `src/ActivityEstimator.tsx`.
+O catálogo tem 33 opções de modalidade/ritmo, incluindo caminhada, trilha, bicicleta, ergométrica, corrida, remo, musculação, calistenia, pilates, yoga, natação, hidroginástica, esportes, dança e ginástica. A seleção oferece busca com normalização de acentos, categorias, cards com intensidade, resumo da seleção e atalhos de 15/30/45/60 minutos. É uma seleção local, sem API paga ou chamadas externas. As modalidades e parâmetros estão em `src/activities.ts`; o formulário está em `src/ActivityEstimator.tsx`.
 
 ## Referência e cálculo
 

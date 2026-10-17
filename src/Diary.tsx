@@ -112,9 +112,7 @@ export function Diary({
       {kind === "food" && e.nutrition && (
         <p className="entry-nutrition-source">
           {e.nutrition.amount} {e.nutrition.food.basis.unit} ·{" "}
-          <a href={e.nutrition.food.sourceUrl} target="_blank" rel="noreferrer">
-            {e.nutrition.food.sourceName}
-          </a>
+          {e.nutrition.food.sourceUrl ? <a href={e.nutrition.food.sourceUrl} target="_blank" rel="noreferrer">{e.nutrition.food.sourceName}</a> : <span>{e.nutrition.food.sourceName}</span>}
         </p>
       )}
       <div className="entry-bottom">
