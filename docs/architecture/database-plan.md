@@ -1,6 +1,6 @@
 # FitIn — proposta funcional de banco de dados
 
-Status: proposta para revisão; não é uma migração executada nem um banco já provisionado.
+Status: esquema lógico de referência. As 38 migrações iniciais foram implementadas e verificadas em MySQL 8.4 local; configuração, diferenças e limites em `docs/database-setup.md`. Endpoints de negócio e integração do frontend continuam pendentes.
 
 ## 1. Arquitetura e escopo
 
@@ -19,7 +19,7 @@ Fases:
 
 ## 2. Convenções que fazem parte de todas as tabelas
 
-Esta seção e as listas abaixo compõem o esquema lógico completo proposto. DDL, migrações e testes de integração ainda serão implementados.
+Esta seção e as listas abaixo compõem o esquema lógico completo proposto. O DDL inicial está em `backend/migrations/` e os testes de integração do banco em `backend/test/`. Esta especificação lógica continua sujeita à revisão; regras que dependem de serviços ainda serão implementadas.
 
 - `ID` = `BIGINT UNSIGNED`; PK `id` usa `AUTO_INCREMENT`, salvo PK expressamente indicada. IDs são internos; não substituem autorização. O backend serializa BIGINT como string no JSON para não perder precisão em JavaScript.
 - `DT` = `DATETIME(6)` em UTC. Toda tabela tem `created_at DT NOT NULL DEFAULT CURRENT_TIMESTAMP(6)`. Tabelas marcadas **mutável** também têm `updated_at DT NOT NULL DEFAULT CURRENT_TIMESTAMP(6)`, atualizado em toda alteração.

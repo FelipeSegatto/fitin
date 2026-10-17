@@ -21,7 +21,17 @@
     "test:products-ui": "node scripts/personal-products-smoke.mjs",
     "test:portability": "node --test scripts/import-portability.test.mjs",
     "test:calories": "node --test scripts/calorie-balance.test.mjs",
-    "test:plans": "node scripts/plans-smoke.mjs"
+    "test:plans": "node scripts/plans-smoke.mjs",
+    "db:configure": "node scripts/setup-local.mjs",
+    "db:up": "docker compose up -d --wait mysql",
+    "db:stop": "docker compose stop mysql",
+    "db:migrate": "npm --prefix backend run db:migrate",
+    "db:status": "npm --prefix backend run db:status",
+    "db:seed": "npm --prefix backend run db:seed",
+    "backend:dev": "npm --prefix backend run dev",
+    "backend:build": "npm --prefix backend run build",
+    "test:database": "npm --prefix backend test",
+    "db:backup": "node scripts/db-backup.mjs"
   },
   "dependencies": {
     "@fontsource/poppins": "^5.2.7",

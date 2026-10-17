@@ -106,3 +106,19 @@ O resumo distingue excesso alimentar e saldo ajustado por atividades. Registrar,
 A equação usa sempre meta − consumo + atividades. Seu saldo positivo corresponde a calorias restantes/déficit; negativo indica superávit, com a direção identificada no resultado. O sinal da equação não é invertido para exibir o texto. A rodinha mostra max(0, meta − consumo + atividades), sempre com o rótulo “kcal restantes”.
 
 Planos disponíveis: Emagrecer, Cutting, Manutenção e Lean bulking. Déficit é verde para Emagrecer/Cutting; superávit é verde para Lean bulking; equilíbrio é verde para Manutenção. Desvios de direção ficam vermelhos, com feedback na equação e no Diário. Os termos de consumo/atividades invertem suas cores em Lean bulking. A rodinha permanece neutra. Regras e testes em [planos e saldo](docs/nutrition-plans.md).
+
+## Banco MySQL e base do backend
+
+O projeto inclui `compose.yaml` com MySQL 8.4, volume persistente, 38 migrações de domínio e seeds versionados. A instalação e a conexão pelo Workbench estão em [docs/database-setup.md](docs/database-setup.md).
+
+```powershell
+npm ci
+npm --prefix backend ci
+npm run db:configure
+npm run db:up
+npm run db:migrate
+npm run db:seed
+npm run backend:dev
+```
+
+O comando de configuração mostra as novas senhas locais antes de iniciar o banco. O frontend demonstrativo ainda não está conectado aos endpoints de negócio do novo backend; esta entrega prepara o banco e a infraestrutura para a revisão e integração seguintes.

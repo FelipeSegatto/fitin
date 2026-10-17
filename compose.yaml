@@ -1,0 +1,28 @@
+name: fitin
+services:
+  mysql:
+    image: mysql:8.4
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:${DB_PORT:-3307}:3306"
+    environment:
+      MYSQL_DATABASE: ${MYSQL_DATABASE:-fitin}
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:?Run npm run db:configure first}
+      FITIN_APP_PASSWORD: ${MYSQL_APP_PASSWORD:?Run npm run db:configure first}
+      FITIN_MIGRATION_PASSWORD: ${MYSQL_MIGRATION_PASSWORD:?Run npm run db:configure first}
+    command:
+      - --character-set-server=utf8mb4
+      - --collation-server=utf8mb4_0900_ai_ci
+      - --default-time-zone=+00:00
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ./docker/mysql/01-users.sh:/docker-entrypoint-initdb.d/01-users.sh:ro
+    healthcheck:
+      test: ["CMD-SHELL", "MYSQL_PWD=\"$$MYSQL_ROOT_PASSWORD\" mysql -h 127.0.0.1 -uroot --batch --skip-column-names -e 'SELECT 1' >/dev/null 2>&1"]
+      interval: 5s
+      timeout: 5s
+      retries: 30
+      start_period: 30s
+    stop_grace_period: 30s
+volumes:
+  mysql_data:

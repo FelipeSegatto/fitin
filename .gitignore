@@ -4,3 +4,7 @@ dist/
 .env.*
 !.env.example
 *.log
+
+# Local database dumps and transient files
+backups/
+*.sql.partial

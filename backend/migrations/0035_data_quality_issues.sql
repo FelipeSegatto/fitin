@@ -1,0 +1,26 @@
+-- FitIn: data_quality_issues. Applied migrations are immutable; add a new file for changes.
+CREATE TABLE `data_quality_issues` (
+  `id` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
+  `run_id` BIGINT UNSIGNED NOT NULL,
+  `input_id` BIGINT UNSIGNED NOT NULL,
+  `rule_code` VARCHAR(64) NOT NULL,
+  `rule_version` VARCHAR(32) NOT NULL,
+  `severity` VARCHAR(16) NOT NULL,
+  `field_path` VARCHAR(191) NULL,
+  `message` VARCHAR(1000) NOT NULL,
+  `observed_value` JSON NULL,
+  `status` VARCHAR(16) NOT NULL DEFAULT 'open',
+  `resolved_by_user_id` BIGINT UNSIGNED NULL,
+  `resolved_at` DATETIME(6) NULL,
+  `resolution_note` VARCHAR(1000) NULL,
+  `created_at` DATETIME(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6),
+  `updated_at` DATETIME(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6) ON UPDATE CURRENT_TIMESTAMP(6),
+  FOREIGN KEY (`input_id`,`run_id`) REFERENCES `processing_inputs` (`id`,`run_id`) ON UPDATE RESTRICT ON DELETE RESTRICT,
+  CHECK (`severity` IN ('info','warning','error')),
+  CHECK (`status` IN ('open','resolved','dismissed')),
+  CHECK ((status='open' AND resolved_at IS NULL AND resolved_by_user_id IS NULL AND resolution_note IS NULL) OR (status<>'open' AND resolved_at IS NOT NULL AND resolution_note IS NOT NULL)),
+  INDEX (`run_id`,`severity`,`id`),
+  INDEX (`status`,`severity`,`id`),
+  FOREIGN KEY (`run_id`) REFERENCES `processing_runs` (`id`) ON UPDATE RESTRICT ON DELETE RESTRICT,
+  FOREIGN KEY (`resolved_by_user_id`) REFERENCES `users` (`id`) ON UPDATE RESTRICT ON DELETE RESTRICT
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;

@@ -1,0 +1,27 @@
+-- FitIn: records. Applied migrations are immutable; add a new file for changes.
+CREATE TABLE `records` (
+  `id` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
+  `user_id` BIGINT UNSIGNED NOT NULL,
+  `kind` VARCHAR(16) NOT NULL,
+  `occurred_at` DATETIME(6) NOT NULL,
+  `local_date` DATE NOT NULL,
+  `timezone` VARCHAR(64) NOT NULL,
+  `title` VARCHAR(160) NOT NULL,
+  `note` VARCHAR(1000) NULL,
+  `origin` VARCHAR(16) NOT NULL,
+  `client_request_id` VARCHAR(64) COLLATE utf8mb4_0900_bin NOT NULL,
+  `create_payload_hash` BINARY(32) NOT NULL,
+  `row_version` INT UNSIGNED NOT NULL DEFAULT 1,
+  `deleted_at` DATETIME(6) NULL,
+  `created_at` DATETIME(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6),
+  `updated_at` DATETIME(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6) ON UPDATE CURRENT_TIMESTAMP(6),
+  CHECK (`row_version` > 0),
+  UNIQUE (`id`,`user_id`),
+  UNIQUE (`id`,`kind`),
+  UNIQUE (`user_id`,`client_request_id`),
+  CHECK (`kind` IN ('food','activity')),
+  CHECK (`origin` IN ('manual','catalog','device','import','ai_confirmed')),
+  INDEX (`user_id`,`local_date`,`deleted_at`,`id`),
+  INDEX (`user_id`,`kind`,`local_date`,`deleted_at`,`id`),
+  FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON UPDATE RESTRICT ON DELETE RESTRICT
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;

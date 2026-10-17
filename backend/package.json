@@ -1,0 +1,25 @@
+{
+  "name": "fitin-backend",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=24.10.0 <25"
+  },
+  "scripts": {
+    "dev": "node --watch src/server.ts",
+    "start": "node src/server.ts",
+    "build": "tsc --noEmit",
+    "db:migrate": "node scripts/migrate.ts",
+    "db:status": "node scripts/migrate.ts --status",
+    "db:seed": "node scripts/seed.ts",
+    "test": "node --test test/*.test.ts"
+  },
+  "dependencies": {
+    "mysql2": "3.24.6"
+  },
+  "devDependencies": {
+    "@types/node": "24.19.2",
+    "typescript": "7.0.2"
+  }
+}

@@ -1,0 +1,26 @@
+-- FitIn: activity_references. Applied migrations are immutable; add a new file for changes.
+CREATE TABLE `activity_references` (
+  `id` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
+  `activity_type_id` BIGINT UNSIGNED NOT NULL,
+  `reference_code` VARCHAR(100) COLLATE utf8mb4_0900_bin NOT NULL,
+  `version_no` INT UNSIGNED NOT NULL,
+  `description` VARCHAR(500) NOT NULL,
+  `intensity` VARCHAR(16) NOT NULL,
+  `met` DECIMAL(6,3) NOT NULL,
+  CHECK (`met` >= 0),
+  `is_approximation` BOOLEAN NOT NULL DEFAULT 0,
+  CHECK (`is_approximation` IN (0,1)),
+  `approximation_note` VARCHAR(1000) NULL,
+  `source_id` BIGINT UNSIGNED NOT NULL,
+  `source_version` VARCHAR(100) NOT NULL,
+  `source_url` VARCHAR(1000) NULL,
+  `created_at` DATETIME(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6),
+  UNIQUE (`reference_code`,`version_no`),
+  UNIQUE (`id`,`activity_type_id`),
+  CHECK (met > 0),
+  CHECK (version_no > 0),
+  CHECK (`intensity` IN ('light','moderate','vigorous','unspecified')),
+  CHECK (is_approximation=0 OR approximation_note IS NOT NULL),
+  FOREIGN KEY (`activity_type_id`) REFERENCES `activity_types` (`id`) ON UPDATE RESTRICT ON DELETE RESTRICT,
+  FOREIGN KEY (`source_id`) REFERENCES `data_sources` (`id`) ON UPDATE RESTRICT ON DELETE RESTRICT
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
