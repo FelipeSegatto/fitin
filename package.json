@@ -18,7 +18,8 @@
     "test:activities": "node --test scripts/activities-unit.test.mjs",
     "test:activities-ui": "node scripts/activities-smoke.mjs",
     "test:products": "node --test scripts/personal-products.test.mjs",
-    "test:products-ui": "node scripts/personal-products-smoke.mjs"
+    "test:products-ui": "node scripts/personal-products-smoke.mjs",
+    "test:portability": "node --test scripts/import-portability.test.mjs"
   },
   "dependencies": {
     "@fontsource/poppins": "^5.2.7",

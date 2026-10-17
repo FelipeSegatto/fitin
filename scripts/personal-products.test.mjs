@@ -1,5 +1,5 @@
 import {test} from 'node:test';import assert from 'node:assert/strict';
-import {createPersonalProduct,validateProductLabel,validBarcode,loadPersonalProducts,savePersonalProducts,productStorageKey} from '../src/personalProducts.ts';
+import {createPersonalProduct,validateProductLabel,validBarcode,loadPersonalProducts,savePersonalProducts,productStorageKey} from '../src/personalProductCatalog.ts';
 const label={name:'Whey teste',brand:'Marca teste',barcode:'3017620422003',amount:30,unit:'g',nutrients:{kcal:120,protein:24,carbs:3,fat:1.5}};
 test('label portions normalize once, preserve original and remain private/unverified',()=>{
  const p=createPersonalProduct(label,[],'test','2026-10-17T00:00:00Z');

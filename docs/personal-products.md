@@ -12,7 +12,7 @@ Não são salvos senha nem credenciais de APIs. O limite inicial é de 200 produ
 
 ## Estrutura entregue agora
 
-`src/personalProducts.ts` contém o contrato versionado `PersonalProduct`, o rótulo original, normalização por 100 g/ml, identificação, datas e validação reutilizável sem dependência da interface. O componente `src/PersonalProducts.tsx` usa essa regra e a camada de armazenamento local, que poderá ser substituída por um repositório de backend quando houver autenticação real.
+`src/personalProductCatalog.ts` contém o contrato versionado `PersonalProduct`, o rótulo original, normalização por 100 g/ml, identificação, datas e validação reutilizável sem dependência da interface. O componente `src/PersonalProducts.tsx` usa essa regra e a camada de armazenamento local, que poderá ser substituída por um repositório de backend quando houver autenticação real.
 
 Checagens atuais:
 

@@ -9,7 +9,7 @@ import {
 } from "./nutrition";
 import "./nutrition.css";
 import { PersonalProducts } from "./PersonalProducts";
-import { findPersonalProducts } from "./personalProducts";
+import { findPersonalProducts } from "./personalProductCatalog";
 
 export function FoodSearch({
   onApply,

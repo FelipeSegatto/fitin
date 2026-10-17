@@ -1,6 +1,6 @@
 import {useEffect,useRef,useState} from 'react';
 import {PackagePlus, Trash2, PackageCheck} from 'lucide-react';
-import {createPersonalProduct,loadPersonalProducts,savePersonalProducts,type PersonalProduct,type ProductLabel} from './personalProducts';
+import {createPersonalProduct,loadPersonalProducts,savePersonalProducts,type PersonalProduct,type ProductLabel} from './personalProductCatalog';
 import type {NutritionReference} from './nutrition';
 import './personalProducts.css';
 export function PersonalProducts({account,onApply}:{account:string;onApply:(reference:NutritionReference)=>void}) {
