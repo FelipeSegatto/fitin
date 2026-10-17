@@ -1,3 +1,4 @@
+import { recordId } from './records.ts';
 import type { FoodCandidate, NutrientKey } from './nutrition';
 export type ProductLabel = {
   name: string; brand: string; barcode: string;
@@ -50,7 +51,7 @@ export function validateProductLabel(value: unknown): {errors:string[]; warnings
   if(!barcode) warnings.push('Sem código de barras: a identificação depende de nome e marca.');
   return {errors,warnings,label:{name,brand,barcode,amount:input.amount,unit:input.unit,nutrients},per100};
 }
-export function createPersonalProduct(label: ProductLabel, existing: PersonalProduct[], id=crypto.randomUUID(), now=new Date().toISOString()): PersonalProduct {
+export function createPersonalProduct(label: ProductLabel, existing: PersonalProduct[], id=recordId(), now=new Date().toISOString()): PersonalProduct {
   const result=validateProductLabel(label);
   if(result.errors.length || !result.label || !result.per100) throw new Error(result.errors.join(' '));
   if(existing.some(p=>result.label!.barcode && p.label.barcode===result.label!.barcode || clean(p.label.name)===clean(label.name) && clean(p.label.brand)===clean(label.brand))) throw new Error('Este produto já está nos seus produtos. Use o cadastro existente.');

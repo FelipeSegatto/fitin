@@ -1,6 +1,8 @@
 import {chromium} from 'playwright';import assert from 'node:assert/strict';
 const b=await chromium.launch({executablePath:process.env.CHROMIUM_PATH||'/usr/bin/chromium',args:['--no-sandbox']});
 const p=await b.newPage({viewport:{width:390,height:844}});const errors=[];p.on('pageerror',e=>errors.push(e.message));
+// Reproduce browsers/HTTP origins that do not expose the secure-context randomUUID API.
+await p.addInitScript(()=>Object.defineProperty(Crypto.prototype,'randomUUID',{configurable:true,value:undefined}));
 const login=async(name='Preencher dados')=>{await p.getByRole('button',{name:'Entrar',exact:true}).click();await p.getByRole('button',{name,exact:true}).click();await p.getByRole('button',{name:'Entrar',exact:true}).click();await p.getByRole('button',{name:'Adicionar alimentos',exact:true}).waitFor();};
 const open=async()=>{await p.getByRole('button',{name:'Adicionar alimentos',exact:true}).click();await p.getByRole('button',{name:'Buscar na base nutricional'}).click();};
 try{

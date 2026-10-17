@@ -28,3 +28,22 @@ test('storage survives reload, separates accounts and rebuilds normalized fields
  storage.setItem(productStorageKey('joao@example.com'),'broken-json');
  assert.throws(()=>loadPersonalProducts('joao@example.com',storage));assert.equal(storage.getItem(productStorageKey('joao@example.com')),'broken-json');
 });
+
+test('products can be saved and reloaded when randomUUID or crypto is unavailable',()=>{
+ const descriptor=Object.getOwnPropertyDescriptor(globalThis,'crypto');
+ try {
+  for(const cryptoValue of [{},undefined]) {
+   Object.defineProperty(globalThis,'crypto',{configurable:true,value:cryptoValue});
+   const products=Array.from({length:100},(_,i)=>createPersonalProduct({...label,name:`Produto ${i}`,barcode:''},[]));
+   assert.equal(new Set(products.map(p=>p.id)).size,100);
+   const map=new Map(),storage={getItem:k=>map.get(k)||null,setItem:(k,v)=>map.set(k,v)};
+   savePersonalProducts('test@example.com',products,storage);
+   const reloaded=loadPersonalProducts('test@example.com',storage);
+   assert.deepEqual(reloaded.map(p=>p.id),products.map(p=>p.id));
+   assert.equal(reloaded[0].food.per100.kcal,400);
+  }
+ } finally {
+  if(descriptor)Object.defineProperty(globalThis,'crypto',descriptor);
+  else delete globalThis.crypto;
+ }
+});
