@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { calorieBalance } from "./calorieBalance";
 import { createRoot } from "react-dom/client";
 import {
   ArrowLeft,
@@ -218,10 +219,9 @@ function App() {
             50,
         ) * 50;
   const consumed = foods.reduce((s, i) => s + i.kcal, 0),
-    burned = workouts.reduce((s, i) => s + i.kcal, 0),
-    remaining = target - consumed;
-  const overTarget = consumed > target;
-  const excessCalories = Math.max(0, consumed - target);
+    burned = workouts.reduce((s, i) => s + i.kcal, 0);
+  const { adjustedBalance: remaining, foodExcess: excessCalories } = calorieBalance(target, consumed, burned);
+  const overTarget = excessCalories > 0;
   const nextSignup = () => {
     const e: Record<string, string> = {};
     if (step === 0) {
@@ -1174,7 +1174,7 @@ function App() {
                       {overTarget && (
                         <p className="warning-consumption">
                           Consumo: {consumed.toLocaleString("pt-BR")} kcal.
-                          Atividades contabilizadas à parte no resumo.
+                          O saldo ajustado abaixo considera as atividades registradas.
                         </p>
                       )}
                     </div>
@@ -1191,11 +1191,12 @@ function App() {
                   <div className="card daily">
                     <div className="card-title">
                       <h3>Resumo Diário</h3>
-                      {foods.length ? (
+                      <small className="balance-caption">Saldo ajustado por atividades</small>
+                      {foods.length || workouts.length ? (
                         <small className="daily-equation">
                           {remaining < 0
-                            ? `${consumed.toLocaleString("pt-BR")} consumidas − ${target.toLocaleString("pt-BR")} de meta`
-                            : `${target.toLocaleString("pt-BR")} de meta − ${consumed.toLocaleString("pt-BR")} consumidas`}
+                            ? <>{consumed.toLocaleString("pt-BR")} − {target.toLocaleString("pt-BR")} − <em>{burned.toLocaleString("pt-BR")}</em></>
+                            : <>{target.toLocaleString("pt-BR")} − {consumed.toLocaleString("pt-BR")} + <em>{burned.toLocaleString("pt-BR")}</em></>}
                           {" = "}<strong className={remaining < 0 ? "calorie-excess" : undefined}>
                             {Math.abs(remaining).toLocaleString("pt-BR")} kcal{remaining < 0 ? " a mais" : " restantes"}
                           </strong>
@@ -1206,11 +1207,12 @@ function App() {
                         </small>
                       )}
                     </div>
+                    {overTarget && <p className="food-excess-note">Alimentação: <strong>{excessCalories.toLocaleString("pt-BR")} kcal a mais</strong> que a meta, antes do ajuste por atividades.</p>}
                     <div className="daily-content">
                       <div
                         className={remaining < 0 ? "ring calorie-excess" : "ring"}
                         style={{
-                          background: `conic-gradient(#ff8774 ${Math.min(100, Math.max(0, (consumed / target) * 100))}%,#efe3d4 0)`,
+                          background: `conic-gradient(#ff8774 ${Math.min(100, Math.max(0, (consumed / (target + burned)) * 100))}%,#efe3d4 0)`,
                         }}
                       >
                         <div>
@@ -1237,7 +1239,7 @@ function App() {
                         <p>
                           <Dumbbell />
                           <span>
-                            Exercícios (à parte)<strong>{burned} kcal</strong>
+                            Exercícios<strong>{burned} kcal</strong>
                           </span>
                         </p>
                       </div>

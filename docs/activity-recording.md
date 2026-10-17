@@ -32,7 +32,7 @@ O Diário identifica a origem e permite abrir a referência. Cada estimativa arm
 
 O registro atual não depende de catálogo externo. Mais tarde, uma API própria pode servir o catálogo versionado, persistir registros e aceitar texto livre com confirmação de modalidade/ritmo/duração. Integrações com dispositivos exigirão autenticação e consentimento específicos. Um catálogo de exercícios de musculação descreve movimentos e equipamentos; não fornece automaticamente gasto individual confiável.
 
-A aplicação continua em memória: recarregar ou sair limpa os registros. O resumo mostra as calorias ativas informadas ou estimadas à parte. Elas não aumentam a meta alimentar nem compensam consumo acima dela. Banner, gráfico, equação e Diário usam a mesma comparação entre consumo alimentar e meta.
+A aplicação continua em memória: recarregar ou sair limpa os registros. O resumo usa as calorias ativas informadas ou estimadas no saldo ajustado: meta − consumo + atividades. A rodinha, a equação e o saldo do Diário usam esse mesmo indicador. A meta alimentar não muda; banner e aviso alimentar continuam mostrando consumo bruto acima dela, independentemente dos exercícios. Exemplo Marina: meta 2.000, consumo 2.400 e atividades 400 → saldo ajustado 0, com aviso alimentar de 400 kcal a mais.
 
 Verificação: `npm run test:activities`; com Vite e Chromium ativos, `npm run test:activities-ui`.
 

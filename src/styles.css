@@ -1879,3 +1879,9 @@ button:hover {
     display: none;
   }
 }
+
+.food-excess-note {font-size:11px;line-height:1.6;color:#8e3550;background:#fce7ef;padding:9px 12px;border-radius:12px;margin-top:12px;}
+.food-excess-note strong {color:#be1f4c;}
+.diary-hero .food-excess-note strong {font-size:inherit;}
+.balance-caption {color:#756184;}
+.card-title:has(.balance-caption) {flex-wrap:wrap;}

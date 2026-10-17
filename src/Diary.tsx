@@ -1,3 +1,4 @@
+import { calorieBalance } from "./calorieBalance";
 import { useState } from "react";
 import {
   ChevronLeft,
@@ -38,8 +39,8 @@ export function Diary({
       .filter((e) => e.date === date)
       .sort((a, b) => a.time.localeCompare(b.time));
   const consumed = foodDay.reduce((s, i) => s + i.kcal, 0),
-    burned = workoutDay.reduce((s, i) => s + i.kcal, 0),
-    remaining = target - consumed;
+    burned = workoutDay.reduce((s, i) => s + i.kcal, 0);
+  const {adjustedBalance: remaining, foodExcess} = calorieBalance(target, consumed, burned);
   const macros = [
     {
       key: "protein" as const,
@@ -224,13 +225,14 @@ export function Diary({
           </strong>
         </div>
         <div>
-          <span>{remaining < 0 ? "Calorias a mais" : "Restante"}</span>
+          <span>{remaining < 0 ? "A mais após atividades" : "Saldo com atividades"}</span>
           <strong className={remaining < 0 ? "calorie-excess" : undefined}>
             {format(Math.abs(remaining))} <small>kcal</small>
           </strong>
         </div>
+        {foodExcess > 0 && <p className="food-excess-note">Alimentação: <strong>{format(foodExcess)} kcal a mais</strong> que a meta antes do ajuste por atividades.</p>}
         {burned > 0 && (
-          <p>Atividades: {format(burned)} kcal, contabilizadas à parte da meta alimentar.</p>
+          <p>Atividades consideradas no saldo: {format(burned)} kcal.</p>
         )}
       </div>
       <section className="macro-summary" aria-labelledby="macro-title">
