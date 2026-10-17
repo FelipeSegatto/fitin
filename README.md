@@ -46,7 +46,7 @@ Verificação dos fluxos: `npm run test:diary-progress`. Dados continuam apenas 
 
 ## Perfil
 
-Perfil baseado no SVG fornecido, com cores ajustadas à paleta existente. Avatar por iniciais, nível/medalhas compartilhando o cálculo de Conquistas, jornada baseada nos pesos do Progresso e resumo mensal dos registros disponíveis no Diário. Atalhos abrem o registro de peso, a meta de peso, o ajuste de ritmo e a coleção. Nome/e-mail podem ser alterados somente na sessão; o FAQ explica os limites da demo e não inventa canais externos de suporte. Logout limpa a demonstração.
+Perfil baseado no SVG fornecido, com cores ajustadas à paleta existente. O personagem do banner é atribuído no cadastro/login: azul ou vermelho para Masculino; rosa ou roxa do SVG do autor para Feminino. Outro usa o conjunto completo. A atribuição fica estável durante a sessão, inclusive ao editar nome/e-mail. Marina usa a personagem rosa e João o azul. Avatar por iniciais, nível/medalhas compartilhando o cálculo de Conquistas, jornada baseada nos pesos do Progresso e resumo mensal dos registros disponíveis no Diário. Atalhos abrem o registro de peso, a meta de peso, o ajuste de ritmo e a coleção. Nome/e-mail podem ser alterados somente na sessão; o FAQ explica os limites da demo e não inventa canais externos de suporte. Logout limpa a demonstração.
 
 Verificação: `npm run test:profile`.
 
@@ -90,3 +90,5 @@ O formulário de alimentos faz uma busca unificada na TACO local (597 alimentos)
 “Adicionar atividades” aceita calorias manuais ou do relógio/app e oferece uma estimativa local por modalidade/ritmo, peso e duração. A estimativa usa METs de referência, identifica o valor como aproximado e calcula somente energia ativa acima do repouso. O Diário guarda e mostra sua origem. Não há conexão com dispositivos nem API paga. Consulte [registro de atividades](docs/activity-recording.md). Verificação: `npm run test:activities` e `npm run test:activities-ui`.
 
 A [avaliação da TBCA](docs/tbca-assessment.md) registra as condições publicadas e uma consulta preparada à coordenação; a TBCA ainda não foi integrada.
+
+No desktop, Conquistas omite o cabeçalho com logo acima do conteúdo, seguindo as outras seções. O logo do menu lateral e o cabeçalho mobile permanecem.

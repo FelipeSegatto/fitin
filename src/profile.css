@@ -452,12 +452,13 @@
 .profile-banner-art {
   display: block;
   width: 130px;
-  height: auto;
+  height: 140px;
   flex: none;
   object-fit: contain;
 }
 @media (min-width: 1000px) {
   .profile-banner-art {
     width: 180px;
+    height: 180px;
   }
 }

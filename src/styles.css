@@ -1873,3 +1873,9 @@ button:hover {
 .ring.calorie-excess small {
   color: #be1f4c;
 }
+
+@media (min-width: 1000px) {
+  .home-body.achievements-tab > header {
+    display: none;
+  }
+}

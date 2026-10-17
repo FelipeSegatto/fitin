@@ -41,6 +41,7 @@ import { FoodSearch } from "./FoodSearch";
 import { portionValues, type NutritionReference } from "./nutrition";
 import { ActivityEstimator } from "./ActivityEstimator";
 import { weightAtDate, type ActivityReference } from "./activities";
+import { assignProfileCharacter, type ProfileCharacter } from "./profileCharacters";
 type Screen =
   | "welcome"
   | "login"
@@ -51,6 +52,7 @@ type Screen =
   | "plan"
   | "home";
 type UserProfile = {
+  character: ProfileCharacter;
   email: string;
   birth: string;
   age: string;
@@ -67,6 +69,7 @@ type UserProfile = {
   goal: string;
 };
 const initial: UserProfile = {
+  character: "blue",
   email: "",
   birth: "",
   age: "",
@@ -193,6 +196,7 @@ function App() {
     setProfile((p) => ({
       ...p,
       [key]: value,
+      ...(key === "sex" ? {character: assignProfileCharacter(value, p.email)} : {}),
       ...(key === "birth" ? { age: ageFromBirth(value) } : {}),
       ...(key === "age" ? { birth: birthFromAge(value, p.birth) } : {}),
     }));
@@ -461,6 +465,8 @@ function App() {
         ...initial,
         email,
         name: fullDay ? "Marina" : "João",
+        sex: fullDay ? "Feminino" : "Masculino",
+        character: assignProfileCharacter(fullDay ? "Feminino" : "Masculino", email),
         activity: "Moderado",
         goal: "Emagrecer",
       });
@@ -1111,6 +1117,7 @@ function App() {
             className={
               "home-body " +
               (tab === "Home" ? "home-tab " : "") +
+              (tab === "Conquistas" ? "achievements-tab " : "") +
               (streak > 0 ? "demo-filled" : "")
             }
           >
@@ -1382,6 +1389,7 @@ function App() {
             )}
             {tab === "Perfil" && (
               <Profile
+                character={profile.character}
                 name={profile.name}
                 email={profile.email || loginEmail}
                 streak={streak}

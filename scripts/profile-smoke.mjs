@@ -13,6 +13,9 @@ try {
   await p.getByRole("heading", { name: "Streak de 7 dias!" }).waitFor();
   await p.getByRole("button", { name: "Perfil", exact: true }).click();
   await p.getByRole("heading", { name: "João", exact: true }).waitFor();
+  const character = await p.locator(".profile-banner-art").getAttribute("data-character");
+  assert(["blue", "red"].includes(character));
+  await p.locator(".profile-banner-art").evaluate(image => image.decode());
   assert(
     (await p.locator(".profile-badges").innerText()).includes(
       "NÍVEL 3 / COLECIONADOR",
@@ -46,6 +49,7 @@ try {
   await p.getByRole("button", { name: "Salvar dados" }).click();
   await p.getByRole("heading", { name: "João Silva", exact: true }).waitFor();
   assert.equal(await p.locator(".profile-avatar").innerText(), "JS");
+  assert.equal(await p.locator(".profile-banner-art").getAttribute("data-character"), character);
   await p.getByRole("button", { name: /Ajuda e suporte/ }).click();
   await p.getByText("Meus dados ficam salvos?", { exact: true }).click();
   await p
@@ -67,7 +71,28 @@ try {
     fullPage: true,
   });
   await p.getByRole("button", { name: "Sair e limpar demonstração" }).click();
-  await p.getByRole("button", { name: "Entrar", exact: true }).waitFor();
+  await p.getByRole("button", { name: "Entrar", exact: true }).click();
+  await p.getByRole("button", { name: "Preencher dia completo", exact: true }).click();
+  await p.getByRole("button", { name: "Entrar", exact: true }).click();
+  await p.getByRole("button", { name: "Perfil", exact: true }).click();
+  await p.getByRole("heading", { name: "Marina", exact: true }).waitFor();
+  const femaleCharacter = await p.locator(".profile-banner-art").getAttribute("data-character");
+  assert(["pink", "purple"].includes(femaleCharacter));
+  await p.locator(".profile-banner-art").evaluate(image => image.decode());
+  assert(await p.locator(".profile-banner-art").evaluate(image => image.naturalWidth > 0));
+  for (const width of [390, 1440]) {
+    await p.setViewportSize({width, height:1000});
+    assert.equal(await p.evaluate(()=>document.documentElement.scrollWidth > innerWidth),false);
+    await p.screenshot({path:`/workspace/artifacts/fitin-marina-profile-${width}.png`,fullPage:true});
+  }
+  await p.getByRole("button", { name: "Conquistas", exact: true }).click();
+  assert.equal(await p.locator(".home-body > header .logo").isVisible(),false);
+  assert.equal(await p.locator(".nav-brand .logo").isVisible(),true);
+  await p.screenshot({path:"/workspace/artifacts/fitin-achievements-header-desktop.png",fullPage:true});
+  await p.setViewportSize({width:390,height:844});
+  assert.equal(await p.locator(".home-body > header .logo").isVisible(),true);
+  await p.getByRole("button", { name: "Perfil", exact: true }).click();
+  assert.equal(await p.locator(".profile-banner-art").getAttribute("data-character"),femaleCharacter);
   console.log(
     "PASS: perfil, medalhas coerentes, registro de peso, meta, edição de conta local, ajuda, atalhos, logout e layouts mobile/desktop.",
   );

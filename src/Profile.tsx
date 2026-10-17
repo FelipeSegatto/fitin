@@ -17,7 +17,9 @@ import {
 import { type DailyRecord, localDay } from "./records";
 import { type WeightRecord } from "./Progress";
 import "./profile.css";
+import { profileCharacters, type ProfileCharacter } from "./profileCharacters";
 type Props = {
+  character: ProfileCharacter;
   name: string;
   email: string;
   streak: number;
@@ -35,6 +37,7 @@ type Props = {
   onLogout: () => void;
 };
 export function Profile({
+  character,
   name,
   email,
   streak,
@@ -133,7 +136,8 @@ export function Profile({
           </div>
           <img
             className="profile-banner-art"
-            src="/assets/profile-buddy.svg"
+            src={profileCharacters[character]}
+            data-character={character}
             alt=""
           />
         </div>
