@@ -1864,3 +1864,9 @@ button:hover {
     bottom: 20px;
   }
 }
+
+.daily-equation strong.calorie-excess,
+.ring.calorie-excess strong,
+.ring.calorie-excess small {
+  color: #be1f4c;
+}

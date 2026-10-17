@@ -144,6 +144,23 @@ try {
       "1 kcal acima",
     ),
   );
+  // Net excess must be positive, red and explicit in the ring and equation.
+  await page.getByRole("button", { name: "Adicionar alimentos", exact: true }).click();
+  await page.getByLabel("Alimento ou refeição").fill("Teste de excesso");
+  await page.getByLabel("Energia (kcal)").fill("500");
+  await page.getByRole("button", { name: "Adicionar registro", exact: true }).click();
+  assert.equal(await page.locator(".ring strong").innerText(), "101");
+  assert.equal(await page.locator(".ring small").innerText(), "kcal a mais");
+  assert.equal(await page.locator(".daily-equation strong").innerText(), "101 kcal a mais");
+  for (const selector of [".ring strong", ".daily-equation strong"])
+    assert.equal(await page.locator(selector).evaluate(e => getComputedStyle(e).color), "rgb(190, 31, 76)");
+  await page.getByRole("button", { name: "Diário", exact: true }).click();
+  await page.getByRole("button", { name: "Excluir Teste de excesso", exact: true }).click();
+  await page.getByRole("button", { name: "Sim, excluir", exact: true }).click();
+  await page.getByRole("button", { name: "Home", exact: true }).click();
+  assert.equal(await page.locator(".ring strong").innerText(), "399");
+  assert.equal(await page.locator(".ring small").innerText(), "kcal restantes");
+  assert.equal(await page.locator(".ring.calorie-excess").count(), 0);
   await logout();
   await login("Preencher dados");
   assert.equal(await page.locator(".today-meals .today-record").count(), 2);

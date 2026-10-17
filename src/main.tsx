@@ -1182,7 +1182,9 @@ function App() {
                       {foods.length ? (
                         <small className="daily-equation">
                           {target} − <span>{consumed}</span> + <em>{burned}</em>{" "}
-                          = <strong>{remaining} kcal</strong>
+                          = <strong className={remaining < 0 ? "calorie-excess" : undefined}>
+                            {Math.abs(remaining).toLocaleString("pt-BR")} kcal{remaining < 0 ? " a mais" : ""}
+                          </strong>
                         </small>
                       ) : (
                         <small>
@@ -1192,14 +1194,14 @@ function App() {
                     </div>
                     <div className="daily-content">
                       <div
-                        className="ring"
+                        className={remaining < 0 ? "ring calorie-excess" : "ring"}
                         style={{
                           background: `conic-gradient(#ff8774 ${Math.min(100, Math.max(0, (consumed / target) * 100))}%,#efe3d4 0)`,
                         }}
                       >
                         <div>
-                          <strong>{remaining.toLocaleString("pt-BR")}</strong>
-                          <small>kcal restantes</small>
+                          <strong>{Math.abs(remaining).toLocaleString("pt-BR")}</strong>
+                          <small>{remaining < 0 ? "kcal a mais" : "kcal restantes"}</small>
                         </div>
                       </div>
                       <div className="daily-values">
