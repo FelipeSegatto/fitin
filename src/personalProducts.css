@@ -28,3 +28,12 @@
 .personal-save-only {padding:12px;border-radius:12px;background:#efe6fa;color:#4c3867;font-size:12px;font-weight:600;}
 @media(max-width:360px) {.personal-entry-actions {grid-template-columns:1fr;}}
 .personal-panel select {width:100%;min-height:49px;padding:10px;border:1px solid #ead8ba;border-radius:12px;background:white;color:#30274b;font:inherit;font-size:13px;}
+.personal-search {margin-top:16px;}
+.personal-search > label {display:block;margin-bottom:6px;font-size:11px;color:#78668e;}
+.personal-search-input {display:flex;align-items:center;gap:8px;padding:0 10px;background:white;border:1px solid #ead8ba;border-radius:13px;color:#78668e;}
+.personal-search-input:focus-within {outline:2px solid #8b72a7;outline-offset:2px;}
+.personal-search-input > svg {flex-shrink:0;}
+.personal-search-input input {width:100%;min-width:0;min-height:44px;padding:10px 0;border:0;outline:0;background:transparent;color:#30274b;font:inherit;font-size:12px;}
+.personal-search-input input::-webkit-search-cancel-button {display:none;}
+.personal-search-input button {display:flex;align-items:center;justify-content:center;flex-shrink:0;min-width:36px;min-height:36px;padding:8px;background:#f4edf8;border-radius:10px;color:#654c7a;}
+.personal-search-empty {padding:8px 0;}

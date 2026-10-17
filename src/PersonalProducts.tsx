@@ -1,15 +1,18 @@
-import {useEffect,useRef,useState} from 'react';
-import {PackagePlus, Trash2, PackageCheck, Plus} from 'lucide-react';
-import {createPersonalProduct,loadPersonalProducts,savePersonalProducts,type PersonalProduct,type ProductLabel} from './personalProductCatalog';
+import {useEffect,useId,useRef,useState} from 'react';
+import {PackagePlus, Trash2, PackageCheck, Plus, Search, X} from 'lucide-react';
+import {createPersonalProduct,filterPersonalProducts,loadPersonalProducts,savePersonalProducts,type PersonalProduct,type ProductLabel} from './personalProductCatalog';
 import type {NutritionReference} from './nutrition';
 import './personalProducts.css';
 export function PersonalProducts({account,onApply}:{account:string;onApply:(reference:NutritionReference)=>void}) {
  const [open,setOpen]=useState(false),[creating,setCreating]=useState(false),[error,setError]=useState(''),[notice,setNotice]=useState('');
+ const [query,setQuery]=useState('');
+ const searchId=useId();
  const heading = useRef<HTMLHeadingElement>(null);
  useEffect(()=>{if(notice)heading.current?.scrollIntoView({block:'start'});},[notice]);
  const [items,setItems]=useState<PersonalProduct[]>([]),[pendingDelete,setPendingDelete]=useState('');
  const [name,setName]=useState(''),[brand,setBrand]=useState(''),[barcode,setBarcode]=useState(''),[amount,setAmount]=useState('100'),[unit,setUnit]=useState<'g'|'ml'>('g');
  const [values,setValues]=useState({kcal:'',protein:'',carbs:'',fat:''}),[serving,setServing]=useState('100');
+ const filteredItems=filterPersonalProducts(items,query);
  const refresh=()=>{try{setItems(loadPersonalProducts(account));setError('');return true;}catch{setError('Não foi possível ler seus produtos salvos. O conteúdo foi preservado.');return false;}};
  const persist=(next:PersonalProduct[])=>{savePersonalProducts(account,next);setItems(next);};
  const save=(useNow=false)=>{
@@ -17,7 +20,7 @@ export function PersonalProducts({account,onApply}:{account:string;onApply:(refe
    try{
     const label:ProductLabel={name,brand,barcode,amount:Number(amount),unit,nutrients:Object.fromEntries(Object.entries(values).map(([k,v])=>[k,v.trim()===''?null:Number(v)])) as ProductLabel['nutrients']};
     const current=loadPersonalProducts(account), product=createPersonalProduct(label,current);
-    persist([...current,product]);setServing(String(label.amount));setCreating(false);setName('');setBrand('');setBarcode('');setValues({kcal:'',protein:'',carbs:'',fat:''});
+    persist([...current,product]);setQuery('');setServing(String(label.amount));setCreating(false);setName('');setBrand('');setBarcode('');setValues({kcal:'',protein:'',carbs:'',fat:''});
     setNotice('Produto salvo só no seu catálogo pessoal. Não foi enviado ao catálogo geral.');
     if(useNow) {onApply({food:product.food,amount:label.amount,retrievedAt:product.createdAt});setOpen(false);}
    }catch(e){setError(e instanceof DOMException?'Não foi possível salvar no navegador. Confira o espaço e as permissões de armazenamento.':e instanceof Error?e.message:'Não foi possível salvar. Confira os dados.');}
@@ -45,8 +48,17 @@ export function PersonalProducts({account,onApply}:{account:string;onApply:(refe
    </fieldset>}
    {error && <p role="alert" className="personal-error">{error}</p>}{notice && <p role="status">{notice}</p>}
    {!creating && <>
-    {items.length>0 && <label className="field"><span>Quantidade que vou consumir</span><input type="number" min="0.1" max="5000" step="0.1" value={serving} onChange={e=>setServing(e.target.value)}/></label>}
-    <div className="personal-list">{items.map(product=><article key={product.id}>
+    {items.length>0 && <div className="personal-search">
+     <label htmlFor={searchId}>Buscar nos meus produtos</label>
+     <div className="personal-search-input">
+      <Search size={17} aria-hidden="true"/>
+      <input id={searchId} type="search" maxLength={120} placeholder="Buscar nos meus produtos" value={query} onChange={e=>{setQuery(e.target.value);setPendingDelete('');}}/>
+      {query && <button type="button" aria-label="Limpar busca dos meus produtos" onClick={()=>setQuery('')}><X size={16}/></button>}
+     </div>
+     <p role="status">{filteredItems.length} de {items.length} {items.length===1?'produto salvo':'produtos salvos'}</p>
+    </div>}
+    {filteredItems.length>0 && <label className="field"><span>Quantidade que vou consumir</span><input type="number" min="0.1" max="5000" step="0.1" value={serving} onChange={e=>setServing(e.target.value)}/></label>}
+    <div className="personal-list">{filteredItems.map(product=><article key={product.id}>
       <strong>{product.label.name}</strong><span>{product.label.brand} · {product.food.per100.kcal} kcal / 100 {product.label.unit}</span>
       <small><PackageCheck size={13}/> Rótulo informado · não verificado</small>
       {product.integrity.warnings.map(w=><p key={w}>{w}</p>)}
@@ -54,6 +66,10 @@ export function PersonalProducts({account,onApply}:{account:string;onApply:(refe
       <button type="button" className="personal-delete" aria-label={`Excluir produto ${product.label.name}`} onClick={()=>setPendingDelete(product.id)}><Trash2 size={16}/></button></div>
       {pendingDelete===product.id && <div className="personal-actions"><span>Excluir do seu catálogo? Os registros já feitos permanecem.</span><button type="button" onClick={()=>{try{persist(loadPersonalProducts(account).filter(p=>p.id!==product.id));setPendingDelete('');}catch{setError('Não foi possível excluir o produto.');}}}>Confirmar exclusão</button><button type="button" onClick={()=>setPendingDelete('')}>Cancelar exclusão</button></div>}
     </article>)}</div>
+    {items.length>0 && !filteredItems.length && <div className="personal-search-empty">
+     <p>Nenhum produto encontrado. Tente outro nome, marca ou código de barras.</p>
+     <button type="button" className="personal-create" onClick={()=>{setCreating(true);setError('');setNotice('');}}><Plus size={16}/> Cadastrar novo produto</button>
+    </div>}
     {!items.length && <p>Você ainda não tem produtos salvos. Eles aparecerão também na busca unificada.</p>}
    </>}
   </div>}

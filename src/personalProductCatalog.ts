@@ -75,7 +75,10 @@ export function savePersonalProducts(account: string, products: PersonalProduct[
   if(products.length>200) throw new Error('Limite de 200 produtos pessoais nesta demo.');
   storage.setItem(productStorageKey(account),JSON.stringify(products));
 }
+export function filterPersonalProducts(products: PersonalProduct[], query: string) {
+  const words=clean(query).split(/\s+/).filter(Boolean);
+  return products.filter(p=>words.every(w=>clean(`${p.label.name} ${p.label.brand} ${p.label.barcode}`).includes(w)));
+}
 export function findPersonalProducts(account: string, query: string) {
-  const words=clean(query).split(/\s+/);
-  return loadPersonalProducts(account).filter(p=>words.every(w=>clean(`${p.label.name} ${p.label.brand} ${p.label.barcode}`).includes(w))).slice(0,8).map(p=>p.food);
+  return filterPersonalProducts(loadPersonalProducts(account),query).slice(0,8).map(p=>p.food);
 }

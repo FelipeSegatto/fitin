@@ -10,12 +10,27 @@ try{
  await p.getByRole('button',{name:'Adicionar alimentos',exact:true}).click();
  assert.equal(await p.locator('.food-search-panel').count(),0);
  await p.getByRole('button',{name:'Cadastrar produto',exact:true}).click();
- for(const [name,value] of [['Nome do produto','Whey teste'],['Marca do produto','Marca teste'],['Quantidade no rótulo','30'],['Proteína no rótulo (g)','24'],['Carboidratos no rótulo (g)','3'],['Gorduras no rótulo (g)','1.5']])await p.getByLabel(name,{exact:true}).fill(value);
+ assert.equal(await p.getByLabel('Buscar nos meus produtos',{exact:true}).count(),0);
+ for(const [name,value] of [['Nome do produto','Whey teste'],['Marca do produto','Marca teste'],['Código de barras (opcional)','3017620422003'],['Quantidade no rótulo','30'],['Proteína no rótulo (g)','24'],['Carboidratos no rótulo (g)','3'],['Gorduras no rótulo (g)','1.5']])await p.getByLabel(name,{exact:true}).fill(value);
  await p.getByRole('button',{name:'Salvar meu produto',exact:true}).click();await p.getByRole('alert').waitFor();
  await p.getByLabel('Calorias do rótulo (kcal)',{exact:true}).fill('120');
  await p.getByRole('button',{name:'Salvar meu produto',exact:true}).click();await p.getByText('Produto salvo só no seu catálogo pessoal.',{exact:false}).waitFor();
  assert.equal(await p.evaluate(()=>document.documentElement.scrollWidth>innerWidth),false);
  await p.screenshot({path:'/tmp/fitin-personal-products-mobile.png',fullPage:true});
+ const personalSearch=p.getByLabel('Buscar nos meus produtos',{exact:true});
+ await personalSearch.fill('MARCA teste');
+ assert.equal(await p.locator('.personal-list article').count(),1);
+ await personalSearch.fill('3017620422003');
+ assert.equal(await p.locator('.personal-list article').count(),1);
+ await personalSearch.fill('produto inexistente');
+ assert.equal(await p.locator('.personal-list article').count(),0);
+ await p.getByText('Nenhum produto encontrado.',{exact:false}).waitFor();
+ await p.getByRole('button',{name:'Cadastrar novo produto',exact:true}).click();
+ await p.getByLabel('Nome do produto',{exact:true}).waitFor();
+ await p.getByRole('button',{name:'Cancelar cadastro',exact:true}).click();
+ await p.getByRole('button',{name:'Limpar busca dos meus produtos',exact:true}).click();
+ assert.equal(await personalSearch.inputValue(),'');
+ assert.equal(await p.locator('.personal-list article').count(),1);
  assert.equal(await p.getByLabel('Quantidade que vou consumir',{exact:true}).inputValue(),'30');
  await p.getByRole('button',{name:'Usar 30 g de Whey teste',exact:true}).click();
  assert.equal(await p.getByLabel('Energia (kcal)').inputValue(),'120');
@@ -31,6 +46,7 @@ try{
  await login();await open();await p.getByRole('button',{name:'Meus produtos',exact:true}).click();
  await p.getByRole('button',{name:'Excluir produto Whey teste',exact:true}).click();await p.getByRole('button',{name:'Confirmar exclusão',exact:true}).click();
  await p.getByText('Você ainda não tem produtos salvos.',{exact:false}).waitFor();
+ assert.equal(await p.getByLabel('Buscar nos meus produtos',{exact:true}).count(),0);
  // Save-and-use must persist the original ml label and apply that portion, without submitting the diary form.
  await p.getByRole('button',{name:'Cadastrar produto',exact:true}).click();
  for(const [name,value] of [['Nome do produto','Bebida teste'],['Marca do produto','Marca teste'],['Quantidade no rótulo','200'],['Calorias do rótulo (kcal)','90']])await p.getByLabel(name,{exact:true}).fill(value);

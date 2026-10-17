@@ -1,5 +1,5 @@
 import {test} from 'node:test';import assert from 'node:assert/strict';
-import {createPersonalProduct,validateProductLabel,validBarcode,loadPersonalProducts,savePersonalProducts,productStorageKey} from '../src/personalProductCatalog.ts';
+import {createPersonalProduct,validateProductLabel,validBarcode,loadPersonalProducts,savePersonalProducts,productStorageKey,filterPersonalProducts} from '../src/personalProductCatalog.ts';
 const label={name:'Whey teste',brand:'Marca teste',barcode:'3017620422003',amount:30,unit:'g',nutrients:{kcal:120,protein:24,carbs:3,fat:1.5}};
 test('label portions normalize once, preserve original and remain private/unverified',()=>{
  const p=createPersonalProduct(label,[],'test','2026-10-17T00:00:00Z');
@@ -46,4 +46,14 @@ test('products can be saved and reloaded when randomUUID or crypto is unavailabl
   if(descriptor)Object.defineProperty(globalThis,'crypto',descriptor);
   else delete globalThis.crypto;
  }
+});
+
+test('personal catalog search matches names, brands and barcodes without truncating the list',()=>{
+ const products=Array.from({length:12},(_,i)=>createPersonalProduct({...label,name:i===0?'Café com leite':`Alimento ${i}`,brand:i===1?'Outra marca':'Marca teste',barcode:i===0?label.barcode:''},[],`filter-${i}`));
+ assert.equal(filterPersonalProducts(products,'   ').length,12);
+ assert.deepEqual(filterPersonalProducts(products,'  CAFE  leite ').map(p=>p.id),['filter-0']);
+ assert.deepEqual(filterPersonalProducts(products,'OUTRA MARCA').map(p=>p.id),['filter-1']);
+ assert.deepEqual(filterPersonalProducts(products,label.barcode).map(p=>p.id),['filter-0']);
+ assert.equal(filterPersonalProducts(products,'não existe').length,0);
+ assert.equal(products.length,12);
 });

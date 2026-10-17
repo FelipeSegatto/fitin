@@ -6,6 +6,8 @@ Em **Adicionar alimentos → Cadastrar produto**, abra o formulário diretamente
 
 **Salvar meu produto** guarda no catálogo sem lançar uma refeição. **Salvar e usar** salva e preenche o registro com a quantidade e unidade do rótulo; é preciso confirmar em **Adicionar registro** para lançar no Diário. Ao salvar apenas no catálogo, a quantidade sugerida para consumo também começa na porção do rótulo, em vez de assumir 100 g/ml.
 
+Em **Meus produtos**, a busca aparece a partir do primeiro cadastro. Filtra imediatamente por nome, marca e código de barras, ignorando maiúsculas e acentos, sem consultar APIs. A lista pessoal não usa o limite de oito sugestões da busca unificada. Sem resultados, é possível limpar a busca ou cadastrar um novo produto; salvar limpa o filtro para mostrar o cadastro novo.
+
 Os produtos aparecem na busca unificada e no filtro **Meus produtos**. Também é possível usá-los diretamente do catálogo, confirmando a quantidade consumida. O registro no Diário conserva um snapshot da referência: excluir o produto pessoal não altera refeições já registradas.
 
 A persistência atual é `localStorage`, separada pelo identificador da conta de demonstração no mesmo navegador. Sobrevive a recarga, logout e novo login na mesma conta. Não há sincronização com outro navegador/aparelho nem autenticação de backend. Isso é organização da demo, não uma fronteira de segurança entre pessoas com acesso ao mesmo navegador. Limpar os dados do site remove os produtos. Nome/e-mail editados durante a sessão não trocam o catálogo que já foi aberto; os logins demo continuam usando seus identificadores originais.
