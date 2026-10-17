@@ -1,5 +1,5 @@
 import {useEffect,useRef,useState} from 'react';
-import {PackagePlus, Trash2, PackageCheck} from 'lucide-react';
+import {PackagePlus, Trash2, PackageCheck, Plus} from 'lucide-react';
 import {createPersonalProduct,loadPersonalProducts,savePersonalProducts,type PersonalProduct,type ProductLabel} from './personalProductCatalog';
 import type {NutritionReference} from './nutrition';
 import './personalProducts.css';
@@ -12,17 +12,19 @@ export function PersonalProducts({account,onApply}:{account:string;onApply:(refe
  const [values,setValues]=useState({kcal:'',protein:'',carbs:'',fat:''}),[serving,setServing]=useState('100');
  const refresh=()=>{try{setItems(loadPersonalProducts(account));setError('');return true;}catch{setError('Não foi possível ler seus produtos salvos. O conteúdo foi preservado.');return false;}};
  const persist=(next:PersonalProduct[])=>{savePersonalProducts(account,next);setItems(next);};
- const save=()=>{
+ const save=(useNow=false)=>{
    setError('');setNotice('');
    try{
     const label:ProductLabel={name,brand,barcode,amount:Number(amount),unit,nutrients:Object.fromEntries(Object.entries(values).map(([k,v])=>[k,v.trim()===''?null:Number(v)])) as ProductLabel['nutrients']};
     const current=loadPersonalProducts(account), product=createPersonalProduct(label,current);
-    persist([...current,product]);setCreating(false);setName('');setBrand('');setBarcode('');setValues({kcal:'',protein:'',carbs:'',fat:''});
+    persist([...current,product]);setServing(String(label.amount));setCreating(false);setName('');setBrand('');setBarcode('');setValues({kcal:'',protein:'',carbs:'',fat:''});
     setNotice('Produto salvo só no seu catálogo pessoal. Não foi enviado ao catálogo geral.');
+    if(useNow) {onApply({food:product.food,amount:label.amount,retrievedAt:product.createdAt});setOpen(false);}
    }catch(e){setError(e instanceof DOMException?'Não foi possível salvar no navegador. Confira o espaço e as permissões de armazenamento.':e instanceof Error?e.message:'Não foi possível salvar. Confira os dados.');}
  };
  return <section className="personal-products" onKeyDown={event=>{if(event.key==='Enter' && event.target instanceof HTMLInputElement)event.preventDefault();}}>
-  <button type="button" className="personal-toggle" aria-expanded={open} onClick={()=>{if(!open)refresh();setOpen(!open);}}><PackagePlus size={18}/> Meus produtos</button>
+  <div className="personal-entry-actions"><button type="button" className="personal-toggle" aria-expanded={open} onClick={()=>{if(!open)refresh();setOpen(!open);}}><PackagePlus size={18}/> Meus produtos</button>
+  <button type="button" className="personal-new" onClick={()=>{if(refresh()){setOpen(true);setCreating(true);setNotice('');}}}><Plus size={17}/> Cadastrar produto</button></div>
   {open && <div className="personal-panel">
    <h3 ref={heading}>Seu catálogo de rótulos</h3>
    <p>Cadastre produtos que não encontrou. Ficam vinculados a esta conta de demonstração neste navegador, sem sincronização entre aparelhos.</p>
@@ -32,10 +34,14 @@ export function PersonalProducts({account,onApply}:{account:string;onApply:(refe
     <label className="field"><span>Marca do produto</span><input maxLength={80} value={brand} onChange={e=>setBrand(e.target.value)}/></label>
     <label className="field"><span>Código de barras (opcional)</span><input inputMode="numeric" maxLength={14} value={barcode} onChange={e=>setBarcode(e.target.value)}/></label>
     <div className="personal-grid"><label className="field"><span>Quantidade no rótulo</span><input type="number" min="0.1" max="5000" step="0.1" value={amount} onChange={e=>setAmount(e.target.value)}/></label>
-    <label className="field"><span>Unidade no rótulo</span><select value={unit} onChange={e=>setUnit(e.target.value as 'g'|'ml')}><option value="g">g</option><option value="ml">ml</option></select></label></div>
+    <label className="field"><span>Unidade no rótulo</span><select aria-label="Unidade no rótulo" value={unit} onChange={e=>setUnit(e.target.value as 'g'|'ml')}><option value="g">g</option><option value="ml">ml</option></select></label></div>
     <p>Copie os nutrientes para essa mesma quantidade. Ex.: se o rótulo informa por 30 g, preencha os valores de 30 g. Campos de macros vazios significam “sem informação”.</p>
     <div className="personal-grid">{(['kcal','protein','carbs','fat'] as const).map((key,i)=><label className="field" key={key}><span>{['Calorias do rótulo (kcal)','Proteína no rótulo (g)','Carboidratos no rótulo (g)','Gorduras no rótulo (g)'][i]}</span><input type="number" min="0" step="0.1" value={values[key]} onChange={e=>setValues(v=>({...v,[key]:e.target.value}))}/></label>)}</div>
-    <button type="button" className="food-search-submit" onClick={save}>Salvar meu produto</button>
+    <div className="personal-save-actions">
+     <button type="button" className="food-search-submit" onClick={()=>save(true)}>Salvar e usar {amount || '…'} {unit}</button>
+     <button type="button" className="personal-save-only" onClick={()=>save()}>Salvar meu produto</button>
+    </div>
+    <p>Salvar e usar preenche o registro com a porção do rótulo. Depois, confirme em “Adicionar registro”. Salvar meu produto guarda apenas no catálogo.</p>
    </fieldset>}
    {error && <p role="alert" className="personal-error">{error}</p>}{notice && <p role="status">{notice}</p>}
    {!creating && <>

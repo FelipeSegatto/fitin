@@ -2,7 +2,9 @@
 
 ## Usar na demo
 
-Em **Adicionar alimentos → Buscar na base nutricional → Meus produtos**, clique em **Cadastrar produto pelo rótulo**. Informe nome, marca, código de barras opcional, quantidade/unidade de referência do rótulo e os nutrientes dessa mesma quantidade. Macros vazios permanecem desconhecidos; zero precisa ser informado explicitamente.
+Em **Adicionar alimentos → Cadastrar produto**, abra o formulário diretamente, sem pesquisar nas APIs. Para consultar o catálogo, use **Meus produtos** na mesma tela. Informe nome, marca, código de barras opcional, quantidade/unidade de referência do rótulo e os nutrientes dessa mesma quantidade. Macros vazios permanecem desconhecidos; zero precisa ser informado explicitamente.
+
+**Salvar meu produto** guarda no catálogo sem lançar uma refeição. **Salvar e usar** salva e preenche o registro com a quantidade e unidade do rótulo; é preciso confirmar em **Adicionar registro** para lançar no Diário. Ao salvar apenas no catálogo, a quantidade sugerida para consumo também começa na porção do rótulo, em vez de assumir 100 g/ml.
 
 Os produtos aparecem na busca unificada e no filtro **Meus produtos**. Também é possível usá-los diretamente do catálogo, confirmando a quantidade consumida. O registro no Diário conserva um snapshot da referência: excluir o produto pessoal não altera refeições já registradas.
 

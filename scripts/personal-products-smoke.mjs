@@ -4,16 +4,17 @@ const p=await b.newPage({viewport:{width:390,height:844}});const errors=[];p.on(
 const login=async(name='Preencher dados')=>{await p.getByRole('button',{name:'Entrar',exact:true}).click();await p.getByRole('button',{name,exact:true}).click();await p.getByRole('button',{name:'Entrar',exact:true}).click();await p.getByRole('button',{name:'Adicionar alimentos',exact:true}).waitFor();};
 const open=async()=>{await p.getByRole('button',{name:'Adicionar alimentos',exact:true}).click();await p.getByRole('button',{name:'Buscar na base nutricional'}).click();};
 try{
- await p.goto(process.env.BASE_URL||'http://localhost:5200');await login();await open();
- await p.getByRole('button',{name:'Meus produtos',exact:true}).click();
- await p.getByRole('button',{name:'Cadastrar produto pelo rótulo',exact:true}).click();
+ await p.goto(process.env.BASE_URL||'http://localhost:5200');await login();
+ await p.getByRole('button',{name:'Adicionar alimentos',exact:true}).click();
+ assert.equal(await p.locator('.food-search-panel').count(),0);
+ await p.getByRole('button',{name:'Cadastrar produto',exact:true}).click();
  for(const [name,value] of [['Nome do produto','Whey teste'],['Marca do produto','Marca teste'],['Quantidade no rótulo','30'],['Proteína no rótulo (g)','24'],['Carboidratos no rótulo (g)','3'],['Gorduras no rótulo (g)','1.5']])await p.getByLabel(name,{exact:true}).fill(value);
  await p.getByRole('button',{name:'Salvar meu produto',exact:true}).click();await p.getByRole('alert').waitFor();
  await p.getByLabel('Calorias do rótulo (kcal)',{exact:true}).fill('120');
  await p.getByRole('button',{name:'Salvar meu produto',exact:true}).click();await p.getByText('Produto salvo só no seu catálogo pessoal.',{exact:false}).waitFor();
  assert.equal(await p.evaluate(()=>document.documentElement.scrollWidth>innerWidth),false);
  await p.screenshot({path:'/tmp/fitin-personal-products-mobile.png',fullPage:true});
- await p.getByLabel('Quantidade que vou consumir',{exact:true}).fill('30');
+ assert.equal(await p.getByLabel('Quantidade que vou consumir',{exact:true}).inputValue(),'30');
  await p.getByRole('button',{name:'Usar 30 g de Whey teste',exact:true}).click();
  assert.equal(await p.getByLabel('Energia (kcal)').inputValue(),'120');
  await p.getByRole('button',{name:'Adicionar registro',exact:true}).click();
@@ -27,6 +28,23 @@ try{
  await p.getByRole('button',{name:'Fechar',exact:true}).click();await p.getByRole('button',{name:'Perfil',exact:true}).click();await p.getByRole('button',{name:'Sair e limpar demonstração'}).click();
  await login();await open();await p.getByRole('button',{name:'Meus produtos',exact:true}).click();
  await p.getByRole('button',{name:'Excluir produto Whey teste',exact:true}).click();await p.getByRole('button',{name:'Confirmar exclusão',exact:true}).click();
- await p.getByText('Você ainda não tem produtos salvos.',{exact:false}).waitFor();assert.deepEqual(errors,[]);
- console.log('PASS: personal product validation, normalization, portions, persistence/relogin, account separation and deletion.');
+ await p.getByText('Você ainda não tem produtos salvos.',{exact:false}).waitFor();
+ // Save-and-use must persist the original ml label and apply that portion, without submitting the diary form.
+ await p.getByRole('button',{name:'Cadastrar produto',exact:true}).click();
+ for(const [name,value] of [['Nome do produto','Bebida teste'],['Marca do produto','Marca teste'],['Quantidade no rótulo','200'],['Calorias do rótulo (kcal)','90']])await p.getByLabel(name,{exact:true}).fill(value);
+ await p.getByLabel('Unidade no rótulo',{exact:true}).selectOption('ml');
+ await p.getByRole('button',{name:'Salvar e usar 200 ml',exact:true}).click();
+ assert.equal(await p.getByLabel('Energia (kcal)').inputValue(),'90');
+ assert.equal(await p.getByLabel('Alimento ou refeição').inputValue(),'Bebida teste · Marca teste (200 ml)');
+ await p.getByRole('button',{name:'Adicionar registro',exact:true}).waitFor();
+ await p.reload();await login();await open();
+ await p.getByLabel('Fonte nutricional').selectOption('personal');
+ await p.getByLabel('Buscar alimento ou código de barras').fill('Bebida teste');
+ await p.getByRole('button',{name:'Pesquisar alimentos',exact:true}).click();
+ await p.getByRole('button',{name:/Bebida teste · Marca teste/}).click();
+ await p.getByLabel('Quantidade (ml)',{exact:true}).fill('100');
+ await p.getByRole('button',{name:'Usar alimento',exact:true}).click();
+ assert.equal(await p.getByLabel('Energia (kcal)').inputValue(),'45');
+ assert.deepEqual(errors,[]);
+ console.log('PASS: direct registration, save-only, save-and-use, g/ml portions, validation, persistence/relogin, account separation and deletion.');
 }finally{await b.close()}

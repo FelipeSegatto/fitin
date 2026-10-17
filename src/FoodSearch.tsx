@@ -127,6 +127,7 @@ export function FoodSearch({
       : null;
   return (
     <section className="food-search">
+      <PersonalProducts account={account} onApply={reference=>{onApply(reference);setOpen(false);reset();}} />
       <button
         className="food-search-toggle"
         type="button"
@@ -142,7 +143,6 @@ export function FoodSearch({
       </button>
       {open && (
         <div className="food-search-panel">
-          <PersonalProducts account={account} onApply={reference=>{onApply(reference);setOpen(false);reset();}} />
           <label className="field">
             <span>Fonte nutricional</span>
             <select

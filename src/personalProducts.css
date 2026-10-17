@@ -4,7 +4,7 @@
 .personal-panel h3 {font-size:14px;margin-bottom:8px;}
 .personal-panel p,.personal-panel small {font-size:10px;line-height:1.7;margin:8px 0;color:#6b5a48;}
 .personal-panel .personal-error {color:#be1f4c;}
-.personal-grid {display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.personal-grid {display:grid;grid-template-columns:1fr 1fr;gap:10px;align-items:end;}
 .personal-grid .field {min-width:0;}
 .personal-grid input {width:100%;min-width:0;}
 .personal-fields {border:0;padding:0;margin-top:14px;min-width:0;}
@@ -20,3 +20,11 @@
 .personal-primary-actions {display:grid;grid-template-columns:minmax(0,1fr)40px;gap:8px;align-items:stretch;}
 .personal-primary-actions button {min-height:40px;display:flex;align-items:center;justify-content:center;border-radius:12px;font-weight:600;}
 .personal-primary-actions .personal-delete {margin:0;width:40px;padding:0;}
+
+.personal-entry-actions {display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+.personal-entry-actions > button {justify-content:center;min-width:0;}
+.personal-new {display:flex;align-items:center;gap:6px;padding:12px 8px;border-radius:12px;background:#e0f3eb;color:#226847;font-size:12px;font-weight:600;}
+.personal-save-actions {display:grid;gap:8px;margin-top:16px;}
+.personal-save-only {padding:12px;border-radius:12px;background:#efe6fa;color:#4c3867;font-size:12px;font-weight:600;}
+@media(max-width:360px) {.personal-entry-actions {grid-template-columns:1fr;}}
+.personal-panel select {width:100%;min-height:49px;padding:10px;border:1px solid #ead8ba;border-radius:12px;background:white;color:#30274b;font:inherit;font-size:13px;}
