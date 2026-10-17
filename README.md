@@ -28,7 +28,7 @@ Na etapa de medidas, a idade é editável e sincroniza a data de nascimento. Pes
 
 ## Home da conta demonstrativa
 
-O login abre com registros fictícios: 7 dias de sequência, meta de 2.000 kcal, duas refeições somando 926 kcal e musculação de 150 kcal. O saldo alimentar é 1.074 kcal; com as 150 kcal de atividade, o saldo mostrado na rodinha é -1.224 kcal (déficit). Quem conclui o cadastro começa sem registros. O logo usa o asset fornecido no SVG de referência da home.
+O login abre com registros fictícios: 7 dias de sequência, meta de 2.000 kcal, duas refeições somando 926 kcal e musculação de 150 kcal. O saldo alimentar é 1.074 kcal; com as 150 kcal de atividade, o a rodinha mostra 1.224 kcal restantes e a equação identifica déficit. Quem conclui o cadastro começa sem registros. O logo usa o asset fornecido no SVG de referência da home.
 
 ## Conquistas
 
@@ -75,7 +75,7 @@ Verificação: `npm run test:full-day-demo` cobre os registros, as cores, os tot
 
 Os cards da home usam preenchimentos mais fortes, seguindo o roxo e o verde originais. Os ícones Lucide são escolhidos pelo tipo e nome do registro, com opções para café, frutas, sanduíches, peixe, ceia, caminhada, musculação, mobilidade, bicicleta, natação e outras atividades. No demo completo, os nove registros usam nove ícones diferentes.
 
-Quando as calorias consumidas ultrapassam a meta diária, o banner da home mostra “Atenção à meta do dia”, o excesso registrado e o personagem fornecido em `attention-buddy.svg`. A comparação usa consumo bruto (`consumidas > meta`): o banner e o aviso alimentar mostram consumo bruto acima da meta. Gráfico, equação e Diário mostram o saldo ajustado (consumo − meta − atividades), com rótulo explícito. No demo completo, 2.400 kcal consumidas para meta de 2.000 geram aviso alimentar de 400 kcal a mais, em vermelho; as 400 kcal de atividades levam o saldo ajustado a zero, sem apagar o aviso. Ao voltar à meta ou abaixo dela, o banner habitual retorna.
+Quando as calorias consumidas ultrapassam a meta diária, o banner da home mostra “Atenção à meta do dia”, o excesso registrado e o personagem fornecido em `attention-buddy.svg`. A comparação usa consumo bruto (`consumidas > meta`): o banner e o aviso alimentar mostram consumo bruto acima da meta. A rodinha mostra apenas as calorias restantes, limitadas a zero; a equação usa meta − consumo + atividades e informa déficit/equilíbrio/superávit conforme o plano. O Diário identifica o saldo do consumo após atividades. No demo completo, 2.400 kcal consumidas para meta de 2.000 geram aviso alimentar de 400 kcal a mais, em vermelho; as 400 kcal de atividades levam o saldo ajustado a zero, sem apagar o aviso. Ao voltar à meta ou abaixo dela, o banner habitual retorna.
 
 A seção “Desafios da semana” fica em um banner com a personagem e o quadro fornecidos pelo autor (`challenges-guide.svg`). Os cards semanais e os desafios ativos usam preenchimentos verde, roxo, azul e amarelo da paleta, com textos escuros e pequenos elementos de cada tema. No mobile, as quatro opções continuam no carrossel.
 
@@ -103,4 +103,6 @@ Atividades agora têm 47 opções, busca, categorias, cards e durações rápida
 
 O resumo distingue excesso alimentar e saldo ajustado por atividades. Registrar, editar ou excluir uma atividade atualiza o saldo ajustado e a equação. A meta alimentar e o aviso por consumo acima dela permanecem independentes. Verificação: `npm run test:calories`.
 
-O saldo usa sempre consumo − meta − atividades: negativo indica déficit, zero indica equilíbrio e positivo indica calorias a mais (vermelho). A equação não inverte a ordem conforme o sinal.
+A equação usa sempre meta − consumo + atividades. Seu saldo positivo corresponde a calorias restantes/déficit; negativo indica superávit, com a direção identificada no resultado. O sinal da equação não é invertido para exibir o texto. A rodinha mostra max(0, meta − consumo + atividades), sempre com o rótulo “kcal restantes”.
+
+Planos disponíveis: Emagrecer, Cutting, Manutenção e Lean bulking. Déficit é verde para Emagrecer/Cutting; superávit é verde para Lean bulking; equilíbrio é verde para Manutenção. Desvios de direção ficam vermelhos, com feedback na equação e no Diário. Os termos de consumo/atividades invertem suas cores em Lean bulking. A rodinha permanece neutra. Regras e testes em [planos e saldo](docs/nutrition-plans.md).

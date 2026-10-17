@@ -38,7 +38,7 @@ try {
     "63 g",
   );
   await p.getByRole("button", { name: "Home", exact: true }).click();
-  assert.equal(await p.locator(".ring strong").innerText(), "-1.194");
+  assert.equal(await p.locator(".ring strong").innerText(), "1.194");
   await p.getByRole("button", { name: "Diário", exact: true }).click();
   await p
     .getByRole("button", {
@@ -75,7 +75,7 @@ try {
     false,
   );
   await p.getByRole("button", { name: "Home", exact: true }).click();
-  assert.equal(await p.locator(".ring strong").innerText(), "-1.750");
+  assert.equal(await p.locator(".ring strong").innerText(), "1.750");
   await p.getByRole("button", { name: "Progresso", exact: true }).click();
   await p.getByRole("heading", { name: "Seu progresso" }).waitFor();
   assert(

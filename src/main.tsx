@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { nutritionPlans, resolveNutritionPlan, calorieFeedback } from "./nutritionPlans";
 import { calorieBalance } from "./calorieBalance";
 import { createRoot } from "react-dom/client";
 import {
@@ -121,11 +122,7 @@ const activities = [
   ["Alto", "Treinos pesados 6 a 7 vezes por semana", "mint"],
   ["Muito alto", "Atletas com rotina dupla ou trabalho físico", "yellow"],
 ];
-const goals = [
-  ["Emagrecer", "Foco em queima de gordura e déficit calórico", "mint"],
-  ["Ganhar massa", "Foco em hipertrofia e superávit calórico", "blue"],
-  ["Manter peso", "Foco em manutenção e equilíbrio no dia a dia", "yellow"],
-];
+const goals = nutritionPlans.map(plan => [plan.name, plan.description, plan.color]);
 const demoNotice =
   "Demonstração · Sem autenticação ou orientação nutricional real";
 function Logo() {
@@ -208,20 +205,23 @@ function App() {
     setErrors({});
     setScreen(s);
   };
-  const goal = profile.goal || "Emagrecer";
+  const goal = resolveNutritionPlan(profile.goal).name;
   const maintenance = 2450;
   const target =
-    goal === "Manter peso"
+    goal === "Manutenção"
       ? maintenance
       : Math.round(
           (maintenance +
-            ((goal === "Ganhar massa" ? 1 : -1) * rate * 7700) / 7) /
+            ((goal === "Lean bulking" ? 1 : -1) * rate * 7700) / 7) /
             50,
         ) * 50;
   const consumed = foods.reduce((s, i) => s + i.kcal, 0),
     burned = workouts.reduce((s, i) => s + i.kcal, 0);
   const { netBalance: netCalories, foodExcess: excessCalories } = calorieBalance(target, consumed, burned);
   const overTarget = excessCalories > 0;
+  const equationBalance = netCalories === 0 ? 0 : -netCalories;
+  const remainingCalories = Math.max(0, equationBalance);
+  const feedback = calorieFeedback(goal, netCalories);
   const nextSignup = () => {
     const e: Record<string, string> = {};
     if (step === 0) {
@@ -954,7 +954,7 @@ function App() {
                   <div className="coral">
                     <small>RITMO</small>
                     <strong>
-                      {goal === "Manter peso"
+                      {goal === "Manutenção"
                         ? "Manutenção"
                         : rate.toLocaleString("pt-BR") + " kg/semana"}
                     </strong>
@@ -1006,7 +1006,7 @@ function App() {
                 <div className="card projection">
                   <div
                     className={
-                      "bars " + (goal === "Ganhar massa" ? "gaining" : "")
+                      "bars " + (goal === "Lean bulking" ? "gaining" : "")
                     }
                   >
                     {[0, 1, 2, 3, 4, 5, 6, 7].map((i) => (
@@ -1014,7 +1014,7 @@ function App() {
                         key={i}
                         style={{
                           height:
-                            goal === "Manter peso" ? "65%" : 95 - i * 9 + "%",
+                            goal === "Manutenção" ? "65%" : 95 - i * 9 + "%",
                         }}
                       />
                     ))}
@@ -1028,9 +1028,9 @@ function App() {
                   <div className="mint">
                     <small>PROJEÇÃO ILUSTRATIVA</small>
                     <strong>
-                      {goal === "Manter peso"
+                      {goal === "Manutenção"
                         ? "Manutenção"
-                        : (goal === "Ganhar massa" ? "+" : "−") +
+                        : (goal === "Lean bulking" ? "+" : "−") +
                           (rate * 8).toLocaleString("pt-BR", {
                             maximumFractionDigits: 1,
                           }) +
@@ -1063,7 +1063,7 @@ function App() {
                   <strong>
                     {target.toLocaleString("pt-BR")} <small>kcal</small>
                   </strong>
-                  {goal !== "Manter peso" && (
+                  {goal !== "Manutenção" && (
                     <>
                       <input
                         type="range"
@@ -1191,13 +1191,13 @@ function App() {
                   <div className="card daily">
                     <div className="card-title">
                       <h3>Resumo Diário</h3>
-                      <small className="balance-caption">Consumo − meta − atividades</small>
+                      <small className="balance-caption">Meta − consumidas + atividades · {goal}</small>
                       {foods.length || workouts.length ? (
                         <small className="daily-equation">
-                          {consumed.toLocaleString("pt-BR")} − {target.toLocaleString("pt-BR")} − <em>{burned.toLocaleString("pt-BR")}</em>
-                          {" = "}<strong className={netCalories > 0 ? "calorie-excess" : undefined}>
-                            {netCalories.toLocaleString("pt-BR")} kcal{netCalories > 0 ? " a mais" : netCalories < 0 ? " de déficit" : " · saldo equilibrado"}
-                          </strong>
+                          <span className="equation-expression"><span className="equation-meta">{target.toLocaleString("pt-BR")}</span> <span className={`equation-consumed balance-${feedback.consumptionTone}`}>− {consumed.toLocaleString("pt-BR")}</span> <em className={`equation-activity balance-${feedback.activityTone}`}>+ {burned.toLocaleString("pt-BR")}</em></span>
+                          <span className="equation-outcome">= <strong className={`balance-result balance-${feedback.tone}`}>
+                            {equationBalance.toLocaleString("pt-BR")} kcal · {feedback.label}
+                          </strong></span>
                         </small>
                       ) : (
                         <small>
@@ -1208,14 +1208,14 @@ function App() {
                     {overTarget && <p className="food-excess-note">Alimentação: <strong>{excessCalories.toLocaleString("pt-BR")} kcal a mais</strong> que a meta, antes do ajuste por atividades.</p>}
                     <div className="daily-content">
                       <div
-                        className={netCalories > 0 ? "ring calorie-excess" : "ring"}
+                        className="ring"
                         style={{
                           background: `conic-gradient(#ff8774 ${Math.min(100, Math.max(0, (consumed / (target + burned)) * 100))}%,#efe3d4 0)`,
                         }}
                       >
                         <div>
-                          <strong>{netCalories.toLocaleString("pt-BR")}</strong>
-                          <small>{netCalories > 0 ? "kcal a mais" : netCalories < 0 ? "kcal de déficit" : "kcal · saldo equilibrado"}</small>
+                          <strong>{remainingCalories.toLocaleString("pt-BR")}</strong>
+                          <small>kcal restantes</small>
                         </div>
                       </div>
                       <div className="daily-values">
@@ -1338,6 +1338,7 @@ function App() {
             )}
             {tab === "Diário" && (
               <Diary
+                plan={goal}
                 foods={foodRecords}
                 workouts={workoutRecords}
                 target={target}

@@ -1899,3 +1899,23 @@ button:hover {
 @media (forced-colors: active) {
   .modal, .activity-options, .food-search-results, .personal-list {scrollbar-color:auto;}
 }
+
+/* The ring is a neutral remaining-calorie counter; plan feedback belongs to the equation. */
+.ring {box-sizing:border-box;}
+.ring > div {text-align:center;gap:4px;padding:4px;box-sizing:border-box;min-width:0;}
+.ring strong {display:block;line-height:1.15;margin:0;font-variant-numeric:tabular-nums;}
+.ring small {display:block;white-space:nowrap;line-height:1.3;margin:0;}
+.home-body.home-tab .ring small {margin-top:0;}
+.home-body.home-tab .card-title small.balance-caption {font-size:11px;line-height:1.5;}
+.daily-equation {display:flex;align-items:baseline;flex-wrap:wrap;gap:4px 6px;max-width:100%;}
+.daily-equation .equation-expression {white-space:nowrap;color:inherit;}
+.daily-equation .equation-outcome {display:inline-flex;align-items:baseline;gap:5px;white-space:nowrap;color:inherit;}
+.daily-equation .balance-result {white-space:nowrap;}
+.daily-equation .balance-good,.diary-hero strong.balance-good {color:#257b4b;}
+.daily-equation .balance-warning,.diary-hero strong.balance-warning {color:#be1f4c;}
+.daily-equation .balance-neutral {color:#695c76;}
+
+.daily-equation .equation-meta {color:#695c76;}
+.daily-equation .equation-expression .balance-good {color:#257b4b;}
+.daily-equation .equation-expression .balance-warning {color:#be1f4c;}
+.daily-equation .equation-expression .balance-neutral {color:#695c76;}

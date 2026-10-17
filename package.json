@@ -20,7 +20,8 @@
     "test:products": "node --test scripts/personal-products.test.mjs",
     "test:products-ui": "node scripts/personal-products-smoke.mjs",
     "test:portability": "node --test scripts/import-portability.test.mjs",
-    "test:calories": "node --test scripts/calorie-balance.test.mjs"
+    "test:calories": "node --test scripts/calorie-balance.test.mjs",
+    "test:plans": "node scripts/plans-smoke.mjs"
   },
   "dependencies": {
     "@fontsource/poppins": "^5.2.7",

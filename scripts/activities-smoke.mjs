@@ -63,7 +63,7 @@ try{
  assert.equal(await page.getByLabel('Duração (min)',{exact:true}).inputValue(),'30');
  assert.equal(await page.getByLabel('Origem das calorias').inputValue(),'met');
  await page.getByRole('button',{name:'Adicionar registro',exact:true}).click();
- assert.equal(await page.locator('.ring strong').innerText(),'-1.347');
+ assert.equal(await page.locator('.ring strong').innerText(),'1.347');
  await page.getByRole('button',{name:'Diário',exact:true}).click();
  await page.locator('.entry-activity-source').getByRole('link').waitFor();
  await page.getByRole('button',{name:'Editar Bicicleta',exact:true}).click();
@@ -82,7 +82,7 @@ try{
  await page.getByText('Calorias ativas informadas · relógio ou aplicativo',{exact:true}).waitFor();
  assert.equal(await page.locator('.entry-activity-source a').count(),0);
  await page.getByRole('button',{name:'Home',exact:true}).click();
- assert.equal(await page.locator('.ring strong').innerText(),'-1.374');
+ assert.equal(await page.locator('.ring strong').innerText(),'1.374');
  assert.deepEqual(errors,[]);
  console.log('PASS: activity estimate, required weight, active energy, source, edit preservation/invalidation, device input, shared totals, mobile and desktop.');
 }finally{await browser.close()}

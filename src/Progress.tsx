@@ -90,7 +90,7 @@ export function Progress({
         )
       : null;
   const weeksLeft =
-    current && goalWeight !== null && goal !== "Manter peso" && rate > 0
+    current && goalWeight !== null && goal !== "Manutenção" && rate > 0
       ? Math.ceil(Math.abs(current.weight - goalWeight) / rate)
       : null;
   const finish = new Date();

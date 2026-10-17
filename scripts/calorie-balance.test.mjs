@@ -12,3 +12,20 @@ test('adjusted balance reacts to adding, editing and removing exercise',()=>{
  assert.equal(calorieBalance(2000,926,300).netBalance,-1374);
  assert.equal(calorieBalance(2000,926,0).netBalance,-1074);
 });
+
+const {calorieFeedback,resolveNutritionPlan,nutritionPlans} = await import('../src/nutritionPlans.ts');
+test('plan feedback distinguishes desired deficit, planned surplus and maintenance',()=>{
+ for(const plan of ['Emagrecer','Cutting']){
+  assert.equal(calorieFeedback(plan,-100).tone,'good');
+  assert.equal(calorieFeedback(plan,100).tone,'warning');
+  assert.equal(calorieFeedback(plan,0).tone,'neutral');
+ }
+ assert.equal(calorieFeedback('Lean bulking',100).tone,'good');
+ assert.equal(calorieFeedback('Lean bulking',-100).tone,'warning');
+ assert.equal(calorieFeedback('Manutenção',0).tone,'good');
+ assert.equal(calorieFeedback('Manutenção',100).tone,'warning');
+ assert.equal(calorieFeedback('Manutenção',-100).tone,'warning');
+ assert.equal(resolveNutritionPlan('Ganhar massa').name,'Lean bulking');
+ assert.equal(resolveNutritionPlan('Manter peso').name,'Manutenção');
+ assert.equal(nutritionPlans.length,4);
+});

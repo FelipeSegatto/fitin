@@ -80,7 +80,7 @@ try {
   await p.getByRole("button", { name: "Próximo", exact: true }).click();
   await p.getByRole("button", { name: /^Leve/ }).click();
   await p.getByRole("button", { name: "Próximo", exact: true }).click();
-  await p.getByRole("button", { name: /^Manter peso/ }).click();
+  await p.getByRole("button", { name: /^Manutenção/ }).click();
   await p.getByRole("button", { name: "Calcular meu plano!" }).click();
   await p.getByRole("button", { name: "Avançar", exact: true }).waitFor();
   assert.equal(await p.locator(".stat.purple strong").innerText(), "—");

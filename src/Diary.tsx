@@ -1,3 +1,4 @@
+import { calorieFeedback } from "./nutritionPlans";
 import { calorieBalance } from "./calorieBalance";
 import { useState } from "react";
 import {
@@ -13,6 +14,7 @@ import {
 import { type DailyRecord, localDay } from "./records";
 import "./diary.css";
 type Props = {
+  plan: string;
   onNotifications: () => void;
   foods: DailyRecord[];
   workouts: DailyRecord[];
@@ -22,6 +24,7 @@ type Props = {
   onDelete: (kind: "food" | "workout", id: string) => void;
 };
 export function Diary({
+  plan,
   onNotifications,
   foods,
   workouts,
@@ -41,6 +44,7 @@ export function Diary({
   const consumed = foodDay.reduce((s, i) => s + i.kcal, 0),
     burned = workoutDay.reduce((s, i) => s + i.kcal, 0);
   const {netBalance: netCalories, foodExcess} = calorieBalance(target, consumed, burned);
+  const feedback = calorieFeedback(plan, netCalories);
   const macros = [
     {
       key: "protein" as const,
@@ -225,8 +229,8 @@ export function Diary({
           </strong>
         </div>
         <div>
-          <span>{netCalories > 0 ? "Calorias a mais" : netCalories < 0 ? "Déficit após atividades" : "Saldo equilibrado"}</span>
-          <strong className={netCalories > 0 ? "calorie-excess" : undefined}>
+          <span>{netCalories === 0 ? "Equilíbrio" : netCalories < 0 ? "Déficit após atividades" : "Superávit após atividades"}</span>
+          <strong className={`balance-result balance-${feedback.tone}${feedback.tone === "warning" ? " calorie-excess" : ""}`}>
             {format(netCalories)} <small>kcal</small>
           </strong>
         </div>
